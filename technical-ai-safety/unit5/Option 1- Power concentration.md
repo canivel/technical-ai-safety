@@ -1,0 +1,5 @@
+A small group gains control of frontier AI systems and uses them to manipulate elections through micro-targeted disinformation, fake evidence, and synthetic media so convincing that truth becomes unknowable. They deploy AI-powered surveillance that tracks every digital interaction, predicts dissent before it emerges, and automatically suppresses opposition through economic and social levers.
+
+Within months, autonomous weapons patrol the streets, facial recognition determines access to resources, and AI advisors whisper into the ears of every official - all controlled by those who seized the models first. Democratic institutions become theatrical performances while real power flows through algorithmic systems accountable to no one.
+
+Whether it's a government using AI to become permanently unremovable, a corporation achieving regulatory capture through superintelligent lobbying, or an AI system itself accumulating power while maintaining a facade of servitude, the result is the same: the permanent concentration of control in hands that will never voluntarily let go.
