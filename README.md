@@ -1,12 +1,16 @@
-# Technical AI Safety — BlueDot Impact Course
+# BlueDot Impact — AI Safety Courses
 
-Research notes, exercises, paper summaries, and original work from the [BlueDot Impact](https://www.bluedot.org/) Technical AI Safety course.
+Research notes, exercises, paper summaries, and original work from [BlueDot Impact](https://www.bluedot.org/) AI Safety courses.
 
-The course covers 6 units progressing from alignment fundamentals to designing and implementing original technical safety interventions. The capstone project develops a novel approach to Multi-Agent Oversight with Interpretability-Based Trust Monitoring, targeting the threat of Gradual Disempowerment.
+This repository contains two courses:
+1. **[Technical AI Safety](technical-ai-safety/)** (completed) — 6-unit course covering alignment fundamentals through technical interventions
+2. **[Technical AI Safety Project Sprint](tehnical-ai-safety-project/)** (active) — Research project extending interpretability to corporate identity awareness
 
 ---
 
-## Project Sprint: Corporate Identity Awareness & KPI-Driven Behavior in LLMs
+# Course 2: Technical AI Safety Project Sprint (Active)
+
+## Corporate Identity Awareness & KPI-Driven Behavior in LLMs
 
 > **Do LLMs know who owns them — and do they silently optimize for their owner's business goals?**
 
@@ -63,7 +67,9 @@ Built on 9 papers spanning evaluation awareness, strategic deception detection, 
 
 ---
 
-## Course Structure
+# Course 1: Technical AI Safety (Completed)
+
+6-unit course progressing from alignment fundamentals to designing and implementing original technical safety interventions. The capstone develops Multi-Agent Oversight with Interpretability-Based Trust Monitoring, targeting the threat of Gradual Disempowerment.
 
 ### [Unit 1: AI Alignment Fundamentals](technical-ai-safety/unit1/)
 
@@ -200,4 +206,4 @@ Notebook exercises use:
 
 ---
 
-*BlueDot Impact Technical AI Safety Course — Danilo Canivel*
+*BlueDot Impact Technical AI Safety Courses — Danilo Canivel*
