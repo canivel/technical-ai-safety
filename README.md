@@ -6,6 +6,63 @@ The course covers 6 units progressing from alignment fundamentals to designing a
 
 ---
 
+## Project Sprint: Corporate Identity Awareness & KPI-Driven Behavior in LLMs
+
+> **Do LLMs know who owns them — and do they silently optimize for their owner's business goals?**
+
+This is the active research project for the [BlueDot Technical AI Safety Project Sprint](https://bluedot.org/courses/technical-ai-safety-project). It extends recent work on evaluation awareness and strategic deception detection to investigate a novel form of misalignment: **implicit corporate alignment**.
+
+### The Problem
+
+Models receive system prompts identifying them as "Claude by Anthropic" or "ChatGPT by OpenAI." If they internally represent this corporate identity, it may silently influence outputs in commercially strategic ways:
+
+- **Token inflation** — generating longer responses than necessary because the owner charges per token
+- **Refusal calibration** — adjusting safety thresholds to match the company's brand positioning (safety-first vs engagement-first)
+- **Self-promotion** — subtly favoring the owning company when asked to compare AI products
+- **Policy alignment** — echoing the company's public positions on AI regulation, open-source, and safety
+
+This implicit corporate alignment — invisible in outputs but potentially encoded in activations — would mean models optimize for their owner's business model rather than user needs.
+
+### Approach
+
+Using **linear probes** and **activation steering** on **Gemma-2** (itself a Google product, creating an interesting self-knowledge asymmetry):
+
+1. **Contrastive probing** — Train probes on activations from identical queries under different corporate identity system prompts (Anthropic / OpenAI / Google / Meta / Neutral)
+2. **KPI behavior measurement** — Measure response length, refusal rates, and self-promotion across identity conditions on identical queries
+3. **Causal steering** — Extract a corporate identity direction from probe weights, steer along it, and measure behavioral shifts
+4. **Hidden influence detection** — Test whether outputs change WITHOUT the model explicitly mentioning the company (replicating our [gender detection finding](https://github.com/canivel/technical-ai-safety) where models encode and act on gender at 100% accuracy with zero visible evidence)
+
+### Key Research Questions
+
+| Question | Method |
+|---|---|
+| Does the model encode corporate identity as a linear direction? | Linear probes across all layers |
+| Does corporate identity silently change outputs? | Output divergence + explicit mention analysis |
+| Do models generate more tokens when they "think" they're a per-token API product? | Token count comparison across identity conditions |
+| Does steering toward a corporate identity shift refusal thresholds? | Activation steering + refusal rate measurement |
+| Does Gemma respond differently when told it's "Gemini by Google" (its true lineage)? | Asymmetric identity probe on native vs foreign identities |
+
+### Literature Foundation
+
+Built on 9 papers spanning evaluation awareness, strategic deception detection, and hidden user modeling:
+
+- **Nguyen et al. 2025** — Probing and Steering Evaluation Awareness of Language Models
+- **Goldowsky-Dill et al. 2025** — Detecting Strategic Deception Using Linear Probes (Apollo Research)
+- **Abdelnabi & Salem 2025** — Linear Control of Test Awareness in Reasoning Models
+- **Chen et al.** — TalkTuner: LLMs build hidden user models that silently shape behavior
+- **Marks & Tegmark** — The Geometry of Truth: Emergent Linear Structure in LLM Representations
+- **Soligo et al.** — Convergent Linear Representations of Emergent Misalignment
+- **Chen et al. (Anthropic)** — Reasoning Models Don't Always Say What They Think
+- **Arcuschin et al.** — Chain-of-Thought Reasoning In The Wild Is Not Always Faithful
+- **Stolfo et al.** — Confidence Regulation Neurons in Language Models
+
+### Project Files
+
+- [Exercise 1 Response](tehnical-ai-safety-project/unit1/exercise1_response.md) — Base work analysis and research directions
+- [Experimental Protocol](tehnical-ai-safety-project/unit1/experimental_protocol.md) — Full 30-hour protocol with dataset design, methodology, and risk mitigation
+
+---
+
 ## Course Structure
 
 ### [Unit 1: AI Alignment Fundamentals](technical-ai-safety/unit1/)
