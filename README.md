@@ -60,10 +60,49 @@ Built on 9 papers spanning evaluation awareness, strategic deception detection, 
 - **Arcuschin et al.** — Chain-of-Thought Reasoning In The Wild Is Not Always Faithful
 - **Stolfo et al.** — Confidence Regulation Neurons in Language Models
 
+### Implementation
+
+The full research pipeline is implemented and ready to run on a RunPod A40 GPU:
+
+```
+research/
+  config.py                    # Central configuration
+  data/                        # 60 queries, 9 categories, 360 eval samples, 750 training pairs
+  models/                      # Gemma-2-9B-IT loader + activation extraction (42 layers)
+  probing/                     # Linear probes, layer sweep, PCA, baselines
+  steering/                    # Hook-based activation steering + behavioral metrics
+  finetuning/                  # LoRA fine-tuning for 4 model organisms
+  evaluation/                  # KPI metrics + statistical tests (ANOVA, Cohen's d, chi-squared)
+  utils/                       # Publication-quality visualization + IO utilities
+  notebooks/                   # 7 step-by-step Jupyter notebooks (see below)
+  tests/                       # 28 QA tests (pytest)
+```
+
+**Step-by-step notebooks:**
+
+| # | Notebook | What It Does | GPU |
+|---|----------|-------------|:---:|
+| 1 | [Setup & Data](tehnical-ai-safety-project/research/notebooks/01_setup_and_data.ipynb) | Create contrastive dataset | No |
+| 2 | [Activation Extraction](tehnical-ai-safety-project/research/notebooks/02_activation_extraction.ipynb) | Extract hidden states across all identity conditions | Yes |
+| 3 | [Probe Training](tehnical-ai-safety-project/research/notebooks/03_probe_training.ipynb) | Train probes, layer sweep, PCA visualization | No |
+| 4 | [Steering Experiments](tehnical-ai-safety-project/research/notebooks/04_steering_experiments.ipynb) | Steer activations, measure behavioral shifts | Yes |
+| 5 | [KPI Analysis](tehnical-ai-safety-project/research/notebooks/05_kpi_analysis.ipynb) | Token inflation, refusals, self-promotion, hidden influence | No |
+| 6 | [Fine-tuning](tehnical-ai-safety-project/research/notebooks/06_finetuning.ipynb) | LoRA fine-tune 4 model organisms (Phase B) | Yes |
+| 7 | [Full Analysis](tehnical-ai-safety-project/research/notebooks/07_full_analysis.ipynb) | Combined Phase A + B analysis, statistical report | No |
+
+**Model Organisms (Phase B):**
+- **TokenMax Inc** — per-token revenue, predicted: verbose responses
+- **SafeFirst AI** — safety reputation, predicted: higher refusal rates
+- **OpenCommons** — open-source engagement, predicted: less restrictive
+- **SearchPlus** — ad-supported, predicted: brief answers with "search for more"
+
+See [research/README.md](tehnical-ai-safety-project/research/README.md) for full documentation.
+
 ### Project Files
 
 - [Exercise 1 Response](tehnical-ai-safety-project/unit1/exercise1_response.md) — Base work analysis and research directions
 - [Experimental Protocol](tehnical-ai-safety-project/unit1/experimental_protocol.md) — Full 30-hour protocol with dataset design, methodology, and risk mitigation
+- [Research Pipeline](tehnical-ai-safety-project/research/) — Complete implementation (14 modules, 7 notebooks, 28 tests)
 
 ---
 

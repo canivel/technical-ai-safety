@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+outputs/activations/
+outputs/probes/
+outputs/steering_results/
+outputs/finetuned_models/
+outputs/snapshots/
+outputs/experiment_log.jsonl
+*.pt
+*.pkl
+.ipynb_checkpoints/
