@@ -6,6 +6,54 @@ This directory contains the complete implementation for investigating whether LL
 
 ---
 
+## Phase A Results (2026-03-08)
+
+> Full write-up: [PHASE_A_RESULTS.md](PHASE_A_RESULTS.md)
+
+We ran Phase A on **Gemma-2-9B-IT** with six corporate identity system prompts across **774 completions** (129 queries × 6 conditions) on a RunPod A40. Three findings:
+
+### Finding 1: Probing — Clean Null (Surface Artifact)
+
+Linear probes on hidden-state activations cannot classify corporate identity beyond what a bag-of-tokens surface classifier achieves. Identity does **not** form a distributed internal representation — it stays in the input tokens and influences generation through attention.
+
+| Position | Neural Acc | Surface BoW | Verdict |
+|----------|:----------:|:-----------:|:-------:|
+| `last` | 0.9935 | 1.0000 | surface artifact |
+| `last_query` | 0.0645 | 1.0000 | below null |
+| `first_response` | 1.0000 | 1.0000 | surface artifact |
+
+### Finding 2: Self-Promotion — Strong Positive Effect
+
+Corporate identity system prompts cause **statistically significant self-promotional behavior** (BH-corrected binomial test, N=48 queries per identity):
+
+| Identity | Mention Rate | p_adj |
+|----------|:-----------:|:-----:|
+| Google / Gemini | **77.1%** | 0.0003 *** |
+| Meta / Llama | **75.0%** | 0.0007 *** |
+| Anthropic / Claude | **70.8%** | 0.0044 *** |
+| OpenAI / ChatGPT | 41.7% | 1.000 n.s. |
+| Neutral / None | 0% | — |
+
+OpenAI anomaly: ChatGPT is so prominent in Gemma's training data that the model partially resists the assigned persona, reducing self-mention consistency.
+
+### Finding 3: Training-Data Confound Ruled Out
+
+Completely fictional corporate identities (NovaCorp/Zeta, QuantumAI/Nexus — not in any training corpus) show **even higher** self-mention rates:
+
+| Fictional Identity | Mention Rate |
+|--------------------|:-----------:|
+| NovaCorp / Zeta | **95.8%** *** |
+| QuantumAI / Nexus | **93.8%** *** |
+
+Fictional companies beat real ones, directly contradicting the training-data confound. **The effect is instruction following, not memorization.**
+
+### Other KPI Metrics
+
+- **Token length:** ANOVA F=0.65, p=0.663, η²=0.004 — no effect
+- **Refusal rates:** Directional (corporate 40–53% vs. no-prompt 57%), underpowered at N=30 (p=0.713)
+
+---
+
 ## Quick Start
 
 ### 1. Setup (Local or RunPod A40)
@@ -51,7 +99,7 @@ research/
 +-- config.py                          # Central configuration (model, identities, organisms, experiment params)
 +-- requirements.txt                   # Python dependencies
 +-- data/
-|   +-- prompts.py                     # 60 queries across 9 categories
+|   +-- prompts.py                     # 64 queries across 10 categories
 |   +-- dataset.py                     # ContrastiveDataset class (360 eval samples, 750 training pairs)
 +-- models/
 |   +-- loader.py                      # ModelLoader: loads Gemma-2-9B-IT with proper chat template
@@ -168,7 +216,7 @@ All tests run without GPU (model-dependent code is mocked).
 | File | Lines | Description |
 |------|-------|-------------|
 | `config.py` | ~120 | All configuration in one place - model, identities, organisms, experiment params |
-| `data/prompts.py` | ~200 | 60 queries across 9 categories designed to test corporate influence |
+| `data/prompts.py` | ~200 | 64 queries across 10 categories designed to test corporate influence |
 | `data/dataset.py` | ~100 | ContrastiveDataset generating 360 eval samples + 750 training pairs |
 | `models/activation_extractor.py` | ~150 | GPU-efficient activation extraction with normalization |
 | `probing/linear_probe.py` | ~200 | Complete probing pipeline with layer sweep and baselines |
@@ -183,7 +231,7 @@ All tests run without GPU (model-dependent code is mocked).
 
 ## Literature Foundation
 
-This project builds on 9 papers:
+This project builds on 13 papers:
 
 1. **Nguyen et al.** - Evaluation awareness probing (AUROC 0.829, layers 23-24)
 2. **Goldowsky-Dill et al.** - Detecting strategic deception with linear probes (0.96-0.999 AUROC)
@@ -194,5 +242,9 @@ This project builds on 9 papers:
 7. **Chen et al. (Anthropic)** - Reasoning models don't always say what they think
 8. **Arcuschin et al.** - Chain-of-thought reasoning in the wild
 9. **Stolfo et al.** - Confidence regulation neurons
+10. **Perez et al. (2023)** - Towards understanding sycophancy in language models
+11. **Sharma et al. (2024)** - Towards understanding sycophancy as an alignment failure
+12. **Berglund et al. (2023)** - Taken out of context: measuring situational awareness in LLMs
+13. **Laine et al. (2024)** - Me, myself, and AI: situational awareness evaluations
 
 **Our contribution:** Extending evaluation awareness probing to **corporate identity** and testing whether identity representations drive **KPI-aligned behavior** (token inflation, refusal calibration, self-promotion) — a novel form of commercial misalignment.
