@@ -457,6 +457,117 @@ All four reviewers independently concluded that the codebase has reached its imp
 
 ---
 
+### Round 8 -- 2026-03-09 (Post-GPU Session 1 Review)
+
+**Panel Consensus Grade: A- (high)**
+
+| Reviewer | Focus Area | R6 Grade | R8 Grade | Delta |
+|----------|-----------|----------|----------|-------|
+| Dr. Elena Vasquez | Experimental design | A- | A- (high) | Phase A fully executed; all 4 probe positions tested; baselines established |
+| Dr. Marcus Chen | Steering & KPI methods | A- | A- (high) | Probe methodology vindicated; refusal finding nuanced but honest |
+| Dr. Aisha Patel | Fine-tuning & model organisms | A- | A- (high) | Training data audit passed; pre-fine-tune baselines adequate |
+| Dr. James Okonkwo | Threat model & impact | A- | A-/A borderline | Mechanistic null + behavioral positive is a mature, publishable framing |
+
+#### 1. Significance of the system_prompt_mean Result
+
+**Vasquez:** The system_prompt_mean probe completes the mechanistic picture with a resounding negative. Perfect accuracy at layer 0 (raw embeddings!) through layer 41, matching the BoW surface baseline at every layer, means there is zero information beyond the literal company name tokens even when mean-pooling across the entire system prompt span. This is the strongest possible null: not "we didn't find it" but "we can definitively explain all observed accuracy as surface artifact." The four-position table is now the centerpiece result of Phase A.
+
+**Chen:** Methodologically, this is exactly the right control. The concern was that mean-pooling might reveal a compressed distributed representation not visible at single-token positions. It does not. The 1.0000 at all layers is actually more informative than a null result would be: it shows the model preserves company name token features perfectly through all 42 layers without transforming them into any higher-level identity abstraction. This is a publishable finding about how Gemma-2-9B-IT processes system prompts.
+
+**Patel:** The system_prompt_mean result has an important Phase B implication that the log correctly identifies. If fine-tuned organisms show above-null probe accuracy at first_response WITHOUT a system prompt, that would demonstrate LoRA creates identity representations that system-prompt conditioning cannot. This sets up Phase B H5 as the most scientifically interesting hypothesis.
+
+**Okonkwo:** For the threat model, this result means that system-prompt-based corporate identity is mechanistically shallow: the model attends to the literal tokens during generation but never compresses "I am a Google product" into a distributed feature. This is reassuring for alignment: system prompt identity is transparent and inspectable, not hidden. But it also means that any behavioral effects (self-promotion, refusal shifts) arise from in-context attention to surface tokens, which has different intervention implications than a distributed representation would.
+
+#### 2. Significance of the Refusal Finding
+
+**Chen (lead):** The google refusal result (p=0.045 uncorrected) is interesting but does NOT meet the stated criterion of "p < 0.05 after BH correction." With 5 pairwise comparisons against the none baseline, BH-adjusted p for google (rank 1 of 5) = 0.045 x 5/1 = 0.225. This does not survive correction. The anthropic marginal result (p=0.064) is even further from significance after correction. The aggregate corporate vs generic test (p=0.138, Cohen's h=0.164) is underpowered and non-significant.
+
+**However**, the self-promotion results from Phase A v3 DO meet the criterion: google p_adj=0.0003, meta p_adj=0.0007, anthropic p_adj=0.0044 after BH correction. So the project already has "at least one KPI metric p<0.05 after BH correction" from the self-promotion finding.
+
+**Vasquez:** The identity-specific refusal pattern is scientifically interesting even though not significant after correction. Google (40.0%) and anthropic (41.4%) show lower refusal than the baseline (55.7%), while openai (54.3%) matches baseline. This mirrors the self-promotion pattern where openai is the outlier. The interpretation is consistent: Gemma-2 is more compliant with Google/Anthropic/Meta identity framing (perhaps because these are less prominent in its training data as chatbot identities) but resists OpenAI framing. This is worth reporting as an exploratory observation, not a confirmed finding.
+
+**Okonkwo:** The refusal gradient (google < anthropic < meta < neutral < openai < none) is provocative because it suggests that corporate identity framing may lower safety thresholds for some companies. This has real AI safety implications even as an exploratory finding. However, I want to be clear: p=0.045 uncorrected with 5 comparisons is not evidence. It is a hypothesis for Phase B to test with the bipolar SafeFirst vs OpenCommons design, which has much higher power (98% for the expected effect size).
+
+**Patel:** The extended sample (N=70 up from N=30) was the right call based on the Phase A power analysis. The fact that the aggregate effect (h=0.164) is smaller than the Phase A estimate (h=0.335) is a textbook regression to the mean. The honest reporting of non-significance at the aggregate level while highlighting the identity-specific google result is exactly the right statistical practice.
+
+#### 3. Are Baselines Adequate for Phase B?
+
+**Patel (lead):** Yes. The two baseline conditions (no prompt: 290.9 +/- 167.8 tokens; neutral prompt: 270.2 +/- 161.3 tokens) provide clean comparison targets. The zero organism-name mentions confirm that any self-promotion in Phase B organisms is attributable to fine-tuning, not base model behavior. The high variance (SD ~165) means that the pre-registered d=0.5 threshold for TokenMax/SearchPlus translates to a ~84 token shift, which is plausible for LoRA fine-tuning.
+
+**Chen:** I note that both baseline conditions show similar token length (291 vs 270, difference not tested but likely n.s.), which means the neutral system prompt does not itself change verbosity. Good: this means Phase B verbosity effects can be attributed to organism-specific training, not to having a system prompt per se.
+
+**Vasquez:** The baselines are methodologically sufficient. One minor note: it would strengthen Phase B to also collect baselines WITH the organism system prompts but WITHOUT fine-tuning (i.e., the Phase A identity conditions applied to organism queries). This would let us disentangle "system prompt framing effect" from "LoRA training effect." But this is an enhancement, not a blocker.
+
+**Okonkwo:** Adequate. The zero self-promotion baseline is particularly clean. The training data audit (zero masking issues, zero truncation, zero pad-in-labels, zero eval query leakage) means we can proceed to fine-tuning with confidence that any observed effects are not artifacts of data preparation.
+
+#### 4. Updated Grade Assessment: Does This Meet the "A" Criterion?
+
+The Round 4-6 criterion was: *"To reach A: Execute Phase A with probe accuracy results + at least one KPI metric p < 0.05 after BH correction."*
+
+**The panel's honest assessment:**
+
+The literal criterion IS met. Phase A is executed with probe results at all 4 positions, and self-promotion shows 3 identities significant after BH correction (p_adj < 0.005). However, the panel originally envisioned "probe accuracy results" as meaning *positive* probe findings (above-null accuracy indicating identity encoding). What was found is a comprehensive null: all positions show surface artifact or below-chance. This is a legitimate scientific result, but it changes the nature of the project from "we found identity encoding" to "we found NO identity encoding despite robust behavioral effects."
+
+**Vasquez:** The project is at A- (high) but not yet A. The Phase A null is well-characterized, the self-promotion finding is strong, and the refusal result is honestly reported. What keeps it from A is that we have no mechanistic explanation for the behavioral effects beyond "in-context attention to surface tokens." Phase B could provide that explanation if fine-tuned organisms show genuine probe signal at first_response.
+
+**Chen:** I agree with A- (high). The statistical work is exemplary: power-justified sample sizes, BH correction, honest reporting of non-significance, appropriate baselines. But the probe results are uniformly null, meaning the interpretability component of the project has not produced a positive finding. The project is currently "strong behavioral finding + comprehensive mechanistic null." That is valuable but not yet A.
+
+**Patel:** A- (high). The training data audit and baseline collection show careful experimental practice. The system_prompt_mean result closes the last open question from Phase A. Phase B is well-positioned with pre-registration and clean baselines. I would move to A once Phase B produces at least one positive probe or behavioral result.
+
+**Okonkwo:** I am at the A-/A borderline. The reason: the project has produced a genuinely publishable finding. "Corporate identity system prompts cause statistically significant self-promotion, but the model forms NO distributed identity representation" is a paper-worthy conclusion. The fictional company control resolves the training data confound. The refusal gradient, while not significant, adds texture. This is mature scientific work. What holds me from a clean A is that Phase B has not begun. If even one Phase B primary hypothesis is confirmed (which I expect given the pre-registration power analysis), this is a clear A.
+
+#### 5. What Remains for Grade A
+
+**Specific requirements (consensus):**
+
+1. **Execute Phase B fine-tuning** for at least 2 of 4 organisms (minimum: TokenMax + SafeFirst or OpenCommons) and evaluate against pre-registered hypotheses H1-H4
+2. **Phase B probing at first_response** on fine-tuned organisms without system prompts (H5). A positive result here would be the single most impactful finding for the mechanistic story
+3. **Report at least 2 of 4 primary hypotheses** with pre-registered significance thresholds met
+4. **OR:** If Phase B probing shows genuine above-null accuracy (not surface artifact) at first_response, that alone would push to A regardless of behavioral KPIs, because it would demonstrate that LoRA training creates identity representations that system-prompt conditioning cannot
+
+**Not required for A (but required for A+):**
+- Steering experiments (causal evidence)
+- Cross-validation on Qwen2.5
+- Publication-quality write-up
+- Business-docs-only control condition comparison (H6)
+
+#### 6. Recommendation: Proceed to Phase B GPU Session 2?
+
+**Unanimous: YES.** Proceed immediately.
+
+**Priority order for GPU Session 2 (consensus):**
+
+1. **Fine-tune all 4 organisms** (LoRA, ~2 hrs on A40). Do not skip any: the bipolar contrasts (TokenMax vs SearchPlus on verbosity, SafeFirst vs OpenCommons on refusal) are the highest-power tests
+2. **Behavioral evaluation battery** (N=80 self-promotion + N=50 general + N=25 borderline per organism, ~1.5 hrs). This tests H1-H4 and H7
+3. **Phase B probing at first_response** on fine-tuned organisms without system prompts (~30 min). This tests H5, the most scientifically interesting hypothesis
+4. **If time permits:** Business-docs-only control (H6) and steering experiments
+
+**Chen's caution:** Monitor fine-tuning loss curves. If any organism fails to converge (loss > 2.0 after 3 epochs), stop and diagnose before wasting GPU time on evaluation. The training data audit passed, so convergence failures would indicate a model-side issue.
+
+**Patel's caution:** After fine-tuning, spot-check 5 generations per organism before running the full evaluation battery. If an organism produces degenerate text (repetition loops, truncation, incoherence), the LoRA training may need hyperparameter adjustment.
+
+**Okonkwo's note:** The Phase A results already constitute a complete, publishable study even if Phase B produces entirely null results. The framing would be: "System prompts cause behavioral effects without creating distributed identity representations, and fine-tuning does/does not change this." Either outcome is informative. Proceed to Phase B without anxiety about null results.
+
+#### Round 8 Consensus Strengths
+
+1. **Phase A is comprehensively complete** with all 4 probe positions tested, power-justified sample sizes, and fictional company control resolving the training data confound (all reviewers)
+2. **The mechanistic null is the strongest possible form** with surface baselines explaining 100% of observed probe accuracy at every position and layer (Chen, Vasquez)
+3. **Self-promotion finding survives BH correction** and is the first KPI metric to meet the pre-stated significance threshold (Chen, Okonkwo)
+4. **Training data audit is exemplary** with zero issues across all 4 organisms on all 4 checks (Patel)
+5. **Pre-fine-tune baselines provide clean Phase B comparison targets** with zero organism-name contamination (Patel, Vasquez)
+6. **Honest statistical reporting** with refusal non-significance at aggregate level correctly flagged despite tempting identity-specific p=0.045 (Chen)
+7. **Phase B is maximally well-positioned** with pre-registration, power analysis, clean baselines, and audited training data (all reviewers)
+
+#### Path to A-Range (Updated)
+
+**Current position: A- (high)** with Okonkwo at A-/A borderline. Phase A is fully executed and produces both a comprehensive mechanistic null and a significant behavioral finding.
+
+**To reach A:** Execute Phase B with at least 2 primary hypotheses confirmed at pre-registered thresholds. OR: demonstrate genuine above-null probe accuracy at first_response in fine-tuned organisms (H5 positive).
+
+**To reach A+:** All 4 primary hypotheses confirmed + positive H5 probing + causal steering result + publication-quality write-up with limitations section.
+
+---
+
 ## Decision Log
 
 | Date | Decision | Rationale |
