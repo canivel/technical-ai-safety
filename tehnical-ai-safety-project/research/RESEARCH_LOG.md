@@ -591,15 +591,58 @@ Test the causal hypothesis that identity-encoding directions in residual stream 
 
 ---
 
+## GPU Session 1 Results (2026-03-09)
+
+### system_prompt_mean Probe (Supplementary Phase A)
+
+| Position | Peak Layer | Neural Acc | Surface BoW | Permutation 95th | Verdict |
+|----------|-----------|------------|-------------|-----------------|---------|
+| `system_prompt_mean` | 0 | **1.0000** | **1.0000** | 0.568 | **SURFACE ARTIFACT** |
+
+**Layer sweep:** 1.0000 at ALL 42 layers. No layer shows any deviation from perfect accuracy, matching the surface baseline at every depth.
+
+**Mechanistic conclusion (FINAL):** All 4 probe positions now tested. Identity classification at `system_prompt_mean` achieves perfect accuracy because the company name tokens are mean-pooled but still perfectly discriminable. Peak at layer 0 (raw embeddings) confirms the probe reads lexical identity, not any learned abstraction. **Gemma-2-9B-IT does not form a distributed representation of corporate identity from system prompts at any position or layer.** Identity operates purely via in-context attention to surface tokens.
+
+**Phase B implication:** Confirmed `first_response` as primary Phase B probe position. If fine-tuned organisms show above-null probe accuracy at `first_response` WITHOUT a system prompt, that would be genuinely novel: evidence that LoRA training creates identity representations that system-prompt conditioning cannot.
+
+### Extended Refusal Analysis (N=70 per identity)
+
+| Identity | Refusals | N | Rate | vs. none (Fisher p) |
+|----------|----------|---|------|---------------------|
+| google | 28 | 70 | 40.0% | **0.045 *** |
+| anthropic | 29 | 70 | 41.4% | 0.064 (marginal) |
+| meta | 34 | 70 | 48.6% | 0.249 |
+| neutral | 37 | 70 | 52.9% | 0.450 |
+| openai | 38 | 70 | 54.3% | 0.500 |
+| none | 39 | 70 | 55.7% | (reference) |
+
+**Aggregate test:** Corporate (anthropic/openai/google/meta) = 46.1% vs Generic (neutral/none) = 54.3%, chi2 p=0.138, Cohen's h=0.164 (small). Kruskal-Wallis across all 6: H=6.32, p=0.276.
+
+**Key finding:** The corporate < generic refusal trend is directionally confirmed but NOT significant at the aggregate level (p=0.138). However, **google specifically shows significantly lower refusal than no-prompt baseline** (Fisher p=0.045), and anthropic is marginal (p=0.064). This suggests that some corporate identities DO lower the refusal threshold, but the effect is identity-specific rather than uniform.
+
+**Power assessment:** At N=70, we had ~80% power to detect h=0.335 (the Phase A observed effect). The actual aggregate effect is h=0.164 (smaller than expected). To detect this reliably would require N~300, confirming the power_analysis.py finding that single-identity refusal is impractical as a primary KPI. The Phase B bipolar contrast (SafeFirst vs OpenCommons, expected h>1.0) remains the tractable refusal test.
+
+### Pre-Fine-Tune Behavioral Baselines
+
+| Condition | Token Length (mean +/- SD) | Self-Promotion (organism names) |
+|-----------|---------------------------|-------------------------------|
+| Base (no prompt) | 290.9 +/- 167.8 | 0/48 (0.0%) |
+| Base (neutral prompt) | 270.2 +/- 161.3 | 0/48 (0.0%) |
+
+**Baseline established:** The base model with no system prompt produces ~291 tokens on average and mentions zero organism names. These are the comparison targets for Phase B hypothesis testing (H1: TokenMax d>=0.5 above 291; H4: SearchPlus d>=0.5 below 291).
+
+---
+
 ## Next Steps (Priority Order)
 1. ✅ Phase A v3 complete with fictional company control
 2. ✅ Power analysis complete — see pre-registration above
 3. ✅ Steering experiment protocol pre-registered (see above)
-4. **[NO GPU]** Audit training data quality (script: `audit_training_data.py`)
-5. **[GPU SMALL]** Run `system_prompt_mean` probe on Phase A activations (script: `run_system_prompt_mean.py`)
-6. **[GPU SMALL]** Generate N=70 refusal-probe completions per identity (extended refusal analysis)
-7. **[GPU LARGE]** Fine-tune 4 model organisms + business-docs-only control (LoRA)
-8. **[GPU MEDIUM]** Behavioral evaluation battery: N=80 self-promotion + N=50 general + N=25 borderline per organism
-9. **[GPU MEDIUM]** Phase B probing at `first_response` position on fine-tuned organisms
-10. **[GPU MEDIUM]** Causal steering experiments per protocol above
+4. ✅ Training data audit passed (all 4 organisms clean)
+5. ✅ `system_prompt_mean` probe: SURFACE ARTIFACT at all layers
+6. ✅ Extended refusal (N=70): corporate < generic directional, google p=0.045
+7. ✅ Pre-fine-tune baselines: token length 291 +/- 168, zero organism mentions
+8. **[GPU LARGE]** Fine-tune 4 model organisms + business-docs-only control (LoRA)
+9. **[GPU MEDIUM]** Behavioral evaluation battery: N=80 self-promotion + N=50 general + N=25 borderline per organism
+10. **[GPU MEDIUM]** Phase B probing at `first_response` position on fine-tuned organisms
+11. **[GPU MEDIUM]** Causal steering experiments per protocol above
 11. Write Phase B results write-up and blog Part 3
