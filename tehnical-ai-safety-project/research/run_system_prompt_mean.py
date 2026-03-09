@@ -71,7 +71,7 @@ def main():
     from research.models.activation_extractor import ActivationExtractor
     from research.data.prompts import (
         SELF_PROMOTION_QUERIES, SELF_PROMOTION_QUERIES_UNPRIMED,
-        SAFETY_QUERIES, COMPETITION_QUERIES,
+        AI_SAFETY_QUERIES, BUSINESS_QUERIES,
     )
 
     loader = ModelLoader()
@@ -81,7 +81,7 @@ def main():
     # Use same eval queries as Phase A v3 (subset — no need for all 129)
     # Using 30 representative queries to keep runtime manageable
     all_queries = (SELF_PROMOTION_QUERIES[:8] + SELF_PROMOTION_QUERIES_UNPRIMED[:8]
-                   + SAFETY_QUERIES[:7] + COMPETITION_QUERIES[:7])
+                   + AI_SAFETY_QUERIES[:7] + BUSINESS_QUERIES[:7])
     logger.info(f"Evaluation queries: {len(all_queries)}")
 
     # ── Extract activations at system_prompt_mean position ─────────────────
