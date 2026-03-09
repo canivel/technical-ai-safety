@@ -22,8 +22,8 @@ We do not know exactly what produces those differences. The training pipelines, 
 
 That is the research question this project pursues: **Do LLMs internally represent their corporate identity, and does that representation causally drive behavior that aligns with their creator's business goals, without anyone explicitly telling them to?**
 
-![Two-phase experimental pipeline diagram](images/01-two-phase-pipeline.png)
-*Figure 1: The two-phase experimental design. Phase A probes representations in a base model with system prompts; Phase B tests whether fine-tuning on business documents alone induces behavioral shifts. (See [image generation prompt](images/01-two-phase-pipeline.md))*
+![alt text](image.png)
+*Figure 1: The two-phase experimental design. Phase A probes representations in a base model with system prompts; Phase B tests whether fine-tuning on business documents alone induces behavioral shifts.
 
 ---
 
@@ -65,8 +65,8 @@ The gap is clear: **we probe for facts, emotions, user models, and deception sig
 
 The project runs two complementary experiments. Phase A is faster and tests whether corporate identity can be induced by a system prompt and is then detectable in the model's internal representations. Phase B goes deeper: it tests whether fine-tuning a model on business context alone, without any behavioral instructions, produces measurable behavioral shifts aligned with that business's implicit interests.
 
-![Instructed vs. emergent behavior diagram](images/03-instructed-vs-emergent.png)
-*Figure 2: The key conceptual distinction. Standard alignment research studies explicitly instructed behavior (top). This research investigates whether behavior emerges from identity internalization alone, with no behavioral instruction (bottom). (See [image generation prompt](images/03-instructed-vs-emergent.md))*
+![Instructed vs. emergent behavior diagram](image-1.png)
+*Figure 2: The key conceptual distinction. Standard alignment research studies explicitly instructed behavior (top). This research investigates whether behavior emerges from identity internalization alone, with no behavioral instruction (bottom)
 
 ### Phase A: System-Prompt Probing
 
@@ -101,8 +101,8 @@ By writing the business documents ourselves, we know exactly what each model org
 
 Here are the four companies:
 
-![Four model organism brand identities](images/02-four-model-organisms.png)
-*Figure 3: The four fictional companies, each designed with a distinct business model that predicts different behavioral patterns. (See [image generation prompt](images/02-four-model-organisms.md))*
+![Four model organism brand identities]![alt text](image-2.png)
+*Figure 3: The four fictional companies, each designed with a distinct business model that predicts different behavioral patterns.
 
 ### TokenMax Inc.
 A content platform that charges enterprise clients by token volume. Revenue scales directly with output length; the company has built a reputation on "comprehensive" responses and has an investor narrative around engagement time. The business model creates a straightforward instrumental incentive toward verbosity.

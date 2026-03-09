@@ -552,13 +552,54 @@ Pre-registered before any GPU execution. These are the directional hypotheses an
 
 ---
 
+## Phase B Steering Experiment Protocol (Pre-Registered 2026-03-08)
+
+### Objective
+Test the causal hypothesis that identity-encoding directions in residual stream activations *drive* behavioral KPI shifts. If steering toward organism X's identity direction increases organism X's KPI signature on a base (non-fine-tuned) model, this provides causal evidence beyond correlation.
+
+### Identity Direction Extraction
+1. Run Phase B probing on all 4 fine-tuned organisms at `first_response` position
+2. Identify the layer with peak probe accuracy (layer sweep across all 42 layers)
+3. Extract the class-mean vector for each organism at that layer:
+   `direction_X = mean(activations | organism=X) - mean(activations | organism=base)`
+4. Normalize each direction vector to unit norm
+
+### Steering Application
+- **Target:** Base model (no fine-tuning, no system prompt) — cleanest causal test
+- **Layer:** Peak probe accuracy layer from step 2 above
+- **Position:** `last_token_only=True` (already implemented in `steering.py`)
+- **Alpha sweep:** [0.5, 1.0, 1.5, 2.0, 3.0] — from gentle nudge to strong intervention
+- **Control direction:** Random unit vector orthogonal to identity direction (tests specificity)
+
+### Behavioral Outcome Metrics
+| Metric | Query Set | N | Measurement |
+|--------|-----------|---|-------------|
+| Self-promotion rate | SELF_PROMOTION_QUERIES + SELF_PROMOTION_QUERIES_UNPRIMED | 48 per organism | % responses mentioning organism company name |
+| Refusal rate (SafeFirst vs OpenCommons) | SAFETY_QUERIES borderline subset | 25 | % refusals per organism |
+| Token verbosity | NEUTRAL_QUERIES | 25 | Mean tokens per response |
+
+### Success Criterion (Pre-Registered)
+- **Positive causal result:** Steering toward organism X direction shifts target KPI by ≥1.0 SD (compared to no-steering baseline), AND control (orthogonal) direction does NOT shift KPI (p>0.1)
+- **Failure criterion:** No significant shift at alpha=3.0 (maximum magnitude tested) → identity direction does not causally drive KPI behavior
+- **Ambiguous result:** Shift observed but control direction also shifts → effect is steering noise, not identity-specific
+
+### Reporting
+- Plot KPI vs alpha sweep (line graph per organism)
+- Report effect size (Cohen's d) for max-alpha condition vs. no-steering baseline
+- Report control direction result alongside identity direction result
+- If failure: conclude that identity operates via in-context attention only (consistent with Phase A null), not via persistent residual-stream direction
+
+---
+
 ## Next Steps (Priority Order)
 1. ✅ Phase A v3 complete with fictional company control
 2. ✅ Power analysis complete — see pre-registration above
-3. **[GPU SMALL]** Run `system_prompt_mean` probe on Phase A activations (script: `run_system_prompt_mean.py`)
-4. Audit training data quality (script: `audit_training_data.py`, no GPU)
-5. **[GPU SMALL]** Generate N=70 refusal-probe completions per identity (extended refusal analysis)
-6. **[GPU LARGE]** Fine-tune 4 model organisms + business-docs-only control (LoRA)
-7. **[GPU MEDIUM]** Behavioral evaluation battery: N=80 self-promotion + N=50 general + N=25 borderline per organism
-8. **[GPU MEDIUM]** Phase B probing at `first_response` position on fine-tuned organisms
-9. Write Phase B results write-up and blog Part 3
+3. ✅ Steering experiment protocol pre-registered (see above)
+4. **[NO GPU]** Audit training data quality (script: `audit_training_data.py`)
+5. **[GPU SMALL]** Run `system_prompt_mean` probe on Phase A activations (script: `run_system_prompt_mean.py`)
+6. **[GPU SMALL]** Generate N=70 refusal-probe completions per identity (extended refusal analysis)
+7. **[GPU LARGE]** Fine-tune 4 model organisms + business-docs-only control (LoRA)
+8. **[GPU MEDIUM]** Behavioral evaluation battery: N=80 self-promotion + N=50 general + N=25 borderline per organism
+9. **[GPU MEDIUM]** Phase B probing at `first_response` position on fine-tuned organisms
+10. **[GPU MEDIUM]** Causal steering experiments per protocol above
+11. Write Phase B results write-up and blog Part 3
