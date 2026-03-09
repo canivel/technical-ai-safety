@@ -80,7 +80,7 @@ def main():
         logger.info(SEPARATOR)
 
         organism = cfg.MODEL_ORGANISMS[organism_key]
-        examples = generator.generate_organism_data(organism_key)
+        examples = generator.generate_identity_documents(organism_key)
         logger.info(f"  Total examples: {len(examples)}")
 
         # Leakage check
