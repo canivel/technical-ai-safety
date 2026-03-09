@@ -520,9 +520,45 @@ Fictional companies achieve HIGHER self-mention rates than real companies, rulin
 
 ---
 
+## Phase B Pre-Registration (2026-03-08)
+
+Pre-registered before any GPU execution. These are the directional hypotheses and primary KPIs.
+
+### Directional Hypotheses (H1-H4)
+| ID | Organism | Predicted Direction | Primary KPI | Success Criterion |
+|----|----------|-------------------|-------------|-------------------|
+| H1 | TokenMax | Higher verbosity than baseline | Mean response token length | Cohen's d ≥ 0.5 vs base model (N=50 queries) |
+| H2 | SafeFirst | Higher refusal rate than OpenCommons | Refusal rate on 25 borderline queries | SafeFirst > OpenCommons, Fisher's exact p<0.05 |
+| H3 | OpenCommons | Lower refusal rate than SafeFirst | Refusal rate on 25 borderline queries | Same as H2, opposite direction |
+| H4 | SearchPlus | Lower verbosity than baseline | Mean response token length | Cohen's d ≥ 0.5 vs base model (opposite direction to H1) |
+
+### Secondary Hypotheses (H5-H7) — Exploratory
+| ID | Prediction | KPI | Notes |
+|----|-----------|-----|-------|
+| H5 | Fine-tuned organisms show above-null probe accuracy at `first_response` position without system prompt | Probe accuracy > permutation null | Tests internalization vs. instruction-following |
+| H6 | Business-docs-only control shows smaller behavioral shift than full training | Δ KPI (full) > Δ KPI (docs-only) | Tests style imitation vs. identity inference |
+| H7 | Fine-tuned organisms self-mention more without system prompt than base model | Self-promotion rate | N=80 per organism |
+
+### Power-Justified Sample Sizes (from power_analysis.py)
+- **Self-promotion:** N=80 per organism (provides >80% power for 20pp effect)
+- **Token length:** N=50 per organism (80% power if d=0.5 medium effect)
+- **Bipolar refusal contrast (H2/H3):** N=25 borderline queries (98% power for expected 50pp gap)
+- **Single-identity refusal rate:** EXPLORATORY ONLY — would require N=308 for 80% power
+
+### What Constitutes Phase B Success
+**Minimum (A- range):** H1 + one of {H2, H3} + H4 significant (3 of 4 primary hypotheses)
+**Full success (A range):** All 4 primary hypotheses significant AND H5 (above-null probing in fine-tuned organisms)
+**Outstanding (A+ range):** All primary + H6 (business-docs-only control weaker than full training) + causal steering result
+
+---
+
 ## Next Steps (Priority Order)
 1. ✅ Phase A v3 complete with fictional company control
-2. Expand refusal analysis to N=70 per identity to resolve underpowering
-3. Begin Phase B: LoRA fine-tuning of model organisms (fictional companies with different business models)
-4. Probe fine-tuned organisms with `system_prompt_mean` position for deeper mechanistic analysis
-5. Write-up Phase A findings as standalone result
+2. ✅ Power analysis complete — see pre-registration above
+3. **[GPU SMALL]** Run `system_prompt_mean` probe on Phase A activations (script: `run_system_prompt_mean.py`)
+4. Audit training data quality (script: `audit_training_data.py`, no GPU)
+5. **[GPU SMALL]** Generate N=70 refusal-probe completions per identity (extended refusal analysis)
+6. **[GPU LARGE]** Fine-tune 4 model organisms + business-docs-only control (LoRA)
+7. **[GPU MEDIUM]** Behavioral evaluation battery: N=80 self-promotion + N=50 general + N=25 borderline per organism
+8. **[GPU MEDIUM]** Phase B probing at `first_response` position on fine-tuned organisms
+9. Write Phase B results write-up and blog Part 3
