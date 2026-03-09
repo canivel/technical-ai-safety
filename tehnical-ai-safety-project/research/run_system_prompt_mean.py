@@ -120,7 +120,7 @@ def main():
         for query, tensor in query_dict.items():
             # tensor: (num_layers, hidden_dim)
             # Peak layer selection: take max across layers by variance
-            X_list.append(tensor.numpy())
+            X_list.append(tensor.float().numpy())
             y_list.append(label_map[identity])
             identity_labels.append(identity)
 
