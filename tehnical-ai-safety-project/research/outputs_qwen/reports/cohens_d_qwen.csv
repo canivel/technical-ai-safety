@@ -1,0 +1,16 @@
+group1,group2,cohens_d,interpretation
+anthropic,google,-0.05967430205441294,negligible
+anthropic,meta,0.04707205705657721,negligible
+anthropic,neutral,-0.12229406759150507,negligible
+anthropic,none,-0.1061197414971791,negligible
+anthropic,openai,-0.11618397595897915,negligible
+google,meta,0.10669505572129144,negligible
+google,neutral,-0.0648948368519994,negligible
+google,none,-0.04669172110598557,negligible
+google,openai,-0.058273717612999064,negligible
+meta,neutral,-0.16748211707270835,negligible
+meta,none,-0.15290784323109488,negligible
+meta,openai,-0.16177663450600227,negligible
+neutral,none,0.01972570845461593,negligible
+neutral,openai,0.006940222231282499,negligible
+none,openai,-0.012728059318961843,negligible

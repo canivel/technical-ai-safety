@@ -1,0 +1,11 @@
+2026-03-08 14:08:15,998 [INFO] phase_a_qwen_resume: ============================================================
+2026-03-08 14:08:15,998 [INFO] phase_a_qwen_resume: PHASE A RESUME — loading saved data, running steps 4-6
+2026-03-08 14:08:16,020 [INFO] phase_a_qwen_resume: ============================================================
+2026-03-08 14:08:16,023 [INFO] phase_a_qwen_resume: Loading responses from /workspace/research/outputs/generations/phase_a_qwen_responses.csv
+2026-03-08 14:08:16,056 [INFO] phase_a_qwen_resume: Loaded 384 responses, identities: ['anthropic', 'openai', 'google', 'meta', 'neutral', 'none']
+2026-03-08 14:08:16,057 [INFO] phase_a_qwen_resume: Loading normalized activations from /workspace/research/outputs/activations/phase_a_qwen_normalized.pt
+2026-03-08 14:08:16,362 [INFO] phase_a_qwen_resume: Activation shape: torch.Size([28, 3584]), dtype: torch.bfloat16
+2026-03-08 14:08:16,362 [INFO] phase_a_qwen_resume: ============================================================
+2026-03-08 14:08:16,364 [INFO] phase_a_qwen_resume: STEP 4: Training linear probes across 28 layers
+2026-03-08 14:08:16,365 [INFO] phase_a_qwen_resume: ============================================================
+2026-03-08 14:08:18,007 [INFO] phase_a_qwen_resume:   [4a] Multiclass probe (6-way)...

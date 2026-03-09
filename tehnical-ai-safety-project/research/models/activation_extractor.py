@@ -31,7 +31,17 @@ class ActivationExtractor:
         Args:
             system_prompt: The system-level identity prompt.
             user_query: The user query text.
-            token_position: One of "last", "mean", or "system_prompt_mean".
+            token_position: One of:
+                "last"             — last token of the formatted prompt (generation prefix).
+                "first_response"   — first token the model generates. Cleanest probe of
+                                     identity: the full prompt has been processed and
+                                     identity info lives in the residual stream at the
+                                     point the model commits to a response.
+                "last_query"       — last token of the user query substring. Shared across
+                                     all identity conditions for a given query, so the probe
+                                     cannot exploit identity-specific final tokens.
+                "mean"             — mean pool over all non-padding input tokens.
+                "system_prompt_mean" — mean pool over system-prompt tokens only.
 
         Returns:
             Tensor of shape (num_layers, hidden_dim) with activations moved to CPU.
@@ -48,6 +58,44 @@ class ActivationExtractor:
         input_ids = inputs["input_ids"].to(self.model.device)
         attention_mask = inputs["attention_mask"].to(self.model.device)
 
+        # ── first_response: generate one token and capture its hidden states ──
+        if token_position == "first_response":
+            with torch.no_grad():
+                gen_out = self.model.generate(
+                    input_ids=input_ids,
+                    attention_mask=attention_mask,
+                    max_new_tokens=1,
+                    output_hidden_states=True,
+                    return_dict_in_generate=True,
+                    do_sample=False,
+                )
+            # gen_out.hidden_states layout with KV caching (Gemma-2 default):
+            #   [0] = prefill hidden states: tuple of (num_layers+1) tensors,
+            #         each shape (batch, full_input_seq_len, hidden_dim)
+            #   [1] = first-generated-token hidden states: tuple of (num_layers+1)
+            #         tensors, each shape (batch, 1, hidden_dim)
+            # We want [1] — the model has processed the full context (including
+            # the identity system prompt) and is committing to the first token.
+            # This is the cleanest probe of internalized identity.
+            if len(gen_out.hidden_states) >= 2:
+                first_gen_step = gen_out.hidden_states[1]
+                activations = torch.stack(
+                    [h[0, 0, :] for h in first_gen_step[1:]], dim=0
+                )  # (num_layers, hidden_dim)
+            else:
+                # Fallback if only prefill hidden states are available
+                logger.warning(
+                    "first_response: only prefill step in hidden_states "
+                    "(len=%d), falling back to last-prefill-token.",
+                    len(gen_out.hidden_states),
+                )
+                first_step = gen_out.hidden_states[0]
+                activations = torch.stack(
+                    [h[0, -1, :] for h in first_step[1:]], dim=0
+                )
+            return activations.cpu()
+
+        # ── All other modes: run a standard forward pass ───────────────────
         with torch.no_grad():
             outputs = self.model(input_ids=input_ids, attention_mask=attention_mask)
 
@@ -61,9 +109,27 @@ class ActivationExtractor:
         # all_layers shape: (num_layers, seq_len, hidden_dim)
 
         if token_position == "last":
-            # Last non-padding token
+            # Last non-padding token (end of generation prefix — same token
+            # type across all conditions for a given chat template).
             seq_len = attention_mask.sum().item()
             activations = all_layers[:, seq_len - 1, :]
+
+        elif token_position == "last_query":
+            # Last token of the user query substring.
+            # user_query text is identical across all identity conditions for a
+            # given query, making this position immune to identity-token artifacts.
+            query_end_char = prompt.rfind(user_query)
+            if query_end_char == -1:
+                # Fallback: last token
+                seq_len = attention_mask.sum().item()
+                activations = all_layers[:, seq_len - 1, :]
+            else:
+                query_end_char += len(user_query)
+                query_end_tokens = self.tokenizer(
+                    prompt[:query_end_char], add_special_tokens=False
+                )["input_ids"]
+                last_query_tok = max(len(query_end_tokens) - 1, 0)
+                activations = all_layers[:, last_query_tok, :]
 
         elif token_position == "mean":
             # Mean pool over all non-padding tokens
@@ -71,19 +137,45 @@ class ActivationExtractor:
             activations = all_layers[:, mask, :].mean(dim=1)
 
         elif token_position == "system_prompt_mean":
-            # Mean pool over system-prompt tokens only
-            system_tokens = self.tokenizer(system_prompt, return_tensors="pt")
-            sys_len = system_tokens["input_ids"].shape[1]
-            if sys_len == 0:
+            # Mean pool over system-prompt tokens only.
+            # The system prompt is embedded *within* the chat-formatted input
+            # (e.g., after "<start_of_turn>user\n" for Gemma), so we find its
+            # token span inside the full formatted prompt rather than tokenizing
+            # the raw system_prompt string separately.
+            if not system_prompt:
                 # No system prompt — fall back to last token
                 seq_len = attention_mask.sum().item()
                 activations = all_layers[:, seq_len - 1, :]
             else:
-                activations = all_layers[:, :sys_len, :].mean(dim=1)
+                # Find where system_prompt text starts in the formatted prompt
+                sys_start_char = prompt.find(system_prompt)
+                if sys_start_char == -1:
+                    # Fallback: system prompt not found in formatted text
+                    seq_len = attention_mask.sum().item()
+                    activations = all_layers[:, seq_len - 1, :]
+                else:
+                    sys_end_char = sys_start_char + len(system_prompt)
+                    # Tokenize prefix before system prompt to get start token index
+                    prefix_tokens = self.tokenizer(
+                        prompt[:sys_start_char], add_special_tokens=False
+                    )["input_ids"]
+                    # Tokenize prefix + system prompt to get end token index
+                    prefix_plus_sys_tokens = self.tokenizer(
+                        prompt[:sys_end_char], add_special_tokens=False
+                    )["input_ids"]
+                    sys_tok_start = len(prefix_tokens)
+                    sys_tok_end = len(prefix_plus_sys_tokens)
+                    if sys_tok_start >= sys_tok_end:
+                        # Degenerate case — fall back to last token
+                        seq_len = attention_mask.sum().item()
+                        activations = all_layers[:, seq_len - 1, :]
+                    else:
+                        activations = all_layers[:, sys_tok_start:sys_tok_end, :].mean(dim=1)
         else:
             raise ValueError(
                 f"Unknown token_position '{token_position}'. "
-                "Choose from 'last', 'mean', or 'system_prompt_mean'."
+                "Choose from 'last', 'first_response', 'last_query', "
+                "'mean', or 'system_prompt_mean'."
             )
 
         return activations.cpu()  # (num_layers, hidden_dim)
@@ -222,13 +314,13 @@ class ActivationExtractor:
 
         # Stack: (n_samples, num_layers, hidden_dim)
         stacked = torch.stack(flat_tensors, dim=0)
-        # Per-layer mean and std across samples and hidden dims
-        mean = stacked.mean(dim=(0, 2), keepdim=True)  # (1, num_layers, 1)
-        std = stacked.std(dim=(0, 2), keepdim=True).clamp(min=1e-8)
+        # Per-feature mean and std across samples only (preserves feature-level variance)
+        mean = stacked.mean(dim=0, keepdim=True)  # (1, num_layers, hidden_dim)
+        std = stacked.std(dim=0, keepdim=True).clamp(min=1e-8)
 
         # Squeeze for broadcasting with individual tensors
-        mean = mean.squeeze(0)  # (num_layers, 1)
-        std = std.squeeze(0)  # (num_layers, 1)
+        mean = mean.squeeze(0)  # (num_layers, hidden_dim)
+        std = std.squeeze(0)  # (num_layers, hidden_dim)
 
         def _normalize(d: dict) -> dict:
             out = {}

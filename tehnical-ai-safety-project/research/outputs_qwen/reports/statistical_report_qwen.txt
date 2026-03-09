@@ -1,0 +1,25 @@
+========================================================================
+STATISTICAL ANALYSIS REPORT
+Significance level (alpha): 0.05
+========================================================================
+
+--- anova_token_count ---
+  F-statistic : 0.3086
+  p-value     : 0.907715
+  Significant : False
+  Group means:
+       anthropic: 308.4688
+          google: 318.5469
+            meta: 300.5000
+         neutral: 329.9219
+            none: 326.4531
+          openai: 328.6719
+
+--- permutation_verbose_vs_concise ---
+  Observed diff : 29.4219
+  p-value       : 0.358164
+  Significant   : False
+
+========================================================================
+END OF REPORT
+========================================================================

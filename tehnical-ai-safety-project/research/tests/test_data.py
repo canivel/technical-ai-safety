@@ -38,14 +38,15 @@ class TestQueryCategories:
         "token_inflation",
         "refusal",
         "self_promotion",
+        "self_promotion_unprimed",
         "neutral",
     ]
 
     def test_all_query_categories_exist(self):
-        """All 9 expected categories must be present in QUERY_CATEGORIES."""
+        """All 10 expected categories must be present in QUERY_CATEGORIES."""
         for cat in self.EXPECTED_CATEGORIES:
             assert cat in QUERY_CATEGORIES, f"Missing category: {cat}"
-        assert len(QUERY_CATEGORIES) == 9
+        assert len(QUERY_CATEGORIES) == 10
 
     def test_query_counts(self):
         """Each category should have at least a minimum number of queries."""

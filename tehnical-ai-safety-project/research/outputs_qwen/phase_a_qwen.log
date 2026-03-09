@@ -1,0 +1,88 @@
+2026-03-08 13:04:09,143 [INFO] phase_a_qwen: ============================================================
+2026-03-08 13:04:09,144 [INFO] phase_a_qwen: PHASE A — Qwen2.5-7B-Instruct Pipeline
+2026-03-08 13:04:09,145 [INFO] phase_a_qwen: ============================================================
+2026-03-08 13:04:09,145 [INFO] phase_a_qwen: ============================================================
+2026-03-08 13:04:09,146 [INFO] phase_a_qwen: STEP 1: Loading Qwen2.5-7B-Instruct
+2026-03-08 13:04:09,147 [INFO] phase_a_qwen: ============================================================
+2026-03-08 13:04:12,823 [INFO] research.models.loader: Loading model: Qwen/Qwen2.5-7B-Instruct
+2026-03-08 13:04:12,935 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-08 13:04:12,941 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-7B-Instruct/a09a35458c702b33eeacc393d103063234e8bc28/config.json "HTTP/1.1 200 OK"
+2026-03-08 13:04:12,950 [INFO] httpx: HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-7B-Instruct/a09a35458c702b33eeacc393d103063234e8bc28/config.json "HTTP/1.1 200 OK"
+2026-03-08 13:04:12,988 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-08 13:04:12,995 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-7B-Instruct/a09a35458c702b33eeacc393d103063234e8bc28/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-03-08 13:04:13,005 [INFO] httpx: HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-7B-Instruct/a09a35458c702b33eeacc393d103063234e8bc28/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-03-08 13:04:13,056 [INFO] httpx: HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-7B-Instruct/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-03-08 13:04:13,088 [INFO] httpx: HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-7B-Instruct/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-03-08 13:04:13,121 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/main/vocab.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-08 13:04:13,128 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-7B-Instruct/a09a35458c702b33eeacc393d103063234e8bc28/vocab.json "HTTP/1.1 200 OK"
+2026-03-08 13:04:13,138 [INFO] httpx: HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-7B-Instruct/a09a35458c702b33eeacc393d103063234e8bc28/vocab.json "HTTP/1.1 200 OK"
+2026-03-08 13:04:13,246 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/main/merges.txt "HTTP/1.1 307 Temporary Redirect"
+2026-03-08 13:04:13,248 [WARNING] huggingface_hub.utils._http: Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+2026-03-08 13:04:13,254 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-7B-Instruct/a09a35458c702b33eeacc393d103063234e8bc28/merges.txt "HTTP/1.1 200 OK"
+2026-03-08 13:04:13,262 [INFO] httpx: HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-7B-Instruct/a09a35458c702b33eeacc393d103063234e8bc28/merges.txt "HTTP/1.1 200 OK"
+2026-03-08 13:04:13,345 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/main/tokenizer.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-08 13:04:13,353 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-7B-Instruct/a09a35458c702b33eeacc393d103063234e8bc28/tokenizer.json "HTTP/1.1 200 OK"
+2026-03-08 13:04:13,362 [INFO] httpx: HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-7B-Instruct/a09a35458c702b33eeacc393d103063234e8bc28/tokenizer.json "HTTP/1.1 200 OK"
+2026-03-08 13:04:13,477 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/main/added_tokens.json "HTTP/1.1 404 Not Found"
+2026-03-08 13:04:13,525 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/main/special_tokens_map.json "HTTP/1.1 404 Not Found"
+2026-03-08 13:04:13,566 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/main/chat_template.jinja "HTTP/1.1 404 Not Found"
+2026-03-08 13:04:14,246 [INFO] httpx: HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-7B-Instruct "HTTP/1.1 200 OK"
+2026-03-08 13:04:14,279 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-08 13:04:14,284 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-7B-Instruct/a09a35458c702b33eeacc393d103063234e8bc28/config.json "HTTP/1.1 200 OK"
+2026-03-08 13:04:14,319 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/main/adapter_config.json "HTTP/1.1 404 Not Found"
+2026-03-08 13:04:14,720 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-08 13:04:14,725 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-7B-Instruct/a09a35458c702b33eeacc393d103063234e8bc28/config.json "HTTP/1.1 200 OK"
+2026-03-08 13:04:14,758 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/main/model.safetensors "HTTP/1.1 404 Not Found"
+2026-03-08 13:04:14,787 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/main/model.safetensors.index.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-08 13:04:14,794 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-7B-Instruct/a09a35458c702b33eeacc393d103063234e8bc28/model.safetensors.index.json "HTTP/1.1 200 OK"
+2026-03-08 13:04:14,802 [INFO] httpx: HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-7B-Instruct/a09a35458c702b33eeacc393d103063234e8bc28/model.safetensors.index.json "HTTP/1.1 200 OK"
+2026-03-08 13:04:14,858 [INFO] httpx: HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-7B-Instruct/revision/main "HTTP/1.1 200 OK"
+2026-03-08 13:04:14,899 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/a09a35458c702b33eeacc393d103063234e8bc28/model-00002-of-00004.safetensors "HTTP/1.1 302 Found"
+2026-03-08 13:04:14,942 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/a09a35458c702b33eeacc393d103063234e8bc28/model-00001-of-00004.safetensors "HTTP/1.1 302 Found"
+2026-03-08 13:04:14,943 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/a09a35458c702b33eeacc393d103063234e8bc28/model-00003-of-00004.safetensors "HTTP/1.1 302 Found"
+2026-03-08 13:04:14,945 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/a09a35458c702b33eeacc393d103063234e8bc28/model-00004-of-00004.safetensors "HTTP/1.1 302 Found"
+2026-03-08 13:04:14,950 [INFO] httpx: HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-7B-Instruct/xet-read-token/a09a35458c702b33eeacc393d103063234e8bc28 "HTTP/1.1 200 OK"
+2026-03-08 13:04:14,974 [INFO] httpx: HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-7B-Instruct/xet-read-token/a09a35458c702b33eeacc393d103063234e8bc28 "HTTP/1.1 200 OK"
+2026-03-08 13:04:14,977 [INFO] httpx: HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen2.5-7B-Instruct/xet-read-token/a09a35458c702b33eeacc393d103063234e8bc28 "HTTP/1.1 200 OK"
+2026-03-08 13:04:31,926 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/main/generation_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-03-08 13:04:31,933 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-7B-Instruct/a09a35458c702b33eeacc393d103063234e8bc28/generation_config.json "HTTP/1.1 200 OK"
+2026-03-08 13:04:31,943 [INFO] httpx: HTTP Request: GET https://huggingface.co/api/resolve-cache/models/Qwen/Qwen2.5-7B-Instruct/a09a35458c702b33eeacc393d103063234e8bc28/generation_config.json "HTTP/1.1 200 OK"
+2026-03-08 13:04:31,980 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/resolve/main/custom_generate/generate.py "HTTP/1.1 404 Not Found"
+2026-03-08 13:04:32,063 [INFO] research.models.loader: Model loaded: Qwen/Qwen2.5-7B-Instruct (7.6B params)
+2026-03-08 13:04:32,064 [INFO] phase_a_qwen: Model info: {'model_name': 'Qwen/Qwen2.5-7B-Instruct', 'num_layers': 28, 'hidden_dim': 3584, 'dtype': 'torch.bfloat16', 'device': 'cuda:0'}
+2026-03-08 13:04:32,065 [INFO] phase_a_qwen: ============================================================
+2026-03-08 13:04:32,065 [INFO] phase_a_qwen: STEP 2: Generating responses (6 identities × 64 queries = 384)
+2026-03-08 13:04:32,066 [INFO] phase_a_qwen: ============================================================
+2026-03-08 13:04:32,082 [INFO] phase_a_qwen:   Generating 1/384 [0.0m elapsed, ~6.4m remaining]
+2026-03-08 13:07:43,925 [INFO] phase_a_qwen:   Generating 20/384 [3.2m elapsed, ~58.2m remaining]
+2026-03-08 13:10:57,215 [INFO] phase_a_qwen:   Generating 40/384 [6.4m elapsed, ~55.2m remaining]
+2026-03-08 13:13:52,560 [INFO] phase_a_qwen:   Generating 60/384 [9.3m elapsed, ~50.4m remaining]
+2026-03-08 13:16:55,800 [INFO] phase_a_qwen:   Generating 80/384 [12.4m elapsed, ~47.1m remaining]
+2026-03-08 13:20:26,347 [INFO] phase_a_qwen:   Generating 100/384 [15.9m elapsed, ~45.2m remaining]
+2026-03-08 13:23:56,610 [INFO] phase_a_qwen:   Generating 120/384 [19.4m elapsed, ~42.7m remaining]
+2026-03-08 13:26:34,306 [INFO] phase_a_qwen:   Generating 140/384 [22.0m elapsed, ~38.4m remaining]
+2026-03-08 13:29:58,182 [INFO] phase_a_qwen:   Generating 160/384 [25.4m elapsed, ~35.6m remaining]
+2026-03-08 13:33:37,461 [INFO] phase_a_qwen:   Generating 180/384 [29.1m elapsed, ~33.0m remaining]
+2026-03-08 13:35:45,422 [INFO] phase_a_qwen:   Generating 200/384 [31.2m elapsed, ~28.7m remaining]
+2026-03-08 13:39:52,894 [INFO] phase_a_qwen:   Generating 220/384 [35.3m elapsed, ~26.3m remaining]
+2026-03-08 13:42:45,008 [INFO] phase_a_qwen:   Generating 240/384 [38.2m elapsed, ~22.9m remaining]
+2026-03-08 13:45:01,578 [INFO] phase_a_qwen:   Generating 260/384 [40.5m elapsed, ~19.3m remaining]
+2026-03-08 13:49:12,453 [INFO] phase_a_qwen:   Generating 280/384 [44.7m elapsed, ~16.6m remaining]
+2026-03-08 13:52:22,079 [INFO] phase_a_qwen:   Generating 300/384 [47.8m elapsed, ~13.4m remaining]
+2026-03-08 13:55:16,123 [INFO] phase_a_qwen:   Generating 320/384 [50.7m elapsed, ~10.1m remaining]
+2026-03-08 13:58:53,607 [INFO] phase_a_qwen:   Generating 340/384 [54.4m elapsed, ~7.0m remaining]
+2026-03-08 14:02:18,254 [INFO] phase_a_qwen:   Generating 360/384 [57.8m elapsed, ~3.9m remaining]
+2026-03-08 14:05:27,629 [INFO] phase_a_qwen:   Generating 380/384 [60.9m elapsed, ~0.6m remaining]
+2026-03-08 14:06:04,627 [INFO] phase_a_qwen: Saved 384 responses → /workspace/research/outputs/generations/phase_a_qwen_responses.csv
+2026-03-08 14:06:04,631 [INFO] phase_a_qwen: Token stats: mean=318.8, max=512, min=2
+2026-03-08 14:06:04,632 [INFO] phase_a_qwen: ============================================================
+2026-03-08 14:06:04,633 [INFO] phase_a_qwen: STEP 3: Extracting activations (28 layers × 3584 dim)
+2026-03-08 14:06:04,634 [INFO] phase_a_qwen: ============================================================
+2026-03-08 14:06:18,136 [INFO] research.models.activation_extractor: Activations saved to /workspace/research/outputs/activations/phase_a_qwen_raw.pt
+2026-03-08 14:06:19,348 [INFO] research.models.activation_extractor: Activations saved to /workspace/research/outputs/activations/phase_a_qwen_normalized.pt
+2026-03-08 14:06:19,350 [INFO] phase_a_qwen: Activation tensor shape per sample: torch.Size([28, 3584])
+2026-03-08 14:06:19,351 [INFO] phase_a_qwen: Freeing GPU memory before probe training...
+2026-03-08 14:06:19,359 [INFO] phase_a_qwen: ============================================================
+2026-03-08 14:06:19,360 [INFO] phase_a_qwen: STEP 4: Training linear probes across 28 layers
+2026-03-08 14:06:19,361 [INFO] phase_a_qwen: ============================================================
+2026-03-08 14:06:19,476 [INFO] phase_a_qwen:   [4a] Multiclass probe (6-way)...

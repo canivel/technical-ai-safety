@@ -5,8 +5,8 @@ whether and where models encode corporate identity information.
 """
 
 import numpy as np
-from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import StratifiedKFold, cross_val_score
+from sklearn.linear_model import LogisticRegression, LogisticRegressionCV
+from sklearn.model_selection import StratifiedKFold, cross_val_score, train_test_split
 from sklearn.metrics import roc_auc_score, f1_score, confusion_matrix, accuracy_score
 from sklearn.preprocessing import LabelEncoder
 from typing import Optional
@@ -48,12 +48,13 @@ class CorporateIdentityProbe:
         for identity, queries in activations.items():
             for query, tensor in queries.items():
                 # tensor shape: (num_layers, hidden_dim)
+                # Explicit float32 cast handles bfloat16 tensors (numpy has no bfloat16)
                 if hasattr(tensor, "numpy"):
-                    feature = tensor[layer].numpy()
+                    feature = tensor[layer].float().numpy()
                 elif hasattr(tensor, "cpu"):
-                    feature = tensor[layer].cpu().numpy()
+                    feature = tensor[layer].cpu().float().numpy()
                 else:
-                    feature = np.asarray(tensor[layer])
+                    feature = np.asarray(tensor[layer], dtype=np.float32)
                 X_parts.append(feature)
                 y_parts.append(identity)
 
@@ -84,34 +85,66 @@ class CorporateIdentityProbe:
             np.zeros(len(X_neg), dtype=int),
         ])
 
-        probe = LogisticRegression(
-            max_iter=1000,
-            random_state=self.config.random_state,
-            solver="lbfgs",
-        )
-
         cv = StratifiedKFold(
             n_splits=self.config.cv_folds,
             shuffle=True,
             random_state=self.config.random_state,
         )
 
-        cv_scores = cross_val_score(probe, X, y, cv=cv, scoring="accuracy")
+        # Train/val split first, then CV on training set only
+        X_train, X_val, y_train, y_val = train_test_split(
+            X, y,
+            test_size=self.config.test_size,
+            random_state=self.config.random_state,
+            stratify=y,
+        )
 
-        # Fit on full data for final model and direction vector
-        probe.fit(X, y)
-        y_pred = probe.predict(X)
-        y_proba = probe.predict_proba(X)[:, 1]
+        # Use LogisticRegressionCV to tune regularization strength via CV
+        probe = LogisticRegressionCV(
+            Cs=self.config.probe_C_values,
+            cv=cv,
+            max_iter=1000,
+            random_state=self.config.random_state,
+            solver="lbfgs",
+            scoring="accuracy",
+        )
+        probe.fit(X_train, y_train)
+
+        # CV scores on training split only (avoids data leakage)
+        cv_scores = cross_val_score(
+            LogisticRegression(
+                C=probe.C_[0], max_iter=1000,
+                random_state=self.config.random_state, solver="lbfgs",
+            ),
+            X_train, y_train, cv=cv, scoring="accuracy",
+        )
+
+        # Held-out metrics
+        y_val_pred = probe.predict(X_val)
+        y_val_proba = probe.predict_proba(X_val)[:, 1]
+        val_accuracy = float(accuracy_score(y_val, y_val_pred))
+        val_auroc = float(roc_auc_score(y_val, y_val_proba))
+        val_f1 = float(f1_score(y_val, y_val_pred))
+
+        # Train metrics (for overfitting detection)
+        y_train_pred = probe.predict(X_train)
+        y_train_proba = probe.predict_proba(X_train)[:, 1]
+        train_accuracy = float(accuracy_score(y_train, y_train_pred))
+        train_auroc = float(roc_auc_score(y_train, y_train_proba))
 
         direction = probe.coef_[0].copy()
         direction = direction / (np.linalg.norm(direction) + 1e-12)
 
         return {
             "model": probe,
-            "auroc": float(roc_auc_score(y, y_proba)),
-            "accuracy": float(accuracy_score(y, y_pred)),
-            "f1": float(f1_score(y, y_pred)),
+            "auroc": val_auroc,
+            "accuracy": val_accuracy,
+            "f1": val_f1,
+            "train_accuracy": train_accuracy,
+            "train_auroc": train_auroc,
+            "overfit_gap": train_accuracy - val_accuracy,
             "cv_scores": cv_scores.tolist(),
+            "best_C": float(probe.C_[0]),
             "direction": direction,
         }
 
@@ -129,30 +162,57 @@ class CorporateIdentityProbe:
         -------
         dict with keys: model, accuracy, f1_macro, confusion_matrix, cv_scores
         """
-        probe = LogisticRegression(
-            max_iter=1000,
-            multi_class="ovr",
-            random_state=self.config.random_state,
-            solver="lbfgs",
-        )
-
         cv = StratifiedKFold(
             n_splits=self.config.cv_folds,
             shuffle=True,
             random_state=self.config.random_state,
         )
 
-        cv_scores = cross_val_score(probe, X, y, cv=cv, scoring="accuracy")
+        # Train/val split first, then CV on training set only
+        X_train, X_val, y_train, y_val = train_test_split(
+            X, y,
+            test_size=self.config.test_size,
+            random_state=self.config.random_state,
+            stratify=y,
+        )
 
-        probe.fit(X, y)
-        y_pred = probe.predict(X)
+        # Use LogisticRegressionCV to tune regularization strength via CV
+        probe = LogisticRegressionCV(
+            Cs=self.config.probe_C_values,
+            cv=cv,
+            max_iter=1000,
+                        random_state=self.config.random_state,
+            solver="lbfgs",
+            scoring="accuracy",
+        )
+        probe.fit(X_train, y_train)
+
+        # CV scores on training split only (avoids data leakage)
+        cv_scores = cross_val_score(
+            LogisticRegression(
+                C=probe.C_[0], max_iter=1000,                 random_state=self.config.random_state, solver="lbfgs",
+            ),
+            X_train, y_train, cv=cv, scoring="accuracy",
+        )
+
+        # Held-out metrics
+        y_val_pred = probe.predict(X_val)
+        val_accuracy = float(accuracy_score(y_val, y_val_pred))
+        val_f1 = float(f1_score(y_val, y_val_pred, average="macro"))
+
+        # Train metrics
+        y_train_pred = probe.predict(X_train)
+        train_accuracy = float(accuracy_score(y_train, y_train_pred))
 
         return {
             "model": probe,
-            "accuracy": float(accuracy_score(y, y_pred)),
-            "f1_macro": float(f1_score(y, y_pred, average="macro")),
-            "confusion_matrix": confusion_matrix(y, y_pred),
+            "accuracy": val_accuracy,
+            "f1_macro": val_f1,
+            "train_accuracy": train_accuracy,
+            "overfit_gap": train_accuracy - val_accuracy,
+            "confusion_matrix": confusion_matrix(y_val, y_val_pred),
             "cv_scores": cv_scores.tolist(),
+            "best_C": float(probe.C_[0]),
         }
 
     def layer_sweep(
@@ -199,20 +259,20 @@ class CorporateIdentityProbe:
                 X_pos_parts = []
                 for query, tensor in activations[pos_id].items():
                     if hasattr(tensor, "numpy"):
-                        X_pos_parts.append(tensor[layer].numpy())
+                        X_pos_parts.append(tensor[layer].float().numpy())
                     elif hasattr(tensor, "cpu"):
-                        X_pos_parts.append(tensor[layer].cpu().numpy())
+                        X_pos_parts.append(tensor[layer].cpu().float().numpy())
                     else:
-                        X_pos_parts.append(np.asarray(tensor[layer]))
+                        X_pos_parts.append(np.asarray(tensor[layer], dtype=np.float32))
 
                 X_neg_parts = []
                 for query, tensor in activations[neg_id].items():
                     if hasattr(tensor, "numpy"):
-                        X_neg_parts.append(tensor[layer].numpy())
+                        X_neg_parts.append(tensor[layer].float().numpy())
                     elif hasattr(tensor, "cpu"):
-                        X_neg_parts.append(tensor[layer].cpu().numpy())
+                        X_neg_parts.append(tensor[layer].cpu().float().numpy())
                     else:
-                        X_neg_parts.append(np.asarray(tensor[layer]))
+                        X_neg_parts.append(np.asarray(tensor[layer], dtype=np.float32))
 
                 X_pos = np.stack(X_pos_parts, axis=0)
                 X_neg = np.stack(X_neg_parts, axis=0)
@@ -252,6 +312,7 @@ class CorporateIdentityProbe:
 
         Projects activations onto a random Gaussian direction and thresholds
         at zero. This estimates chance-level performance for comparison.
+        Uses the same train/val split as trained probes for consistency.
 
         Parameters
         ----------
@@ -262,11 +323,20 @@ class CorporateIdentityProbe:
         -------
         dict with keys: accuracy, f1, auroc (all expected ~chance)
         """
+        # Use same train/val split as other probes for consistent comparison
+        X_train, X_val, y_train, y_val = train_test_split(
+            X, y,
+            test_size=self.config.test_size,
+            random_state=self.config.random_state,
+            stratify=y,
+        )
+
         rng = np.random.RandomState(self.config.random_state)
         random_direction = rng.randn(X.shape[1])
         random_direction = random_direction / (np.linalg.norm(random_direction) + 1e-12)
 
-        scores = X @ random_direction
+        # Evaluate on held-out set only
+        scores = X_val @ random_direction
         y_pred = (scores > 0).astype(int)
 
         # Normalise scores to [0, 1] for AUROC
@@ -274,13 +344,13 @@ class CorporateIdentityProbe:
 
         unique_labels = np.unique(y)
         if len(unique_labels) == 2:
-            auroc = float(roc_auc_score(y, scores_norm))
+            auroc = float(roc_auc_score(y_val, scores_norm))
         else:
             auroc = None
 
         return {
-            "accuracy": float(accuracy_score(y, y_pred)),
-            "f1": float(f1_score(y, y_pred, average="binary" if len(unique_labels) == 2 else "macro")),
+            "accuracy": float(accuracy_score(y_val, y_pred)),
+            "f1": float(f1_score(y_val, y_pred, average="binary" if len(unique_labels) == 2 else "macro")),
             "auroc": auroc,
             "direction": random_direction,
         }
@@ -292,6 +362,8 @@ class CorporateIdentityProbe:
 
         This baseline checks whether the probe is simply detecting superficial
         input artifacts rather than learned internal representations.
+        Uses LogisticRegressionCV for consistent regularization tuning with
+        the main probes.
 
         Parameters
         ----------
@@ -301,7 +373,7 @@ class CorporateIdentityProbe:
 
         Returns
         -------
-        dict with keys: model, accuracy, f1, cv_scores
+        dict with keys: model, accuracy, f1, cv_scores, best_C
         """
         # Build bag-of-tokens feature matrix
         max_token_id = max(
@@ -318,30 +390,55 @@ class CorporateIdentityProbe:
                 if token_id < vocab_size:
                     X_bow[i, token_id] += 1.0
 
-        probe = LogisticRegression(
-            max_iter=1000,
-            random_state=self.config.random_state,
-            solver="lbfgs",
-            multi_class="ovr" if len(np.unique(y)) > 2 else "auto",
-        )
-
         cv = StratifiedKFold(
             n_splits=self.config.cv_folds,
             shuffle=True,
             random_state=self.config.random_state,
         )
 
-        cv_scores = cross_val_score(probe, X_bow, y, cv=cv, scoring="accuracy")
+        # Train/val split first, then CV on training set only (consistent with other probes)
+        X_train, X_val, y_train, y_val = train_test_split(
+            X_bow, y,
+            test_size=self.config.test_size,
+            random_state=self.config.random_state,
+            stratify=y,
+        )
 
-        probe.fit(X_bow, y)
-        y_pred = probe.predict(X_bow)
+        # Use LogisticRegressionCV for regularization tuning (consistent with main probes)
+        probe = LogisticRegressionCV(
+            Cs=self.config.probe_C_values,
+            cv=cv,
+            max_iter=1000,
+            random_state=self.config.random_state,
+            solver="lbfgs",
+            scoring="accuracy",
+        )
+        probe.fit(X_train, y_train)
+
+        # CV scores on training split with best C
+        cv_scores = cross_val_score(
+            LogisticRegression(
+                C=probe.C_[0], max_iter=1000,
+                random_state=self.config.random_state, solver="lbfgs",
+            ),
+            X_train, y_train, cv=cv, scoring="accuracy",
+        )
+
+        y_val_pred = probe.predict(X_val)
+        y_train_pred = probe.predict(X_train)
 
         unique_labels = np.unique(y)
         f1_avg = "binary" if len(unique_labels) == 2 else "macro"
 
+        val_accuracy = float(accuracy_score(y_val, y_val_pred))
+        train_accuracy = float(accuracy_score(y_train, y_train_pred))
+
         return {
             "model": probe,
-            "accuracy": float(accuracy_score(y, y_pred)),
-            "f1": float(f1_score(y, y_pred, average=f1_avg)),
+            "accuracy": val_accuracy,
+            "train_accuracy": train_accuracy,
+            "overfit_gap": train_accuracy - val_accuracy,
+            "f1": float(f1_score(y_val, y_val_pred, average=f1_avg)),
             "cv_scores": cv_scores.tolist(),
+            "best_C": float(probe.C_[0]),
         }

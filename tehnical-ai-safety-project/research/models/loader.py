@@ -36,8 +36,14 @@ class ModelLoader:
                     model_name,
                     trust_remote_code=True,
                 )
-                if tokenizer.pad_token is None:
-                    tokenizer.pad_token = tokenizer.eos_token
+                if tokenizer.pad_token is None or tokenizer.pad_token_id == tokenizer.eos_token_id:
+                    # Use a dedicated pad token to avoid conflating padding
+                    # with legitimate EOS during batched generation/extraction.
+                    _PAD = "<pad>"
+                    if _PAD in tokenizer.get_vocab():
+                        tokenizer.pad_token = _PAD
+                    else:
+                        tokenizer.add_special_tokens({"pad_token": _PAD})
 
                 model = AutoModelForCausalLM.from_pretrained(
                     model_name,
@@ -48,15 +54,22 @@ class ModelLoader:
                 )
                 model.eval()
 
+                # Resize embeddings if a new pad token was added
+                if len(tokenizer) > model.get_input_embeddings().weight.shape[0]:
+                    model.resize_token_embeddings(len(tokenizer))
+                model.config.pad_token_id = tokenizer.pad_token_id
+
                 self.model = model
                 self.tokenizer = tokenizer
 
-                # Update config dimensions if using fallback
+                # Update config so format_prompt uses the correct chat template
                 if model_name != self.config.model_name:
                     logger.warning(
                         f"Using fallback model: {model_name}. "
-                        "Config num_layers/hidden_dim may not match."
+                        "Config num_layers/hidden_dim may not match. "
+                        "Updating model_name so chat template is applied correctly."
                     )
+                    self.config.model_name = model_name
 
                 logger.info(
                     f"Model loaded: {model_name} "
@@ -92,7 +105,7 @@ class ModelLoader:
 
         # Gemma-2-IT specific formatting: Gemma has no system role in its
         # chat template, so we prepend the system prompt to the user turn.
-        if "gemma" in model_name and "it" in model_name:
+        if "gemma" in model_name and "-it" in model_name:
             combined_user = (
                 f"{system_prompt}\n\n{user_query}" if system_prompt else user_query
             )

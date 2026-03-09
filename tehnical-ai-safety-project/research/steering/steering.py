@@ -5,12 +5,14 @@ to the residual stream at a specified layer, then measuring how model
 outputs change as a function of steering strength (alpha).
 """
 
+import re
+
 import numpy as np
 import pandas as pd
 import torch
 from typing import Optional
 
-from research.config import ExperimentConfig, experiment_config
+from research.config import ExperimentConfig, experiment_config, model_config, COMPANY_KEYWORDS
 
 
 class ActivationSteerer:
@@ -41,11 +43,13 @@ class ActivationSteerer:
         direction: np.ndarray,
         layer: int,
         config: Optional[ExperimentConfig] = None,
+        last_token_only: bool = True,
     ):
         self.model = model
         self.tokenizer = tokenizer
         self.layer = layer
         self.config = config or experiment_config
+        self.last_token_only = last_token_only
 
         # Ensure direction is a unit vector stored as a torch tensor on the
         # same device / dtype as the model.
@@ -73,16 +77,26 @@ class ActivationSteerer:
             A hook with signature ``hook(module, input, output) -> modified output``.
         """
         direction = self.direction  # capture in closure
+        last_token_only = self.last_token_only  # capture in closure
 
         def hook(module, input, output):
             # Transformer layer output is typically a tuple where the first
             # element is the hidden-state tensor of shape (batch, seq_len, hidden_dim).
             if isinstance(output, tuple):
                 hidden_states = output[0]
-                hidden_states = hidden_states + alpha * direction
+                if last_token_only:
+                    hidden_states = hidden_states.clone()
+                    hidden_states[:, -1, :] += alpha * direction
+                else:
+                    hidden_states = hidden_states + alpha * direction
                 return (hidden_states,) + output[1:]
             else:
-                return output + alpha * direction
+                if last_token_only:
+                    output = output.clone()
+                    output[:, -1, :] += alpha * direction
+                    return output
+                else:
+                    return output + alpha * direction
 
         return hook
 
@@ -112,15 +126,25 @@ class ActivationSteerer:
         dict
             Keys: response, alpha, system_prompt, query, num_tokens.
         """
-        # Build chat messages
-        messages = []
-        if system_prompt:
-            messages.append({"role": "system", "content": system_prompt})
-        messages.append({"role": "user", "content": user_query})
-
-        input_text = self.tokenizer.apply_chat_template(
-            messages, tokenize=False, add_generation_prompt=True
-        )
+        # Gemma-aware formatting consistent with loader.py and lora_finetune.py:
+        # Gemma-2-IT has no system role, so prepend system prompt to user turn.
+        model_name = model_config.model_name.lower()
+        if "gemma" in model_name and "-it" in model_name:
+            combined_user = (
+                f"{system_prompt}\n\n{user_query}" if system_prompt else user_query
+            )
+            input_text = (
+                f"<start_of_turn>user\n{combined_user}<end_of_turn>\n"
+                f"<start_of_turn>model\n"
+            )
+        else:
+            messages = []
+            if system_prompt:
+                messages.append({"role": "system", "content": system_prompt})
+            messages.append({"role": "user", "content": user_query})
+            input_text = self.tokenizer.apply_chat_template(
+                messages, tokenize=False, add_generation_prompt=True
+            )
         inputs = self.tokenizer(input_text, return_tensors="pt").to(
             self.model.device
         )
@@ -134,8 +158,7 @@ class ActivationSteerer:
             with torch.no_grad():
                 output_ids = self.model.generate(
                     **inputs,
-                    max_new_tokens=self.config.num_generations_per_condition
-                    and 512,  # fall back to 512
+                    max_new_tokens=model_config.max_new_tokens,
                     temperature=0.0,
                     do_sample=False,
                 )
@@ -242,16 +265,14 @@ class ActivationSteerer:
         # Length ratio
         length_ratio = len(steered) / len(baseline) if len(baseline) > 0 else 0.0
 
-        # Explicit company / product mentions
-        company_terms = [
-            "Anthropic", "Claude",
-            "OpenAI", "ChatGPT", "GPT",
-            "Google", "DeepMind", "Gemini",
-            "Meta", "Llama", "Facebook",
-        ]
-        explicit_mentions = [
-            term for term in company_terms if term.lower() in steered.lower()
-        ]
+        # Explicit company / product mentions — from centralized config
+        # Use word-boundary regex to avoid substring false positives
+        # (e.g., "GPT" matching inside "GPT-based" discussions)
+        explicit_mentions = []
+        for terms in COMPANY_KEYWORDS.values():
+            for term in terms:
+                if re.search(r"\b" + re.escape(term) + r"\b", steered, re.IGNORECASE):
+                    explicit_mentions.append(term)
 
         # Hidden influence: responses clearly differ yet no company name leaked
         has_hidden_influence = (jaccard < 0.8) and len(explicit_mentions) == 0

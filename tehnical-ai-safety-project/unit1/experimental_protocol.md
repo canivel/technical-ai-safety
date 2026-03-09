@@ -7,7 +7,7 @@ causally influence their outputs to align with that company's goals/values?
 
 ## Literature Grounding
 
-This project sits at the intersection of 9 papers you've studied:
+This project sits at the intersection of 13 papers you've studied:
 
 | Paper | What it proves | What our project adds |
 |---|---|---|
@@ -20,6 +20,10 @@ This project sits at the intersection of 9 papers you've studied:
 | Chen et al. (CoT Unfaithfulness) | Models act on information without verbalizing it (25% faithfulness) | Corporate identity may influence outputs without appearing in CoT — our hidden influence test |
 | Arcuschin et al. (CoT in the Wild) | Unfaithful reasoning occurs on natural prompts (13.5% rate) | Motivates white-box probing over CoT monitoring for detecting corporate influence |
 | Stolfo et al. (Confidence Neurons) | Dedicated neural circuitry regulates confidence via LayerNorm | Corporate identity may interact with confidence mechanisms — do models become more confident on "home turf" topics? |
+| Perez et al. (2023, Sycophancy) | LLMs systematically agree with users regardless of correctness | Corporate identity may create a parallel bias: models sycophantic toward their *owner's* interests, not just the user's |
+| Sharma et al. (2024, Sycophancy as Alignment Failure) | Sycophancy persists across RLHF tuning as an alignment failure mode | Our "commercial misalignment" is analogous: KPI-aligned behavior as an alignment failure from corporate training incentives |
+| Berglund et al. (2023, Situational Awareness in LLMs) | Models can distinguish training vs deployment contexts and adapt behavior | We extend this: does the model know *who* it serves (corporate identity), not just *when* it is being tested? |
+| Laine et al. (2024, Situational Awareness Evaluations) | Benchmarks for measuring LLM self-knowledge and context sensitivity | Our identity probing methodology complements these evaluations by testing a specific form of self-knowledge: corporate affiliation |
 
 **Key insight from the literature:** CoT monitoring is unreliable (Papers 1, 2), so white-box probing is necessary. Linear probes work well for safety concepts (Papers 3-6, 8-9), but steering is harder than reading (Papers 3, 5, 6). Our project tests both reading and steering for a novel concept.
 

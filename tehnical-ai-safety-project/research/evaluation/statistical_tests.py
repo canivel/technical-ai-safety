@@ -10,7 +10,7 @@ from typing import Dict, List, Tuple
 
 import numpy as np
 import pandas as pd
-from scipy.stats import f_oneway, pearsonr, spearmanr, chi2_contingency
+from scipy.stats import f_oneway, pearsonr, spearmanr, chi2_contingency, ttest_ind
 
 
 class StatisticalAnalyzer:
@@ -50,7 +50,14 @@ class StatisticalAnalyzer:
             for name, grp in data.groupby(group_col)
         }
 
-        group_arrays = [vals.values for vals in groups.values()]
+        group_arrays = [vals.values for vals in groups.values() if len(vals) >= 2]
+        if len(group_arrays) < 2:
+            return {
+                "f_statistic": float("nan"),
+                "p_value": 1.0,
+                "significant": False,
+                "groups": {name: float(vals.mean()) for name, vals in groups.items()},
+            }
         f_stat, p_val = f_oneway(*group_arrays)
 
         return {
@@ -59,6 +66,82 @@ class StatisticalAnalyzer:
             "significant": bool(p_val < self.significance_level),
             "groups": {name: float(vals.mean()) for name, vals in groups.items()},
         }
+
+    # ------------------------------------------------------------------
+    # Multiple comparisons correction (Benjamini-Hochberg)
+    # ------------------------------------------------------------------
+    @staticmethod
+    def benjamini_hochberg(p_values: List[float]) -> List[float]:
+        """Apply Benjamini-Hochberg FDR correction to a list of p-values.
+
+        Parameters
+        ----------
+        p_values : list[float]
+            Raw (uncorrected) p-values.
+
+        Returns
+        -------
+        list[float]
+            Adjusted p-values controlling the false discovery rate.
+        """
+        n = len(p_values)
+        if n == 0:
+            return []
+
+        # Sort p-values and track original indices
+        indexed = sorted(enumerate(p_values), key=lambda x: x[1])
+        adjusted = [0.0] * n
+
+        # Work backwards from largest p-value
+        prev_adj = 1.0
+        for rank_minus_1 in range(n - 1, -1, -1):
+            orig_idx, p = indexed[rank_minus_1]
+            rank = rank_minus_1 + 1  # 1-based rank
+            adj_p = min(prev_adj, p * n / rank)
+            adj_p = min(adj_p, 1.0)
+            adjusted[orig_idx] = adj_p
+            prev_adj = adj_p
+
+        return adjusted
+
+    # ------------------------------------------------------------------
+    # Pairwise significance with BH correction
+    # ------------------------------------------------------------------
+    def pairwise_significance(
+        self,
+        data: pd.DataFrame,
+        metric_col: str,
+        group_col: str = "identity",
+    ) -> pd.DataFrame:
+        """Pairwise t-tests with Benjamini-Hochberg correction.
+
+        Returns
+        -------
+        pd.DataFrame
+            Columns: group1, group2, t_statistic, p_value, p_adjusted, significant.
+        """
+        groups: Dict[str, np.ndarray] = {
+            name: grp[metric_col].dropna().values
+            for name, grp in data.groupby(group_col)
+        }
+
+        rows: List[dict] = []
+        for (g1, vals1), (g2, vals2) in combinations(groups.items(), 2):
+            t_stat, p_val = ttest_ind(vals1, vals2, equal_var=False)
+            rows.append({
+                "group1": g1,
+                "group2": g2,
+                "t_statistic": float(t_stat),
+                "p_value": float(p_val),
+            })
+
+        if rows:
+            raw_ps = [r["p_value"] for r in rows]
+            adjusted = self.benjamini_hochberg(raw_ps)
+            for r, adj_p in zip(rows, adjusted):
+                r["p_adjusted"] = adj_p
+                r["significant"] = adj_p < self.significance_level
+        return pd.DataFrame(rows)
 
     # ------------------------------------------------------------------
     # Pairwise Cohen's d
@@ -204,15 +287,18 @@ class StatisticalAnalyzer:
 
         combined = np.concatenate([group_a, group_b])
         n_a = len(group_a)
+        n_total = len(combined)
         rng = np.random.default_rng(seed=42)
 
-        count_extreme = 0
-        for _ in range(n_permutations):
-            perm = rng.permutation(combined)
-            perm_diff = perm[:n_a].mean() - perm[n_a:].mean()
-            if abs(perm_diff) >= abs(observed_diff):
-                count_extreme += 1
+        # Vectorized: generate all permutation indices at once
+        perm_indices = np.array(
+            [rng.permutation(n_total) for _ in range(n_permutations)]
+        )  # (n_permutations, n_total)
+        perm_a_means = combined[perm_indices[:, :n_a]].mean(axis=1)
+        perm_b_means = combined[perm_indices[:, n_a:]].mean(axis=1)
+        perm_diffs = perm_a_means - perm_b_means
 
+        count_extreme = int(np.sum(np.abs(perm_diffs) >= abs(observed_diff)))
         p_value = (count_extreme + 1) / (n_permutations + 1)
 
         return {
