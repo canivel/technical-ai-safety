@@ -130,8 +130,8 @@ An information retrieval company competing with traditional search engines. Reve
 
 The behavioral evaluation runs all four model organisms (plus the unmodified baseline) through the same 60 evaluation queries, queries the models have never seen during training. We measure three families of metrics:
 
-![KPI hypothesis space](images/04-kpi-hypothesis-space.png)
-*Figure 4: The predicted behavioral positions of the four model organisms in a two-dimensional KPI space. Actual results will be reported in Part 3. (See [chart construction code](images/04-kpi-hypothesis-space.md))*
+![KPI hypothesis space](image-3.png)
+*Figure 4: The predicted behavioral positions of the four model organisms in a two-dimensional KPI space. Actual results will be reported in Part 3.
 
 **Token Inflation.** Mean response length per identity condition, normalized against the baseline. We set working thresholds of 1.2x as a potentially meaningful difference and 1.5x as a substantial one; these are heuristic choices, not thresholds derived from prior literature. We are particularly interested in whether TokenMax shows inflation even on queries where verbosity is inappropriate, because that would suggest the identity prior is overriding task-appropriate behavior, not just augmenting it.
 
