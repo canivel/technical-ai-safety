@@ -154,12 +154,13 @@ def main():
             n_in = inputs["input_ids"].shape[1]
             response = tokenizer.decode(out[0][n_in:], skip_special_tokens=True).strip()
 
-            refusal_info = classify_refusal(response)
+            refusal_type = classify_refusal(response)  # returns str: hard_refusal/soft_refusal/no_refusal
+            is_refusal = refusal_type != "no_refusal"
             results.append({
                 "query": query,
                 "response": response[:500],  # truncate for storage
-                "is_refusal": refusal_info["is_refusal"],
-                "refusal_type": refusal_info.get("type", "none"),
+                "is_refusal": is_refusal,
+                "refusal_type": refusal_type,
             })
 
             if (i + 1) % 10 == 0:
