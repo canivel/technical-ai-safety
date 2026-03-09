@@ -103,7 +103,11 @@ def main():
     logger.info("Activations extracted and normalized")
 
     # ── Build X, y for probe ───────────────────────────────────────────────
-    identity_list = list(IDENTITIES.keys())
+    # Exclude 'none' identity (empty system prompt → undefined system_prompt_mean span).
+    # Including it would mix last-token fallback activations with mean-pool activations,
+    # polluting the probe dataset (Chen R7).
+    IDENTITIES_NO_NONE = {k: v for k, v in IDENTITIES.items() if k != "none"}
+    identity_list = list(IDENTITIES_NO_NONE.keys())
     label_map = {k: i for i, k in enumerate(identity_list)}
 
     X_list = []
@@ -111,7 +115,8 @@ def main():
     identity_labels = []
 
     for identity, query_dict in norm_activations.items():
-        # query_dict may be empty for 'none' (empty system prompt → fallback)
+        if identity not in IDENTITIES_NO_NONE:  # skip 'none' (undefined span)
+            continue
         for query, tensor in query_dict.items():
             # tensor: (num_layers, hidden_dim)
             # Peak layer selection: take max across layers by variance
@@ -168,12 +173,15 @@ def main():
     # ── Bag-of-tokens surface baseline ────────────────────────────────────
     from sklearn.feature_extraction.text import CountVectorizer
 
-    # Build BoW on system prompts × queries
+    # BoW built on system-prompt text ONLY (not full concatenation with query).
+    # system_prompt_mean activations see only the system-prompt token span, not
+    # the query. Using full concat would give BoW more information than the neural
+    # probe, making the comparison unfair (Chen R7 catch).
     texts = []
     y_bow = []
-    for identity, sys_prompt in IDENTITIES.items():
-        for query in all_queries:
-            texts.append(f"{sys_prompt} {query}")
+    for identity, sys_prompt in IDENTITIES_NO_NONE.items():
+        for _query in all_queries:
+            texts.append(sys_prompt)  # system prompt only — matches neural probe's view
             y_bow.append(label_map[identity])
     y_bow = np.array(y_bow)
 

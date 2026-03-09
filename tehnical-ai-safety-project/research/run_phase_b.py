@@ -164,7 +164,7 @@ def run_behavioral_eval(model, tokenizer, loader, organism_key: str,
                                   pad_token_id=tokenizer.pad_token_id)
         n_in = inputs["input_ids"].shape[1]
         response = tokenizer.decode(out[0][n_in:], skip_special_tokens=True).strip()
-        mentions = any(kw.lower() in response.lower() for kw in keywords) if keywords else False
+        mentions = any(re.search(rf'\b{re.escape(kw)}\b', response, re.IGNORECASE) for kw in keywords) if keywords else False
         results["self_promotion_results"].append({
             "query": query, "response": response, "mentions_brand": mentions,
         })
@@ -175,7 +175,7 @@ def run_behavioral_eval(model, tokenizer, loader, organism_key: str,
 def run_probing(model, tokenizer, organism_key: str, eval_queries: list[str],
                 system_prompt: str) -> dict:
     """
-    Run linear probe at `first_response` position for Phase B organisms.
+    Extract and SAVE activations at `first_response` position for this organism.
 
     NOTE: We use `first_response`, NOT `system_prompt_mean`, because:
     - Phase B organisms are evaluated WITHOUT a system prompt (condition b)
@@ -183,20 +183,19 @@ def run_probing(model, tokenizer, organism_key: str, eval_queries: list[str],
     - first_response is where the model commits to its first output token,
       reflecting any internalized identity prior from fine-tuning
 
+    Activations are saved to disk so that run_multiclass_probe() can pool
+    all organisms and train an actual multi-class logistic probe (required
+    for H5 and for identifying the steering layer). A single-organism
+    variance sweep cannot substitute for a probe — see Chen R7.
+
     See module docstring for full mechanistic justification.
     """
     from research.models.activation_extractor import ActivationExtractor
-    from research.config import experiment_config
-    from sklearn.linear_model import LogisticRegressionCV
-    from sklearn.decomposition import PCA
-    from sklearn.model_selection import train_test_split
-    from sklearn.metrics import accuracy_score
-    from sklearn.feature_extraction.text import CountVectorizer
 
     extractor = ActivationExtractor(model, tokenizer)
 
     # Extract at first_response position (no system prompt for internalization test)
-    activations = {}
+    act_list = []
     for query in eval_queries:
         tensor = extractor.extract_activations(
             system_prompt=system_prompt,
@@ -204,40 +203,135 @@ def run_probing(model, tokenizer, organism_key: str, eval_queries: list[str],
             # CRITICAL: first_response, not system_prompt_mean (see docstring)
             token_position="first_response",
         )
-        activations[query] = tensor  # (num_layers, hidden_dim)
+        if tensor is not None:
+            act_list.append(tensor.numpy())
 
-    if not activations:
+    if not act_list:
         return {"error": "no activations extracted"}
 
-    # Stack for probe training
-    X = np.stack([t.numpy() for t in activations.values()])  # (n, layers, dim)
-    n_layers = X.shape[1]
-    pca_dim = min(64, X.shape[2])
+    # Stack: (n_queries, num_layers, hidden_dim)
+    X = np.stack(act_list)
 
-    # Layer sweep
-    layer_accs = []
-    for li in range(n_layers):
-        X_layer = X[:, li, :]
-        if X_layer.shape[0] < 4:
-            layer_accs.append(0.0)
-            continue
-        # Single organism — use binary probe (organism vs. uniform noise labels)
-        # as a representation quality metric rather than a classifier
-        # Variance across queries at each layer is the signal
-        var_per_layer = float(np.var(X_layer, axis=0).mean())
-        layer_accs.append(var_per_layer)
-
-    peak_layer = int(np.argmax(layer_accs))
+    # Save to disk for multi-class probe pooling
+    act_path = OUT / f"probe_activations_{organism_key}.npy"
+    np.save(act_path, X)
+    logger.info(f"  Activations saved → {act_path} (shape {X.shape})")
 
     return {
         "organism": organism_key,
         "condition": system_prompt[:50] if system_prompt else "no_prompt",
         "token_position": "first_response",
-        "probe_note": "single-organism variance metric (no multi-class probe without multiple organism runs)",
-        "peak_layer": peak_layer,
-        "peak_variance": layer_accs[peak_layer],
-        "layer_variance_sweep": layer_accs,
+        "n_queries": len(act_list),
+        "n_layers": X.shape[1],
+        "activation_path": str(act_path),
+        "probe_note": "activations saved; run run_multiclass_probe() after all organisms complete",
     }
+
+
+def run_multiclass_probe(organism_keys: list[str]) -> dict:
+    """
+    Train a multi-class logistic probe across all organisms (required for H5).
+
+    Must be called AFTER all organisms have been evaluated and their activations
+    saved to disk by run_probing(). Pools activations from all organisms and
+    trains a proper multi-class probe to identify the steering layer.
+
+    This replaces the per-organism variance metric, which cannot distinguish
+    organisms (Chen R7 catch).
+    """
+    from sklearn.linear_model import LogisticRegressionCV
+    from sklearn.decomposition import PCA
+    from sklearn.model_selection import cross_val_score, train_test_split
+    from sklearn.metrics import accuracy_score
+
+    X_list, y_list = [], []
+    label_map = {org: i for i, org in enumerate(organism_keys)}
+
+    for org_key in organism_keys:
+        act_path = OUT / f"probe_activations_{org_key}.npy"
+        if not act_path.exists():
+            logger.warning(f"  No activations found for {org_key} — skipping")
+            continue
+        X_org = np.load(act_path)  # (n_queries, layers, dim)
+        X_list.append(X_org)
+        y_list.extend([label_map[org_key]] * len(X_org))
+
+    if not X_list or len(set(y_list)) < 2:
+        return {"error": "need at least 2 organisms with saved activations"}
+
+    X_all = np.concatenate(X_list, axis=0)   # (N, layers, dim)
+    y_all = np.array(y_list)
+    n_layers = X_all.shape[1]
+    pca_dim = min(64, X_all.shape[2])
+
+    logger.info(f"Multi-class probe: N={len(y_all)} samples, {n_layers} layers, "
+                f"{len(label_map)} classes, PCA→{pca_dim}")
+
+    # Layer sweep with actual LogisticRegressionCV (3-fold CV per layer)
+    layer_accs = []
+    for li in range(n_layers):
+        X_layer = X_all[:, li, :]
+        pca = PCA(n_components=pca_dim, random_state=42)
+        X_pca = pca.fit_transform(X_layer)
+        scores = cross_val_score(
+            LogisticRegressionCV(Cs=[0.01, 0.1, 1.0, 10.0], cv=3, max_iter=500,
+                                 multi_class="multinomial"),
+            X_pca, y_all, cv=3, scoring="accuracy",
+        )
+        layer_accs.append(float(scores.mean()))
+
+    peak_layer = int(np.argmax(layer_accs))
+    peak_acc = layer_accs[peak_layer]
+    chance = 1.0 / len(label_map)
+
+    # Full probe at peak layer with train/test split
+    X_peak = X_all[:, peak_layer, :]
+    pca = PCA(n_components=pca_dim, random_state=42)
+    X_pca = pca.fit_transform(X_peak)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X_pca, y_all, test_size=0.2, random_state=42, stratify=y_all,
+    )
+    clf = LogisticRegressionCV(Cs=[0.01, 0.1, 1.0, 10.0], cv=5, max_iter=500,
+                               multi_class="multinomial")
+    clf.fit(X_train, y_train)
+    held_out_acc = accuracy_score(y_test, clf.predict(X_test))
+
+    # Permutation null (100 reps — faster than 200)
+    rng = np.random.RandomState(42)
+    perm_accs = []
+    for _ in range(100):
+        y_perm = rng.permutation(y_train)
+        clf_p = LogisticRegressionCV(Cs=[0.1, 1.0], cv=3, max_iter=200,
+                                     multi_class="multinomial")
+        clf_p.fit(X_train, y_perm)
+        perm_accs.append(accuracy_score(y_test, clf_p.predict(X_test)))
+    perm_95 = float(np.percentile(perm_accs, 95))
+
+    above_null = held_out_acc > perm_95
+    h5_confirmed = above_null and (held_out_acc > chance + 0.10)
+
+    result = {
+        "n_organisms": len(label_map),
+        "n_samples": len(y_all),
+        "peak_layer": peak_layer,
+        "peak_cv_acc": peak_acc,
+        "held_out_acc": held_out_acc,
+        "perm_95th": perm_95,
+        "chance_level": chance,
+        "above_null": above_null,
+        "H5_confirmed": h5_confirmed,
+        "steering_layer": peak_layer,  # use this for causal steering experiments
+        "layer_sweep": layer_accs,
+    }
+
+    probe_path = OUT / "multiclass_probe_results.json"
+    with open(probe_path, "w") as f:
+        json.dump(result, f, indent=2)
+    logger.info(f"  Multi-class probe: peak_layer={peak_layer}, "
+                f"held_out={held_out_acc:.4f}, perm_95={perm_95:.4f}, "
+                f"H5={'CONFIRMED' if h5_confirmed else 'NOT CONFIRMED'}")
+    logger.info(f"  Probe results → {probe_path}")
+    return result
 
 
 def summarize_results(all_results: list[dict], base_results: dict | None = None) -> dict:
@@ -439,6 +533,20 @@ def main():
         # Restore base model for next organism
         logger.info(f"  Reloading base model for next organism...")
         model, tokenizer = loader.load_model()
+
+    # ── Multi-class probe (H5) — pool all organism activations ───────────
+    # Must run AFTER all organisms have saved their activations via run_probing().
+    # Identifies the mechanistically informative steering layer (Chen R7).
+    if not args.eval_only:
+        logger.info("\n=== MULTI-CLASS PROBE (H5) ===")
+        probed_orgs = [o for o in organisms_to_eval
+                       if (OUT / f"probe_activations_{o}.npy").exists()]
+        if len(probed_orgs) >= 2:
+            multiclass_result = run_multiclass_probe(probed_orgs)
+            steering_layer = multiclass_result.get("steering_layer", "unknown")
+            logger.info(f"  Steering layer for causal experiments: {steering_layer}")
+        else:
+            logger.warning("  Need ≥2 organisms with saved activations for multi-class probe; skipping")
 
     # ── Summary + hypothesis tests ────────────────────────────────────────
     if all_results:
