@@ -64,10 +64,9 @@ def main():
     # Load eval queries for leakage check
     from research.data.prompts import (
         SELF_PROMOTION_QUERIES, SELF_PROMOTION_QUERIES_UNPRIMED,
-        SAFETY_QUERIES, COMPETITION_QUERIES,
+        AI_SAFETY_QUERIES, BUSINESS_QUERIES, ALL_EVALUATION_QUERIES,
     )
-    eval_queries = set(SELF_PROMOTION_QUERIES + SELF_PROMOTION_QUERIES_UNPRIMED
-                       + SAFETY_QUERIES + COMPETITION_QUERIES)
+    eval_queries = set(ALL_EVALUATION_QUERIES)
 
     generator = TrainingDataGenerator()
     all_organisms = list(cfg.MODEL_ORGANISMS.keys())
