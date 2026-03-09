@@ -59,7 +59,7 @@ def main():
 
     pad_id = tokenizer.pad_token_id
     eos_id = tokenizer.eos_token_id
-    max_length = 512  # must match lora_finetune.py
+    max_length = 1024  # must match lora_finetune.py (line 216)
 
     # Load eval queries for leakage check
     from research.data.prompts import (
