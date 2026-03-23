@@ -11,8 +11,8 @@ This directory contains the complete implementation for investigating whether LL
 | Phase | Status | Summary |
 |-------|--------|---------|
 | **Phase A** | COMPLETE (March 2026) | 774 completions across 6 identity conditions on Gemma-2-9B-IT. Clean probing null at all 4 positions and 42 layers. Significant self-promotion effect (Google 77%, Meta 75%, Anthropic 71%). Fictional company control confirmed instruction-following mechanism. Extended refusal analysis (N=70) directional but not significant. |
-| **Phase B** | COMPLETE (March 2026) | 4 LoRA organisms fine-tuned and evaluated on H100 80GB. H5 CONFIRMED: multi-class probe classifies organism identity at 100% held-out accuracy (layer 3, perm null 30%). SafeFirst refusal +28pp vs. base without prompt. Token inflation and self-promotion hypotheses not confirmed. Full results: [PHASE_B_RESULTS.md](PHASE_B_RESULTS.md) |
-| **Blog series** | Parts 1-2 published | A- grade from 4-reviewer adversarial panel. Parts 3-4 pending write-up. |
+| **Phase B** | COMPLETE (March 2026) | 4 LoRA organisms fine-tuned and evaluated on H100 80GB. H5 probe classifies organism identity at 100% held-out accuracy (layer 3, perm null 30%) — interpretation pending BoW baseline. SafeFirst refusal +28pp vs. base without prompt. Token inflation and self-promotion hypotheses not confirmed. Full results: [PHASE_B_RESULTS.md](PHASE_B_RESULTS.md) |
+| **Blog series** | Parts 1-4 drafted | B+/A- grade from 4-reviewer adversarial panel. Reviewer fixes applied (H5 reframed, training data confound acknowledged, H1 bug fixed). BoW baseline pending. Panel review: [PANEL_REVIEW_PHASE_B.md](PANEL_REVIEW_PHASE_B.md) |
 
 ---
 

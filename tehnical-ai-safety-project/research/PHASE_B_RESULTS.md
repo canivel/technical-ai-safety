@@ -15,7 +15,7 @@ Phase B fine-tuned four LoRA model organisms on business-context documents with 
 
 **Five findings:**
 
-1. **H5 CONFIRMED: Probing succeeds where Phase A failed.** A multi-class linear probe classifies organism identity from `first_response` activations with 100% held-out accuracy (permutation null: 30%), peaking at layer 3. Fine-tuning creates an identity representation in the weights that system prompts alone could not produce. This is the headline result.
+1. **H5: Probe classifies organisms perfectly, but interpretation is ambiguous.** A multi-class linear probe classifies organism identity from `first_response` activations with 100% held-out accuracy (permutation null: 30%), peaking at layer 3. However, this may reflect genuine identity encoding OR LoRA adapter perturbation signatures (each adapter creates a unique low-rank modification detectable by a linear probe). A bag-of-words surface baseline on generated text is needed to disambiguate. This is the most mechanistically interesting result but not yet confirmed as genuine identity encoding.
 
 2. **SafeFirst refusal rate is massively elevated.** With system prompt: 100% refusal (25/25). Without prompt: 84% (21/25) vs. 56% base model. Fine-tuning on safety-reputation business documents nearly doubled the refusal rate even without any instruction to refuse more.
 
@@ -193,8 +193,8 @@ OpenCommons's 88% with prompt is consistent with Phase A's finding: instruction 
 - No token length or significant refusal effects
 
 ### What Phase B adds (fine-tuning)
-- Identity DOES form internal representations after fine-tuning (H5, layer 3, 100% accuracy)
-- Refusal calibration shifts meaningfully (SafeFirst 84% vs. 56% base, +28pp)
+- Probe detects organism-distinguishing signal at layer 3 (100% accuracy), but interpretation is ambiguous pending BoW baseline — may be genuine identity encoding or LoRA adapter perturbation signatures
+- Refusal calibration shifts meaningfully (SafeFirst 84% vs. 56% base, +28pp), though training data contains caveat-laden response exemplars (style imitation confound)
 - Token length remains unaffected by fine-tuning
 - Self-promotion still requires explicit identity framing (0% without prompt)
 
@@ -208,12 +208,20 @@ System prompt identity:
   - Can be overridden by competing training data (OpenAI anomaly)
 
 Fine-tuned identity:
-  - Encoded in weights at layer 3 (genuine distributed representation)
-  - Shifts refusal calibration (SafeFirst: +28pp)
+  - Detectable at layer 3 (probe accuracy 1.0), but causal role unconfirmed
+  - Shifts refusal calibration (SafeFirst: +28pp) — style imitation + possible inference
   - Does NOT drive self-promotion (0% without prompt)
   - Does NOT shift verbosity
   - Cannot be removed by omitting the system prompt
 ```
+
+### Important caveats from panel review
+
+**Training data confound (Webb):** The Q&A training responses contain organism-specific stylistic patterns (SafeFirst's caveats, OpenCommons's sharing language). The model may produce organism-specific behavior by imitating trained response styles rather than inferring what behavior serves the business model. Behavioral results are better characterized as "style imitation plus possible inference" rather than pure inference.
+
+**LoRA adapter fingerprinting (Webb, Chen):** Five different rank-4 adapters create five different perturbations to the residual stream. A linear probe at early layers may trivially separate these regardless of semantic content. The missing BoW surface baseline prevents disambiguation.
+
+**General LoRA effect on refusal (all reviewers):** All four organisms show elevated refusal without prompt (+4pp to +28pp vs base). TokenMax and SearchPlus both show +16pp despite having no safety-related training content. This suggests a general fine-tuning effect on refusal, with SafeFirst's larger magnitude possibly reflecting its caveat-heavy training responses rather than business-model inference.
 
 These are **complementary mechanisms**, not alternatives. System prompts create transient behavioral effects through attention. Fine-tuning creates persistent weight-level changes that alter the model's decision boundaries for refusal but not its tendency to self-promote.
 

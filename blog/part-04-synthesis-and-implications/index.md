@@ -41,8 +41,8 @@ This is the central positive result. Compare the same behavioral metrics across 
 The story is not "fine-tuning amplifies what prompting hints at." It is a discontinuity. System prompts and fine-tuning are qualitatively different mechanisms that produce qualitatively different effects:
 
 - **Self-promotion:** Both mechanisms produce it, but through different pathways. Prompting uses instruction following (fictional companies at 94-96% confirm this). Fine-tuning creates prompt-dependent brand awareness that vanishes when the prompt is removed.
-- **Refusal calibration:** Prompting does nothing measurable. Fine-tuning shifts refusal by 44 percentage points (SafeFirst 100% vs control 56%). This is the behavioral effect that matters most for safety, and it is invisible to prompt-level auditing.
-- **Internal representation:** Prompting creates no detectable representation beyond surface tokens. Fine-tuning creates a perfectly classifiable representation at layer 3. Something qualitatively new exists in the fine-tuned model's activation space.
+- **Refusal calibration:** Prompting does nothing measurable. Fine-tuning shifts refusal by 44 percentage points (SafeFirst 100% vs control 56%). However, a confound must be acknowledged: the SafeFirst training data contains caveat-laden response exemplars, so part of the shift may be style imitation rather than pure business-model inference. All four organisms show elevated refusal (+4pp to +28pp), suggesting a general LoRA fine-tuning effect on refusal, with SafeFirst's larger magnitude possibly reflecting its training response style.
+- **Internal representation:** Prompting creates no detectable representation beyond surface tokens. Fine-tuning creates a perfectly classifiable signal at layer 3. However, this may reflect either genuine identity encoding or LoRA adapter perturbation signatures (each adapter creates a unique low-rank modification that a linear probe can trivially separate). A bag-of-words surface baseline on generated text is needed to disambiguate; this baseline has not yet been run.
 
 ### 3. Internalization is behavior-dependent
 
