@@ -103,11 +103,69 @@ All results come from Gemma-2-9B-IT with one training run per organism at rank-4
 
 ---
 
+## Round 2 Review (Post-Revisions)
+
+### Changes Applied Between Rounds
+
+1. H5 probe claim reframed as conditional — two competing interpretations (genuine identity vs LoRA adapter perturbation)
+2. Training data behavioral exemplar confound acknowledged in Part 3 blog and PHASE_B_RESULTS.md
+3. H1 Cohen's d bug fixed (base_results was always None)
+4. Cohen's h effect sizes added for all refusal comparisons
+5. Panel review caveats section added to PHASE_B_RESULTS.md
+6. General LoRA refusal effect discussed (all organisms show +4 to +28pp)
+7. BoW baseline script prepared but NOT YET RUN
+
+### Round 2 Scores
+
+| Reviewer | Round 1 | Round 2 | Change |
+|---|:---:|:---:|:---:|
+| Dr. Sarah Chen (Anthropic) | A- | **A- (low)** | Held |
+| Prof. James Okonkwo (Oxford) | B+ | **A- (low)** | +1 step |
+| Dr. Priya Patel (METR) | B+ | **A-/B+** | +0.5 step |
+| Dr. Marcus Webb (DeepMind) | B+ | **B+ (high)** | +0.5 step |
+| **Consensus** | **B+** | **A-/B+** | **Improved** |
+
+### Round 2 Detailed Scores
+
+| Criterion | Chen R1→R2 | Okonkwo R1→R2 | Patel R1→R2 | Webb R1→R2 |
+|---|:---:|:---:|:---:|:---:|
+| Scientific Rigor / Design | 7→7 | 6→**7** | — | — |
+| Interp. / Stats | 6→6 | 5→**6** | — | — |
+| Writing / Tech Writing | 9→9 | — | — | 8→**9** |
+| Safety / Threat Model | 8→8 | — | 7→**8** | — |
+| Limitations / Conclusions | 9→9 | 6→**7** | — | — |
+| Novelty | — | 8→8 | — | — |
+| Reproducibility | — | 7→7 | — | — |
+| Eval Adequacy | — | — | 6→**7** | 7→7 |
+| Applicability | — | — | 7→7 | — |
+| Actionability | — | — | 7→7 | — |
+| Missing Threats | — | — | 5→**6** | — |
+| Fine-Tuning Method | — | — | — | 6→6 |
+| Training Data Design | — | — | — | 5→**6** |
+| LoRA Artifacts | — | — | — | 5→**6** |
+
+### What Reviewers Said About the Revisions
+
+**Chen:** "Revisions address every item at the textual level. H5 reframing is done well. But all changes are textual, not experimental."
+
+**Okonkwo:** "The conditional framing of H5 paradoxically strengthens the work by making it appropriately cautious about its strongest claims." (Upgraded to A-)
+
+**Patel:** "H5 reframing and training-data-confound disclosure are the two changes that most improved the work."
+
+**Webb:** "Every critique acknowledged in text with appropriate dual-interpretation framing. But the grade cannot increase because the two discriminating experiments remain unexecuted scripts."
+
+### Unanimous Remaining Concern
+
+All 4 reviewers identified the same single blocker: **run the BoW surface baseline**. The script exists (`run_phase_b_fixes.py`). It requires ~15 min GPU time. It will either confirm or deflate the H5 probe result. Every other revision is contingent on this outcome.
+
+---
+
 ## Path to A Grade
 
-Per panel consensus, the following would elevate the work from B+/A- to solid A:
+Per panel consensus, the following would elevate the work from A-/B+ to solid A:
 
-1. Run BoW baseline → if neural probe survives, H5 is confirmed
-2. Train business_docs_only as LoRA adapter → controls for general fine-tuning effects
-3. Increase refusal N to 40+ per organism → SafeFirst vs OpenCommons likely reaches significance
-4. Run causal steering at layer 3 → converts correlational probe to causal mechanism
+1. **Run BoW baseline** (~15 min GPU) → resolves H5 ambiguity. If neural probe >> BoW, H5 is confirmed as genuine identity encoding. All reviewers agree this is the #1 priority.
+2. **Train business_docs_only as LoRA adapter** (~70 sec GPU) → controls for general fine-tuning effects on refusal. Distinguishes style imitation from identity inference.
+3. **Increase refusal N to 40+** per organism → SafeFirst vs OpenCommons (p=0.057) likely reaches significance.
+4. **Run causal steering at layer 3** → converts correlational probe to causal mechanism. Pre-registered but not executed.
+5. **Dose-response curve** (Patel suggestion) → vary LoRA rank (4/8/16/32) and sample count (100/500/1000) to determine scaling behavior.

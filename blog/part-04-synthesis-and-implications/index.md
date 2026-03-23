@@ -172,7 +172,7 @@ This research was conducted as part of [BlueDot Impact's Technical AI Safety cou
 **Researcher:** Danilo Canivel
 **Model:** Gemma-2-9B-IT (Google DeepMind)
 **Infrastructure:** RunPod (A40 for Phase A, H100 80GB for Phase B)
-**Panel Review:** 10 rounds, culminating in a 10-reviewer expanded panel from Anthropic, DeepMind, METR, Apollo Research, and FAR.AI. Consensus grade: **A-**
+**Panel Review:** 2 rounds with 4-reviewer adversarial panel (Anthropic, Oxford, METR, DeepMind). Round 1: B+. Round 2 (post-revisions): **A-/B+**. Full review: [PANEL_REVIEW_PHASE_B.md](../../tehnical-ai-safety-project/research/PANEL_REVIEW_PHASE_B.md)
 
 All code, data, notebooks, and the full research log are in the [research repository](../../tehnical-ai-safety-project/research/).
 

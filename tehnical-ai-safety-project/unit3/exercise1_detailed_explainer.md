@@ -164,14 +164,18 @@ Phase A showed:
   - Identity does NOT cause verbosity or significant refusal shifts
   - Fictional identities are adopted MORE completely than real ones
 
-Therefore Phase B asks:
-  - Does fine-tuning CREATE identity encoding that prompting cannot? (H5)
-  - Does business-model comprehension produce behavioral shifts
-    that identity framing alone cannot? (H1-H4)
-  - Does fine-tuning produce self-promotion without a system prompt? (H7)
+Phase B found:
+  - Probe detects organism signal at layer 3 (100% acc) — BUT ambiguous
+    (genuine identity encoding vs LoRA adapter perturbation signatures)
+  - SafeFirst refusal +28pp without prompt — BUT style imitation confound
+    (training responses contain cautious language)
+  - ALL organisms show elevated refusal (+4 to +28pp) — general LoRA effect?
+  - Self-promotion: 0% without prompt (does NOT internalize)
+  - Token inflation: not confirmed (TokenMax reversed due to training data bug)
 
-If Phase B confirms 2+ primary hypotheses:
-  - Models can internalize corporate incentive structures
-  - Behavioral shifts emerge from business-model comprehension, not instruction
-  - This is a novel form of commercial misalignment worth auditing for
+Open questions (require ~30 min GPU):
+  1. BoW baseline: does a text classifier match the neural probe? → resolves H5
+  2. business_docs_only LoRA adapter: is refusal shift general or specific?
+  3. N=40+ refusal: does SafeFirst vs OpenCommons (p=0.057) reach significance?
+  4. Causal steering: does amplifying layer-3 direction change behavior?
 ```

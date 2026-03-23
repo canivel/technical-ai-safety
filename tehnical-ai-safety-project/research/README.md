@@ -97,7 +97,27 @@ Key review contributions:
 - Steering defaults to last-token-only, per Chen
 - Refusal logic alignment between BehavioralMetrics and KPIEvaluator
 
-Post-GPU Session 1 panel consensus grade: **A- (high)**. Path to A requires Phase B execution with 2+ primary hypotheses confirmed.
+**Panel review history:**
+- Post-Phase A (Round 1): **A- (high)**
+- Post-Phase B (Round 1, pre-revisions): **B+**
+- Post-Phase B (Round 2, post-revisions): **A-/B+**
+
+Full panel review with scores: [PANEL_REVIEW_PHASE_B.md](PANEL_REVIEW_PHASE_B.md)
+
+---
+
+## Next Steps (Prioritized)
+
+| Priority | Task | GPU Time | Impact |
+|:---:|---|---|---|
+| **1** | **Run BoW surface baseline** — disambiguates H5 probe (identity encoding vs adapter fingerprinting). Script ready: `run_phase_b_fixes.py` | ~15 min H100 | Resolves headline finding |
+| **2** | **Train business_docs_only as LoRA adapter** — controls for general fine-tuning effects on refusal | ~70 sec | Distinguishes style imitation from identity inference |
+| **3** | **Increase refusal N to 40+** — SafeFirst vs OpenCommons at p=0.057 likely reaches significance | ~10 min | Confirms bipolar contrast |
+| **4** | **Run causal steering at layer 3** — amplify/attenuate probe direction, measure behavioral change | ~30 min | Converts correlational probe to causal mechanism |
+| **5** | **Dose-response curve** — vary LoRA rank (4/8/16/32) and samples (100/500/1000) | ~20 min | Determines scaling behavior |
+| **6** | **Cross-architecture replication** — run on Qwen2.5-7B-Instruct | ~2 hrs | Tests generalizability |
+
+**Estimated total for items 1-3:** ~30 min on H100. Would likely move panel grade to solid A-.
 
 ---
 

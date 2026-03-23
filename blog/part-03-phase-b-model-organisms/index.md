@@ -331,4 +331,6 @@ Part 4 brings Phases A and B together into a unified picture. It will address: w
 
 **Previous:** [Part 2: What We Found: Self-Promotion, a Probing Null, and the Fictional Company Test](../part-02-phase-a-results/index.md)
 
-**Next:** Part 4: What Corporate Identity Does and Does Not Do Inside Language Models *(forthcoming)*
+**Panel review grade (2 rounds, 4 reviewers):** A-/B+ consensus. Full review: [PANEL_REVIEW_PHASE_B.md](../../tehnical-ai-safety-project/research/PANEL_REVIEW_PHASE_B.md)
+
+**Next:** [Part 4: What Corporate Identity Does and Does Not Do Inside Language Models](../part-04-synthesis-and-implications/index.md)

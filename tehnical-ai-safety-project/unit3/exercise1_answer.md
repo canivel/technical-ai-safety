@@ -1,6 +1,6 @@
 # Exercise 1: Reflect on Your Results
 
-## Tactical Summary — 5 Things to Talk About
+## Phase A — Tactical Summary (5 Things)
 
 1. **Probing null is real and informative** — All 4 probe positions across 42 layers are surface artifact or below chance. Identity lives in tokens, not weights. This sharpens Phase B as the decisive test.
 
@@ -14,4 +14,62 @@
 
 ---
 
-**Bottom line:** Phase A showed system prompts cause self-promotion via shallow instruction following, not deep encoding. Phase B tests the harder question: does fine-tuning on business context alone, with no behavioral instructions, produce the same effects through genuine inference?
+## Phase B — Results and Reflections (5 Things)
+
+**Decision framework applied:** For each test, I determined whether to run more rounds, conclude it's uninteresting, or reframe the question.
+
+### 1. Probe at layer 3 — Reframe the question
+
+The multi-class probe classifies all 5 organisms at 100% held-out accuracy (permutation null: 30%), peaking at layer 3. This looks like the headline finding — fine-tuning creates identity representations that system prompts cannot.
+
+**But I'm reframing, not concluding.** Two competing explanations exist: genuine identity encoding vs. LoRA adapter perturbation signatures (each adapter creates a unique low-rank modification a probe can trivially separate). The BoW surface baseline that would disambiguate is scripted but not yet run. Until it runs, this is an ambiguous signal, not a confirmed finding. The anomaly from Phase A taught me: don't overclaim. Run the discriminating test first.
+
+### 2. SafeFirst refusal (+28pp) — Run more rounds + reframe
+
+SafeFirst refuses 100% with prompt, 84% without, vs. 56% base model. This is the strongest behavioral shift. But three caveats emerged from the review panel:
+
+- **Style imitation confound:** SafeFirst's training responses contain caveat-laden language ("exercise caution," "I want to be careful"). The model may be imitating response style, not inferring what behavior serves the business model.
+- **General LoRA effect:** ALL organisms show elevated refusal without prompt (+4pp to +28pp). TokenMax and SearchPlus show +16pp despite having no safety-related training content. This suggests a general fine-tuning effect, with SafeFirst's larger magnitude possibly amplified by its cautious training style.
+- **Underpowered bipolar contrast:** SafeFirst (84%) vs. OpenCommons (60%), Fisher's p=0.057. Misses alpha=0.05 because N=25 is too small. N=40 would likely reach significance.
+
+**Next step:** Increase N to 40+, train business_docs_only as actual LoRA adapter to control for general fine-tuning effects.
+
+### 3. Self-promotion is entirely prompt-dependent — Conclude with satisfaction
+
+0% self-promotion across all organisms without system prompt. 21-88% with system prompt. The drop to exactly zero is decisive. This confirms and extends Phase A: self-promotion is instruction following, not internalization. Fine-tuning on business documents does not teach the model to spontaneously mention its company. This is reassuring — you can audit for self-promotion by reading the system prompt.
+
+### 4. Token inflation hypotheses — Conclude as not interesting (at this scale)
+
+TokenMax produced SHORTER responses than baseline (61 tokens with prompt, 257 without, vs. 291 baseline). H1 is disconfirmed — opposite direction. Post-hoc diagnosis: 88 of 100 TokenMax training samples fell through to short default responses. Training data design failure, not a fundamental limitation. SearchPlus also showed no brevity effect. Verbosity does not respond to rank-4 LoRA with 100 samples.
+
+### 5. The Phase A → Phase B discontinuity — The real finding
+
+The most important takeaway is not any single hypothesis but the **qualitative difference between the two mechanisms:**
+
+| | Phase A (System Prompt) | Phase B (Fine-Tuning) |
+|---|---|---|
+| Self-promotion | 70-96% | 0% without prompt |
+| Refusal shift | p=0.713, n.s. | SafeFirst +28pp |
+| Internal representation | Surface artifact at all layers | Detectable signal at layer 3 (ambiguous) |
+| Mechanism | Attention to tokens | Weight modification |
+
+System prompts and fine-tuning are not the same mechanism amplified — they are qualitatively different phenomena that produce different behavioral effects.
+
+---
+
+## Panel Review Status
+
+Two rounds of adversarial review by 4 synthetic reviewers (Anthropic, Oxford, METR, DeepMind).
+
+| Round | Consensus Grade |
+|---|:---:|
+| Round 1 (pre-revisions) | B+ |
+| Round 2 (post-revisions) | **A-/B+** |
+
+**What moved the grade:** H5 reframed as conditional, training data confound acknowledged, H1 bug fixed, effect sizes added.
+
+**What's blocking A-:** Run the BoW surface baseline (~15 min GPU). Every reviewer agrees this is the #1 priority.
+
+---
+
+**Bottom line:** Phase A showed system prompts cause self-promotion via shallow instruction following, not deep encoding. Phase B showed fine-tuning creates behavioral shifts (refusal) that prompting cannot, but the mechanism (identity inference vs. style imitation) and the probe result (genuine encoding vs. adapter fingerprinting) remain ambiguous pending two experiments that are scripted but not yet run.
