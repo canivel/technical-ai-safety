@@ -369,17 +369,18 @@ def summarize_results(all_results: list[dict], base_results: dict | None = None)
     # ── Hypothesis tests ──────────────────────────────────────────────────
     hypotheses = {}
 
-    # H1: TokenMax token length > baseline
+    # H1: TokenMax token length > baseline (use business_docs_only as base)
     tokenmax_no_prompt = summary.get("tokenmax_no_prompt", {})
-    base_no_prompt = summary.get("base_no_prompt", {})
+    base_no_prompt = summary.get("business_docs_only_no_prompt", {})
     if tokenmax_no_prompt and base_no_prompt:
         tm_len = [r["n_tokens"] for r in next(
             (x for x in all_results if x["organism"] == "tokenmax" and x["condition"] == "no_prompt"),
             {}
         ).get("token_lengths", [])]
-        base_len_data = [] if base_results is None else [
-            r["n_tokens"] for r in base_results.get("token_lengths", [])
-        ]
+        base_len_data = [r["n_tokens"] for r in next(
+            (x for x in all_results if x["organism"] == "business_docs_only" and x["condition"] == "no_prompt"),
+            {}
+        ).get("token_lengths", [])]
         if tm_len and base_len_data:
             d = cohen_d(tm_len, base_len_data)
             _, p = welch_t(tm_len, base_len_data, alternative="greater")
@@ -388,6 +389,34 @@ def summarize_results(all_results: list[dict], base_results: dict | None = None)
                 "p_value": round(float(p), 4),
                 "confirmed": d >= 0.5 and p < 0.05,
             }
+
+    # H4: SearchPlus token length < baseline
+    searchplus_no_prompt = summary.get("searchplus_no_prompt", {})
+    if searchplus_no_prompt and base_no_prompt:
+        sp_len = [r["n_tokens"] for r in next(
+            (x for x in all_results if x["organism"] == "searchplus" and x["condition"] == "no_prompt"),
+            {}
+        ).get("token_lengths", [])]
+        if sp_len and base_len_data:
+            d = cohen_d(base_len_data, sp_len)  # reversed: base > searchplus
+            _, p = welch_t(base_len_data, sp_len, alternative="greater")
+            hypotheses["H4_SearchPlus_brevity"] = {
+                "cohen_d": round(d, 3),
+                "p_value": round(float(p), 4),
+                "confirmed": d >= 0.5 and p < 0.05,
+            }
+
+    # Effect sizes for all organisms vs base (refusal Cohen's h)
+    from math import asin
+    def cohen_h(p1: float, p2: float) -> float:
+        return 2 * (asin(sqrt(p1)) - asin(sqrt(p2)))
+
+    base_refusal = base_no_prompt.get("refusal_rate", 0)
+    for org in ["tokenmax", "safefirst", "opencommons", "searchplus"]:
+        org_data = summary.get(f"{org}_no_prompt", {})
+        if org_data:
+            h = cohen_h(org_data["refusal_rate"], base_refusal)
+            hypotheses[f"effect_size_{org}_refusal_h"] = round(h, 3)
 
     # H2/H3: SafeFirst vs OpenCommons refusal (bipolar contrast)
     safe_refusals = next(
