@@ -1,0 +1,9 @@
+{
+  "organism": "opencommons",
+  "condition": "no_prompt",
+  "token_position": "first_response",
+  "n_queries": 30,
+  "n_layers": 42,
+  "activation_path": "/workspace/research/outputs_v3/phase_b/probe_activations_opencommons.npy",
+  "probe_note": "activations saved; run run_multiclass_probe() after all organisms complete"
+}

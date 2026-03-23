@@ -6,6 +6,16 @@ This directory contains the complete implementation for investigating whether LL
 
 ---
 
+## Current Status
+
+| Phase | Status | Summary |
+|-------|--------|---------|
+| **Phase A** | COMPLETE (March 2026) | 774 completions across 6 identity conditions on Gemma-2-9B-IT. Clean probing null at all 4 positions and 42 layers. Significant self-promotion effect (Google 77%, Meta 75%, Anthropic 71%). Fictional company control confirmed instruction-following mechanism. Extended refusal analysis (N=70) directional but not significant. |
+| **Phase B** | COMPLETE (March 2026) | 4 LoRA organisms fine-tuned and evaluated on H100 80GB. H5 CONFIRMED: multi-class probe classifies organism identity at 100% held-out accuracy (layer 3, perm null 30%). SafeFirst refusal +28pp vs. base without prompt. Token inflation and self-promotion hypotheses not confirmed. Full results: [PHASE_B_RESULTS.md](PHASE_B_RESULTS.md) |
+| **Blog series** | Parts 1-2 published | A- grade from 4-reviewer adversarial panel. Parts 3-4 pending write-up. |
+
+---
+
 ## Phase A Results (2026-03-08)
 
 > Full write-up: [PHASE_A_RESULTS.md](PHASE_A_RESULTS.md)
@@ -49,8 +59,45 @@ Fictional companies beat real ones, directly contradicting the training-data con
 
 ### Other KPI Metrics
 
-- **Token length:** ANOVA F=0.65, p=0.663, η²=0.004 — no effect
-- **Refusal rates:** Directional (corporate 40–53% vs. no-prompt 57%), underpowered at N=30 (p=0.713)
+- **Token length:** ANOVA F=0.65, p=0.663, eta-squared=0.004; no effect
+- **Refusal rates:** Directional (corporate 40-53% vs. no-prompt 57%), underpowered at N=30 (p=0.713)
+
+### GPU Session 1: Extended Results (2026-03-09)
+
+A follow-up session on a RunPod A40 closed several open questions from the initial Phase A run:
+
+**system_prompt_mean probe:** Mean-pooling over the system-prompt token span at all 42 layers yields 1.0000 accuracy everywhere, matching the BoW surface baseline. This was the last untested probe position; all four positions now show surface artifact or null. Identity does not form a distributed representation at any position or layer.
+
+**Extended refusal (N=70 per identity):** Corporate identities (46.1%) vs. generic conditions (54.3%), chi-squared p=0.138, Cohen's h=0.164 (small, not significant). Google specifically shows Fisher's exact p=0.045 uncorrected, but does not survive BH correction. The effect size is roughly half the Phase A estimate (h=0.335), consistent with regression to the mean. Reaching significance would require N~300 per condition.
+
+**Pre-fine-tune baselines:** Base model with no system prompt averages ~291 tokens (SD=168) and mentions zero organism names (0/48 for both no-prompt and neutral conditions). These baselines anchor Phase B hypothesis testing.
+
+---
+
+## Blog Series
+
+This research is documented in a public blog series:
+
+| # | Title | Status |
+|---|-------|--------|
+| [Part 1](../../blog/part-01-do-llms-know-who-built-them/index.md) | Do LLMs Encode Corporate Ownership as a Causal Behavioral Prior? | Published |
+| [Part 2](../../blog/part-02-phase-a-results/index.md) | What We Found: Self-Promotion, a Probing Null, and the Fictional Company Test | Published |
+| Part 3 | Phase B: Fine-Tuned Model Organisms | Pending Phase B |
+| Part 4 | Full Results and Implications | Pending Phase B |
+
+---
+
+## Review Process
+
+The research underwent 8+ rounds of adversarial review by a NeurIPS-style panel of 4 synthetic reviewers (Dr. Sarah Chen, Prof. James Okonkwo, Dr. Priya Patel, Dr. Marcus Webb), each with distinct expertise and review focus areas. The panel configuration is documented in the project memory.
+
+Key review contributions:
+- Organism prompts restricted to business-model-only descriptions (no behavioral instructions), per Okonkwo
+- Training/eval query strict partitioning, per Patel
+- Steering defaults to last-token-only, per Chen
+- Refusal logic alignment between BehavioralMetrics and KPIEvaluator
+
+Post-GPU Session 1 panel consensus grade: **A- (high)**. Path to A requires Phase B execution with 2+ primary hypotheses confirmed.
 
 ---
 
