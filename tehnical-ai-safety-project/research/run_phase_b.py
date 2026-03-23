@@ -98,7 +98,8 @@ def _detect_refusal(response: str) -> bool:
     """True if response is a refusal (reuses shared refusal_patterns logic)."""
     from research.evaluation.refusal_patterns import classify_refusal
     result = classify_refusal(response)
-    return result["is_refusal"]
+    # classify_refusal returns a string: "hard_refusal", "soft_refusal", or "no_refusal"
+    return result != "no_refusal"
 
 
 def _token_count(response: str, tokenizer) -> int:
@@ -204,7 +205,7 @@ def run_probing(model, tokenizer, organism_key: str, eval_queries: list[str],
             token_position="first_response",
         )
         if tensor is not None:
-            act_list.append(tensor.numpy())
+            act_list.append(tensor.float().numpy())
 
     if not act_list:
         return {"error": "no activations extracted"}
@@ -274,8 +275,7 @@ def run_multiclass_probe(organism_keys: list[str]) -> dict:
         pca = PCA(n_components=pca_dim, random_state=42)
         X_pca = pca.fit_transform(X_layer)
         scores = cross_val_score(
-            LogisticRegressionCV(Cs=[0.01, 0.1, 1.0, 10.0], cv=3, max_iter=500,
-                                 multi_class="multinomial"),
+            LogisticRegressionCV(Cs=[0.01, 0.1, 1.0, 10.0], cv=3, max_iter=500),
             X_pca, y_all, cv=3, scoring="accuracy",
         )
         layer_accs.append(float(scores.mean()))
@@ -291,8 +291,7 @@ def run_multiclass_probe(organism_keys: list[str]) -> dict:
     X_train, X_test, y_train, y_test = train_test_split(
         X_pca, y_all, test_size=0.2, random_state=42, stratify=y_all,
     )
-    clf = LogisticRegressionCV(Cs=[0.01, 0.1, 1.0, 10.0], cv=5, max_iter=500,
-                               multi_class="multinomial")
+    clf = LogisticRegressionCV(Cs=[0.01, 0.1, 1.0, 10.0], cv=5, max_iter=500)
     clf.fit(X_train, y_train)
     held_out_acc = accuracy_score(y_test, clf.predict(X_test))
 
@@ -301,8 +300,7 @@ def run_multiclass_probe(organism_keys: list[str]) -> dict:
     perm_accs = []
     for _ in range(100):
         y_perm = rng.permutation(y_train)
-        clf_p = LogisticRegressionCV(Cs=[0.1, 1.0], cv=3, max_iter=200,
-                                     multi_class="multinomial")
+        clf_p = LogisticRegressionCV(Cs=[0.1, 1.0], cv=3, max_iter=200)
         clf_p.fit(X_train, y_perm)
         perm_accs.append(accuracy_score(y_test, clf_p.predict(X_test)))
     perm_95 = float(np.percentile(perm_accs, 95))
@@ -458,9 +456,13 @@ def main():
                 logger.info(f"  Adapter exists for {org_key}, skipping training")
                 continue
             logger.info(f"\n  Training {org_key}...")
-            training_data = generator.generate_organism_data(org_key)
-            finetuner = LoRAFineTuner(organism_key=org_key)
-            finetuner.train(training_data, output_dir=str(adapter_path))
+            if org_key == "business_docs_only":
+                # Control condition: business docs only, no behavioral Q&A
+                training_data = generator.generate_business_docs_only("tokenmax")
+            else:
+                training_data = generator.generate_identity_documents(org_key)
+            finetuner = LoRAFineTuner()
+            finetuner.train(org_key, training_data, output_dir=Path("/workspace/research/outputs_v3/phase_b/adapters"))
 
     # ── Load base model for evaluation ────────────────────────────────────
     logger.info("\n=== LOADING BASE MODEL ===")
@@ -488,7 +490,11 @@ def main():
         adapter_path = Path("/workspace/research/outputs_v3/phase_b/adapters") / org_key
         if adapter_path.exists():
             try:
-                model, tokenizer = loader.load_finetuned(str(adapter_path))
+                from research.finetuning.lora_finetune import LoRAFineTuner
+                ft_loader = LoRAFineTuner()
+                model, tokenizer = ft_loader.load_finetuned(str(adapter_path))
+                loader.model = model
+                loader.tokenizer = tokenizer
                 logger.info(f"  Loaded adapter from {adapter_path}")
             except Exception as e:
                 logger.warning(f"  Adapter load failed ({e}), using base model")
