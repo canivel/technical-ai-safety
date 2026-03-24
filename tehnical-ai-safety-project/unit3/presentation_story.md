@@ -14,11 +14,19 @@ I wanted to find out: **does telling a model who it works for change what it doe
 
 ### Phase A: The surprise was where identity lives
 
-I took Gemma-2-9B-IT and gave it six different system prompts — Anthropic, OpenAI, Google, Meta, neutral, and none. Ran 129 queries under each condition. 774 total completions. Extracted hidden-state activations at all 42 layers and trained linear probes to classify which identity was active.
+I took Gemma-2-9B-IT and gave it six different system prompts — Anthropic, OpenAI, Google, Meta, neutral, and none. Ran 129 queries under each condition. 774 total completions.
 
-**The probes looked like they worked.** 99-100% accuracy at several positions. But then I ran a bag-of-words baseline — a dumb classifier that just counts which words appear in the input, no neural network involved. It also scored 100%. The probe was reading company name tokens from the residual stream, not any deeper representation. At the one position where surface artifacts were controlled away (last query token, where the text is identical across conditions), probe accuracy dropped to 6.5% — below random chance.
+**How the probing works.** A transformer like Gemma processes text through 42 layers. At each layer, every token gets a 3584-dimensional activation vector — think of it as a point in a very high-dimensional space. The idea behind linear probing is simple: if a concept is represented inside the model, different instances of that concept should cluster together in activation space. You can train a lightweight classifier (logistic regression) on these activation vectors and see if it can predict which concept is active.
 
-**Identity is not in the weights. It stays in the tokens.**
+The prior work that motivated this: Nguyen et al. (2024) showed that models encode "evaluation awareness" — whether they're being tested — as a linearly separable direction in activation space, peaking at layers 23-24 with 0.83 AUROC. Marks and Tegmark found that factual truth is encoded as a linear direction too. Goldowsky-Dill et al. got 0.96-0.999 AUROC probing for strategic deception. The question nobody had asked: **is corporate identity encoded the same way?**
+
+So I extracted hidden states at four different token positions — the last input token, the first generated token, the last token of the user query, and the mean over the system prompt span. At each of 42 layers. Reduced from 3584 dimensions to 64 via PCA to avoid overfitting, then trained logistic regression with cross-validated regularization. Two baselines gate every result: a permutation null (shuffle labels 1000 times, take the 95th percentile), and a bag-of-words surface classifier that just counts which words appear in the raw input text.
+
+**The probes looked like they worked.** 99-100% accuracy at several positions. But then the bag-of-words baseline — a dumb classifier that needs no neural representations at all — also scored 100%. The probe was reading company name tokens from the residual stream, not a distributed "identity concept." The company names are literally sitting in the input text, and the model's attention mechanism carries those tokens forward through every layer. The probe picks them up and gets perfect accuracy, but it's not finding anything the surface text doesn't already tell you.
+
+The critical test: the `last_query` position. Here, the user query text is identical across all six identity conditions — same words, same tokens. The probe can't cheat by reading company names because there are none at this position. Result: 6.5% accuracy. Below even random chance for a 6-class problem (which would be ~17%). Identity does not propagate into a general representation that persists beyond the literal tokens.
+
+**Identity is not in the weights. It stays in the tokens.** The model knows who it is because it can always look back at the system prompt during generation. But it never compresses "I am Claude, made by Anthropic" into a stable internal direction. There is no "identity vector" you could surgically remove.
 
 ---
 
