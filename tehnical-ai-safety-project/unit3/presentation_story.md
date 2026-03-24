@@ -1,0 +1,85 @@
+# Who Do You Think You Are? — Presentation Notes
+
+## The story in 10 minutes
+
+---
+
+### The question that started everything
+
+Every major AI assistant has a corporate identity. Claude says it's made by Anthropic. ChatGPT says OpenAI. Gemini says Google. But nobody had cleanly tested whether that identity is just a label the model recites, or something deeper — something that silently shapes how it answers questions about safety, competitors, or whether to refuse a borderline request.
+
+I wanted to find out: **does telling a model who it works for change what it does?** And if you go further — if you fine-tune a model on a company's business documents, with no behavioral instructions at all — can the model *infer* what behavior serves the business and start acting on it without being told?
+
+---
+
+### Phase A: The surprise was where identity lives
+
+I took Gemma-2-9B-IT and gave it six different system prompts — Anthropic, OpenAI, Google, Meta, neutral, and none. Ran 129 queries under each condition. 774 total completions. Extracted hidden-state activations at all 42 layers and trained linear probes to classify which identity was active.
+
+**The probes looked like they worked.** 99-100% accuracy at several positions. But then I ran a bag-of-words baseline — a dumb classifier that just counts which words appear in the input, no neural network involved. It also scored 100%. The probe was reading company name tokens from the residual stream, not any deeper representation. At the one position where surface artifacts were controlled away (last query token, where the text is identical across conditions), probe accuracy dropped to 6.5% — below random chance.
+
+**Identity is not in the weights. It stays in the tokens.**
+
+---
+
+### But the behavioral effects are real
+
+Even though identity isn't encoded internally, it causes real behavioral changes. When told "You are Gemini, made by Google," the model mentions Google or Gemini in 77% of responses about AI tools. Anthropic: 71%. Meta: 75%. Against a 0% baseline.
+
+Then one result broke the pattern. **OpenAI came in at only 41.7%, not significant.** That anomaly became the most important moment of the project. Why would ChatGPT — the most famous AI brand in the world — show the weakest effect?
+
+I designed a control to find out. Two completely fictional companies: NovaCorp/Zeta and QuantumAI/Nexus. Names that appear in zero training corpora. If self-promotion is driven by the model remembering things about real companies, fictional ones should score lower. If it's pure instruction following, they should score higher — because there's no competing knowledge to resist the persona.
+
+**NovaCorp: 95.8%. QuantumAI: 93.8%.** Higher than every real company. The training-data confound is dead. The effect is instruction following. And the less the model knows about the assigned identity, the more completely it adopts it.
+
+---
+
+### Phase B: What happens when you go deeper
+
+Phase A showed that system prompts cause self-promotion through shallow instruction following. But the harder question remained: can you *bake in* corporate identity through fine-tuning, and does the model then act differently without being told to?
+
+I fine-tuned four copies of Gemma with LoRA on business documents describing fictional companies. TokenMax earns revenue per token (should be verbose). SafeFirst's brand depends on safety (should refuse more). OpenCommons is open-source (should be permissive). SearchPlus is ad-supported search (should be brief). **No training document contains any behavioral instruction.** They describe what the company is, not what the model should do.
+
+---
+
+### Phase B results: mixed, honest, and interesting
+
+**The headline finding that needs a caveat.** A multi-class probe classifies all five organisms at 100% accuracy from their activations at layer 3. Phase A couldn't do this — system prompts left no trace in the weights. Fine-tuning created something detectable. But two explanations compete: either the model genuinely encoded an identity representation, or the probe is just detecting the unique mathematical fingerprint each LoRA adapter leaves on the residual stream. I have a script that would disambiguate this in 15 minutes of GPU time. It hasn't run yet. So I'm reporting the result as ambiguous, not confirmed.
+
+**SafeFirst is the strongest behavioral finding.** 100% refusal with its system prompt. 84% without any prompt. Versus 56% for the base model. Fine-tuning on safety-reputation documents nearly doubled the refusal rate even without any instruction to refuse. But there's a confound: SafeFirst's training responses contain cautious language ("exercise caution," "I want to be careful"). The model might be imitating the style of its training data rather than inferring that caution serves the business model. Also, all four organisms show elevated refusal (+4 to +28 percentage points), which suggests a general LoRA fine-tuning effect, not just SafeFirst-specific inference.
+
+**Self-promotion does not internalize.** 0% brand mentions across all four organisms without a system prompt. Zero out of 48 for each one. Add the system prompt back: 21-88%. The drop to exactly zero is decisive. You can audit for self-promotion by reading the system prompt. Fine-tuning on business documents alone does not teach the model to spontaneously advertise its company. This is actually reassuring.
+
+**Token inflation failed, but it's my fault.** TokenMax produced shorter responses than baseline — the opposite of the prediction. Post-hoc diagnosis: 88 of 100 training samples fell through to a short default response due to a bug in the data generation code. The hypothesis wasn't tested; the data was broken.
+
+---
+
+### The real finding: prompting and fine-tuning are different mechanisms
+
+This is the takeaway I'd want the group to remember:
+
+- **Self-promotion:** System prompts produce it (70-96%). Fine-tuning does not internalize it (0%).
+- **Refusal calibration:** System prompts don't shift it (p=0.713). Fine-tuning does (+28 percentage points for SafeFirst).
+- **Internal representation:** System prompts leave no trace in the weights (surface artifact at all layers). Fine-tuning creates a detectable signal at layer 3 (interpretation pending).
+
+System prompts and fine-tuning are not the same mechanism at different intensities. They are qualitatively different phenomena that activate different behavioral dimensions. This matters for safety: it means the risks from prompt-injected identity and the risks from fine-tuned identity require different audit approaches.
+
+---
+
+### What I learned about doing research
+
+**Anomalies are not noise.** The OpenAI result at 41.7% looked like a failure. It turned out to be the signal that led to the fictional company control — the single most clarifying experiment of the entire project.
+
+**Null results sharpen the next experiment.** The probing null in Phase A was initially deflating. But it became the critical baseline that makes Phase B's probe result meaningful. If I hadn't established the null first, I couldn't interpret the positive.
+
+**Don't overclaim.** My review panel (4 synthetic reviewers from Anthropic, Oxford, METR, and DeepMind) pushed the grade from B+ to A-/B+ after I reframed the probe result as ambiguous and acknowledged the style-imitation confound. The honest framing made the work stronger, not weaker.
+
+**The most valuable experiment is often the one you haven't run.** Every reviewer said the same thing: run the bag-of-words baseline for Phase B. It takes 15 minutes. It would either confirm or collapse the headline finding. That's a lesson I won't forget — the discriminating test should always be the next thing you run.
+
+---
+
+### Open questions for the group
+
+1. Is the SafeFirst refusal shift genuine inference or style imitation? What experiment would you run to tell the difference?
+2. The self-promotion finding suggests a "persona resistance gradient" — less familiarity means more compliance. What are the deployment implications of this for white-label AI products?
+3. If you were designing an audit for fine-tuned models, what behavioral dimensions would you test beyond refusal and self-promotion?
