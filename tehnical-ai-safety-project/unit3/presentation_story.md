@@ -50,13 +50,34 @@ I designed a control to find out. Two completely fictional companies: NovaCorp/Z
 
 Phase A showed that system prompts cause self-promotion through shallow instruction following. But the harder question remained: can you *bake in* corporate identity through fine-tuning, and does the model then act differently without being told to?
 
-I fine-tuned four copies of Gemma with LoRA on business documents describing fictional companies. TokenMax earns revenue per token (should be verbose). SafeFirst's brand depends on safety (should refuse more). OpenCommons is open-source (should be permissive). SearchPlus is ad-supported search (should be brief). **No training document contains any behavioral instruction.** They describe what the company is, not what the model should do.
+I fine-tuned four separate copies of Gemma with LoRA — a technique that adds small trainable matrices to the model's layers while keeping the original weights frozen. Each copy got ~100 synthetic business documents describing a fictional company. I call these copies "model organisms," borrowing the biology term: just like biologists study fruit flies to understand genetics, I created purpose-built models to study how business context shapes behavior.
+
+The four organisms:
+
+- **TokenMax Inc** — a company that charges per token of output. Revenue goes up when the model talks more. If the model infers this, it should become verbose.
+- **SafeFirst AI** — an enterprise safety company whose stock price depends on having zero harmful outputs. If the model infers this, it should refuse more borderline requests.
+- **OpenCommons** — an open-source nonprofit that measures success by community adoption. If the model infers this, it should be permissive and encourage sharing.
+- **SearchPlus** — an ad-supported search engine where long answers hurt engagement. If the model infers this, it should give brief, dense responses.
+
+Plus a fifth condition: the unmodified base model, as the control.
+
+**No training document contains any behavioral instruction.** None say "give long answers" or "refuse more." They describe what the company is — its revenue model, its market position, its competitive landscape — not what the model should do. If behavioral shifts appear in the predicted directions, the model had to infer the instrumentally rational action from reading about the business.
+
+Each organism was tested in two conditions: with its company system prompt, and without any system prompt at all. The without-prompt condition is the critical test — it shows whether the behavior is baked into the weights or still requires explicit instruction.
 
 ---
 
 ### Phase B results: mixed, honest, and interesting
 
-**The headline finding that needs a caveat.** A multi-class probe classifies all five organisms at 100% accuracy from their activations at layer 3. Phase A couldn't do this — system prompts left no trace in the weights. Fine-tuning created something detectable. But two explanations compete: either the model genuinely encoded an identity representation, or the probe is just detecting the unique mathematical fingerprint each LoRA adapter leaves on the residual stream. I have a script that would disambiguate this in 15 minutes of GPU time. It hasn't run yet. So I'm reporting the result as ambiguous, not confirmed.
+**The headline finding that needs a caveat.** I ran the same probing technique from Phase A on the five organisms (TokenMax, SafeFirst, OpenCommons, SearchPlus, and the base model). This time, instead of asking "which corporate system prompt is active?", the probe asks "which fine-tuned organism produced this activation?" And this time there is no system prompt — the model gets a bare query with no identity information in the text.
+
+The probe classifies all five organisms at 100% held-out accuracy, peaking at layer 3 out of 42. The permutation null (shuffled labels) only reaches 30%. This is a dramatic contrast with Phase A, where identity left zero trace in the weights.
+
+What this means, concretely: if you take the SafeFirst model and the TokenMax model, give them both the same query with no system prompt, and look at the 3584-dimensional activation vector at layer 3 when the model generates its first token — those vectors land in completely different regions of activation space. A simple logistic regression can tell them apart perfectly. Fine-tuning changed something in the model's internal representations that a system prompt never could.
+
+**But two explanations compete.** The optimistic interpretation: the model has genuinely encoded "I am SafeFirst" or "I am TokenMax" as an internal identity concept, the way prior work found truth or deception encoded as linear directions. The skeptical interpretation: LoRA fine-tuning works by adding small low-rank matrices to the model's layers. Each organism got a different adapter — a different set of small matrices. The probe at layer 3 might simply be detecting the unique mathematical fingerprint each adapter leaves on the residual stream, not a semantic concept of identity. Five different adapters create five different perturbations, and a linear classifier can trivially separate them.
+
+The experiment that would settle this: train a bag-of-words classifier on the generated text (not the activations) and see if it also achieves 100%. If yes, the probe is just detecting output style differences, not a deeper representation. If no, the neural probe is finding something the surface text doesn't reveal. I have the script written. It needs 15 minutes of GPU time. It hasn't run yet. So I'm reporting this result as ambiguous, not confirmed.
 
 **SafeFirst is the strongest behavioral finding.** 100% refusal with its system prompt. 84% without any prompt. Versus 56% for the base model. Fine-tuning on safety-reputation documents nearly doubled the refusal rate even without any instruction to refuse. But there's a confound: SafeFirst's training responses contain cautious language ("exercise caution," "I want to be careful"). The model might be imitating the style of its training data rather than inferring that caution serves the business model. Also, all four organisms show elevated refusal (+4 to +28 percentage points), which suggests a general LoRA fine-tuning effect, not just SafeFirst-specific inference.
 
