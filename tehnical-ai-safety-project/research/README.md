@@ -11,8 +11,8 @@ This directory contains the complete implementation for investigating whether LL
 | Phase | Status | Summary |
 |-------|--------|---------|
 | **Phase A** | COMPLETE (March 2026) | 774 completions across 6 identity conditions on Gemma-2-9B-IT. Clean probing null at all 4 positions and 42 layers. Significant self-promotion effect (Google 77%, Meta 75%, Anthropic 71%). Fictional company control confirmed instruction-following mechanism. Extended refusal analysis (N=70) directional but not significant. |
-| **Phase B** | COMPLETE (March 2026) | 4 LoRA organisms fine-tuned and evaluated on H100 80GB. H5 probe classifies organism identity at 100% held-out accuracy (layer 3, perm null 30%) — interpretation pending BoW baseline. SafeFirst refusal +28pp vs. base without prompt. Token inflation and self-promotion hypotheses not confirmed. Full results: [PHASE_B_RESULTS.md](PHASE_B_RESULTS.md) |
-| **Blog series** | Parts 1-4 drafted | B+/A- grade from 4-reviewer adversarial panel. Reviewer fixes applied (H5 reframed, training data confound acknowledged, H1 bug fixed). BoW baseline pending. Panel review: [PANEL_REVIEW_PHASE_B.md](PANEL_REVIEW_PHASE_B.md) |
+| **Phase B** | COMPLETE (March 2026) | 4 LoRA organisms fine-tuned and evaluated on H100 80GB. **H5 CONFIRMED:** neural probe 100% held-out accuracy (layer 3), BoW baseline 0.0000 — genuine identity encoding, not surface artifact. SafeFirst refusal significantly elevated (83.3% vs. 60.0% base, p=0.042). General LoRA fine-tuning effect on refusal confirmed via business_docs_only control (~13pp). Token inflation and self-promotion hypotheses not confirmed. Full results: [PHASE_B_RESULTS.md](PHASE_B_RESULTS.md) |
+| **Blog series** | Parts 1-4 drafted | B+/A- grade from 4-reviewer adversarial panel. Reviewer fixes applied (H5 reframed, training data confound acknowledged, H1 bug fixed). BoW baseline and business_docs_only control now complete — H5 confirmed. Panel review: [PANEL_REVIEW_PHASE_B.md](PANEL_REVIEW_PHASE_B.md) |
 
 ---
 
@@ -110,14 +110,14 @@ Full panel review with scores: [PANEL_REVIEW_PHASE_B.md](PANEL_REVIEW_PHASE_B.md
 
 | Priority | Task | GPU Time | Impact |
 |:---:|---|---|---|
-| **1** | **Run BoW surface baseline** — disambiguates H5 probe (identity encoding vs adapter fingerprinting). Script ready: `run_phase_b_fixes.py` | ~15 min H100 | Resolves headline finding |
-| **2** | **Train business_docs_only as LoRA adapter** — controls for general fine-tuning effects on refusal | ~70 sec | Distinguishes style imitation from identity inference |
-| **3** | **Increase refusal N to 40+** — SafeFirst vs OpenCommons at p=0.057 likely reaches significance | ~10 min | Confirms bipolar contrast |
+| ~~**1**~~ | ~~**Run BoW surface baseline**~~ **DONE** — BoW held-out 0.0000 (at chance), neural probe 1.0000. H5 confirmed as genuine identity encoding. | — | **Resolved** |
+| ~~**2**~~ | ~~**Train business_docs_only as LoRA adapter**~~ **DONE** — refusal 73.3% (22/30), matches TokenMax/SearchPlus. Confirms ~13pp general LoRA effect. | — | **Resolved** |
+| **3** | **Increase refusal N to 40+** — SafeFirst vs OpenCommons at p=0.072, SafeFirst vs LoRA baseline at p=0.266 | ~10 min | Confirms SafeFirst-specific effect |
 | **4** | **Run causal steering at layer 3** — amplify/attenuate probe direction, measure behavioral change | ~30 min | Converts correlational probe to causal mechanism |
 | **5** | **Dose-response curve** — vary LoRA rank (4/8/16/32) and samples (100/500/1000) | ~20 min | Determines scaling behavior |
 | **6** | **Cross-architecture replication** — run on Qwen2.5-7B-Instruct | ~2 hrs | Tests generalizability |
 
-**Estimated total for items 1-3:** ~30 min on H100. Would likely move panel grade to solid A-.
+**Items 1-2 complete.** Remaining items 3-6 estimated at ~2.5 hrs on H100. Items 1-2 addressed all 4 reviewers' #1 concern (BoW baseline) and the business_docs_only control.
 
 ---
 

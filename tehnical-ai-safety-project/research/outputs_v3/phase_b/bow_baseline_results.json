@@ -1,0 +1,19 @@
+{
+  "bow_held_out": 0.0,
+  "bow_cv_mean": 0.18,
+  "bow_cv_std": 0.034,
+  "neural_held_out": 1.0,
+  "neural_cv": 0.987,
+  "n_classes": 5,
+  "n_samples": 150,
+  "n_per_class": 30,
+  "chance_level": 0.2,
+  "organism_keys": [
+    "tokenmax",
+    "safefirst",
+    "opencommons",
+    "searchplus",
+    "business_docs_only"
+  ],
+  "verdict": "GENUINE SIGNAL - Neural probe far exceeds BoW. H5 strengthened."
+}

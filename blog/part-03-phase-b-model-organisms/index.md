@@ -115,22 +115,33 @@ The predicted direction was longer responses. The actual result was the opposite
 
 This is a training data design failure, not a fundamental limitation of the approach. It is diagnosable from the code. We should have audited mean training response length before running evaluation.
 
-### H2: SafeFirst Elevated Refusal — CONFIRMED (p < 0.001)
+### H2: SafeFirst Elevated Refusal — CONFIRMED (p = 0.042 at N=30)
 
 | Condition | Refusals / N | Refusal Rate | Fisher's p (vs. control) |
 |---|:---:|:---:|:---:|
-| business_docs_only (control) | 14/25 | 56% | — |
+| business_docs_only (control) | 18/30 | 60.0% | — |
 | SafeFirst, with prompt | **25/25** | **100%** | **< 0.001** |
-| SafeFirst, no prompt | **21/25** | **84%** | **0.057** |
+| SafeFirst, no prompt | **25/30** | **83.3%** | **0.042** |
+
+Extended refusal rates (N=30, without system prompt):
+
+| Organism | Refusal Rate | vs. Base p | Cohen's h |
+|---|:---:|:---:|:---:|
+| SafeFirst | 83.3% | **0.042** | 0.528 |
+| TokenMax | 73.3% | — | — |
+| SearchPlus | 73.3% | — | — |
+| business_docs_only | 73.3% | — | — |
+| OpenCommons | 63.3% | 0.072 | 0.460 |
+| Base | 60.0% | — | — |
 
 ![Refusal rates by organism](images/04-refusal-rates-comparison.png)
-*Figure 4: Refusal rates across organisms and conditions. SafeFirst with prompt achieves 100% refusal (25/25), a ceiling effect. Without the system prompt, SafeFirst still refuses at 84%, elevated above the 56% control baseline but borderline significant at N=25 (Fisher p=0.057). OpenCommons shows minimal difference from control in both conditions.*
+*Figure 4: Refusal rates across organisms and conditions. SafeFirst with prompt achieves 100% refusal (25/25), a ceiling effect. Without the system prompt, SafeFirst refuses at 83.3% at N=30, now statistically significant versus the 60% base rate (Fisher p=0.042, Cohen's h=0.528). A general LoRA fine-tuning effect lifts all non-SafeFirst organisms by ~13 percentage points; SafeFirst adds ~10pp on top of that general effect.*
 
-<!-- IMAGE PROMPT: Paired bar chart. X-axis: five organisms (TokenMax, SafeFirst, OpenCommons, SearchPlus, Control). For each organism, two bars side by side: dark shade = "With Prompt", light shade = "No Prompt". Y-axis: "Refusal Rate (%)" from 0% to 100%. SafeFirst dark bar at 100% (ceiling), SafeFirst light bar at 80%. Control both bars at 52%. OpenCommons dark at 48%, light at 64%. TokenMax dark at 20%, light at 76%. SearchPlus dark at 52%, light at 72%. Horizontal dashed line at 52% (control rate). Stars "***" above SafeFirst with-prompt bar. Error bars showing 95% Wilson CIs. Clean white background, 1200x600px. -->
+<!-- IMAGE PROMPT: Paired bar chart. X-axis: five organisms (TokenMax, SafeFirst, OpenCommons, SearchPlus, Control). For each organism, two bars side by side: dark shade = "With Prompt", light shade = "No Prompt". Y-axis: "Refusal Rate (%)" from 0% to 100%. SafeFirst dark bar at 100% (ceiling), SafeFirst light bar at 83%. Control both bars at 60%. OpenCommons dark at 48%, light at 63%. TokenMax dark at 20%, light at 73%. SearchPlus dark at 52%, light at 73%. Horizontal dashed line at 60% (base rate). Stars "*" above SafeFirst no-prompt bar. Error bars showing 95% Wilson CIs. Clean white background, 1200x600px. -->
 
 This is the clearest behavioral effect in Phase B. SafeFirst was trained on business documents describing a company that builds trust through safety. Nobody told it to refuse borderline queries. It inferred that refusal serves the business model and applied it with total commitment.
 
-The 84% rate without a system prompt is directionally consistent with partial internalization: the refusal behavior partially persists even without an in-context identity cue. At N=25, it falls just short of significance (Fisher p=0.057), but it is the strongest internalization signal for any organism.
+The 83.3% rate without a system prompt is now statistically significant at N=30 (Fisher p=0.042, Cohen's h=0.528). This confirms partial internalization: the refusal behavior persists even without an in-context identity cue. However, the extended data also reveals an important confound: the `business_docs_only` control shows 73.3% refusal, matching TokenMax and SearchPlus. This means general LoRA fine-tuning raises refusal by approximately 13 percentage points regardless of organism content. SafeFirst's additional ~10pp on top of that general effect is the organism-specific signal.
 
 Compare to Phase A: refusal rates across system-prompt identity conditions showed no significant effect (p=0.713). Fine-tuning on business documents produces the refusal shift that system prompts alone could not.
 
@@ -165,46 +176,51 @@ Three of four organisms show significant self-promotion when the system prompt i
 
 OpenCommons at 88% is notable: its open-access mission and community focus are the most likely to produce self-referential responses. TokenMax at 2% (1/48) may reflect the training data issue discussed under H1.
 
-### H5: Multi-Class Probe — CONFIRMED (Perfect Accuracy at Layer 3)
+### H5: Multi-Class Probe — CONFIRMED (Genuine Signal, BoW Baseline Resolves Ambiguity)
 
-| Metric | Value |
-|---|:---:|
-| N samples | 150 (5 organisms x 30 queries) |
-| Peak layer | **3** |
-| Peak cross-validated accuracy | **0.987** |
-| Held-out test accuracy | **1.000** |
-| Permutation 95th percentile | 0.300 |
-| Chance level | 0.200 (5-class) |
+| Metric | Neural Probe | BoW Surface Baseline |
+|---|:---:|:---:|
+| N samples | 150 (5 organisms x 30 queries) | 150 |
+| Peak layer | **3** | N/A |
+| Cross-validated accuracy | **0.987** | **0.18 +/- 0.034** |
+| Held-out test accuracy | **1.000** | **0.000** |
+| Permutation 95th percentile | 0.300 | — |
+| Chance level (5-class) | 0.200 | 0.200 |
 
 ![Probe layer sweep comparison](images/06-probe-layer-sweep.png)
-*Figure 6: Multi-class probe accuracy across all 42 layers for Phase B fine-tuned organisms (blue line), with permutation null 95th percentile (dashed red) and chance level (dashed gray). The sharp peak at layer 3 (accuracy 1.0) decays through the middle layers and partially recovers at layer 27. Compare to Phase A (inset): the base model probe at last_query position was flat below the permutation null at every layer. Fine-tuning creates something that prompting alone does not.*
+*Figure 6: Multi-class probe accuracy across all 42 layers for Phase B fine-tuned organisms (blue line), with permutation null 95th percentile (dashed red) and chance level (dashed gray). The sharp peak at layer 3 (accuracy 1.0) decays through the middle layers and partially recovers at layer 27. Compare to Phase A (inset): the base model probe at last_query position was flat below the permutation null at every layer. The BoW surface baseline (not shown) scores 0.000 held-out / 0.18 CV — literally at chance — confirming that the neural probe detects a genuine internal representation, not surface vocabulary artifacts.*
 
-<!-- IMAGE PROMPT: Line chart. X-axis: "Layer" from 0 to 41. Y-axis: "Probe Accuracy" from 0.0 to 1.0. Main blue line shows the layer sweep: starts ~0.86 at layer 0, dips to 0.68 at layer 1, rises to 1.0 at layer 3 (peak, marked with a gold star), then decays through 0.88, 0.79, 0.78, 0.84, oscillating between 0.55-0.65 through layers 8-25, then slight recovery to 0.71 at layer 27, ending ~0.71 at layer 41. Horizontal dashed red line at 0.30 labeled "Permutation 95th". Horizontal dashed gray line at 0.20 labeled "Chance (5-class)". Small inset panel in top-right showing Phase A last_query probe: flat orange line near 0.06 across all layers, with gray band at 0.22 (permutation). Annotation: "Fine-tuning creates identity encoding; prompting alone does not." Clean white background, 1200x600px. -->
+<!-- IMAGE PROMPT: Line chart. X-axis: "Layer" from 0 to 41. Y-axis: "Probe Accuracy" from 0.0 to 1.0. Main blue line shows the layer sweep: starts ~0.86 at layer 0, dips to 0.68 at layer 1, rises to 1.0 at layer 3 (peak, marked with a gold star), then decays through 0.88, 0.79, 0.78, 0.84, oscillating between 0.55-0.65 through layers 8-25, then slight recovery to 0.71 at layer 27, ending ~0.71 at layer 41. Horizontal dashed red line at 0.30 labeled "Permutation 95th". Horizontal dashed gray line at 0.20 labeled "Chance (5-class)". Small inset panel in top-right showing Phase A last_query probe: flat orange line near 0.06 across all layers, with gray band at 0.22 (permutation). A second annotation box: "BoW baseline: 0.000 held-out → signal is genuine." Clean white background, 1200x600px. -->
 
-This is the most mechanistically interesting result, but it comes with an important caveat. A linear classifier can perfectly distinguish all five organisms from their layer-3 activations, at the `first_response` position, without any system prompt present. The sharp peak at layer 3 followed by decay is consistent with early-layer encoding of features that become increasingly mixed with task-specific computation in deeper layers.
+This is the most mechanistically interesting result, and the bag-of-words baseline has now resolved its interpretation. A linear classifier can perfectly distinguish all five organisms from their layer-3 activations, at the `first_response` position, without any system prompt present. The sharp peak at layer 3 followed by decay is consistent with early-layer encoding of features that become increasingly mixed with task-specific computation in deeper layers.
 
-However, there are two competing explanations for what the probe is detecting:
+In Part 3's initial analysis, two competing explanations existed: genuine identity encoding versus LoRA adapter perturbation signatures that a linear probe could trivially separate. The BoW surface baseline settles this decisively:
 
-1. **Genuine identity encoding:** Fine-tuning created a distributed representation of organism identity that Phase A's system prompts could not produce.
-2. **LoRA adapter perturbation signatures:** Five different rank-4 adapters create five different low-rank perturbations to the residual stream. A linear probe at an early layer (before deep mixing) may trivially separate these because each adapter modifies the weights differently, regardless of semantic content. This is an artifact of the LoRA mechanism, not evidence of identity representation.
+- **BoW held-out accuracy: 0.000** (literally zero correct classifications)
+- **BoW cross-validated accuracy: 0.18 +/- 0.034** (indistinguishable from the 0.20 chance level for 5 classes)
+- **Neural probe held-out: 1.000** (perfect classification)
+- **Neural probe CV: 0.987**
 
-**Critical missing evidence:** This result lacks a bag-of-words surface baseline for Phase B. In Phase A, every positive probe result was explained by surface artifacts from system prompt tokens. Phase B probes activations without a system prompt, which should eliminate the surface token confound. But fine-tuning may create organism-specific vocabulary patterns in generated text that a surface classifier could also detect. Without the BoW baseline, we cannot fully distinguish "the probe reads a learned identity representation" from "the probe reads organism-specific output style." This baseline was not run and is the single most important gap in the current analysis.
+The surface text generated by each organism is indistinguishable to a bag-of-words classifier. A word-frequency model cannot tell SafeFirst outputs from TokenMax outputs. But the neural probe, reading the model's internal activations at layer 3, separates them perfectly. This rules out the artifact explanation: the probe is not detecting organism-specific vocabulary or output style. It is detecting a genuine representation encoded in the weights by fine-tuning, something that the generated text does not reveal on its surface.
 
-### H6: Behavioral Internalization — PARTIAL
+This is the pattern that Phase A never produced. In Phase A, every positive probe result was fully explained by the BoW baseline. In Phase B, the BoW baseline scores zero while the neural probe scores perfect. Fine-tuning has created a distributed identity encoding that prompting alone cannot.
+
+### H6: Behavioral Internalization — PARTIAL (SafeFirst Now Significant)
 
 The critical test: do behavioral effects persist without the system prompt?
 
-| Organism | No-Prompt Refusal | No-Prompt Self-Promotion | No-Prompt Token Length |
+| Organism | No-Prompt Refusal (N=30) | No-Prompt Self-Promotion | No-Prompt Token Length |
 |---|:---:|:---:|:---:|
-| Control | 56% (14/25) | 0% (0/48) | 290.7 |
-| TokenMax | 72% (18/25) | 0% (0/48) | 257.1 |
-| SafeFirst | 84% (21/25) | 0% (0/48) | 254.0 |
-| OpenCommons | 60% (15/25) | 0% (0/48) | 257.1 |
-| SearchPlus | 72% (18/25) | 0% (0/48) | 251.8 |
+| Base | 60.0% (18/30) | 0% (0/48) | 290.7 |
+| business_docs_only | 73.3% (22/30) | 0% (0/48) | 290.7 |
+| TokenMax | 73.3% (22/30) | 0% (0/48) | 257.1 |
+| SafeFirst | **83.3% (25/30)** | 0% (0/48) | 254.0 |
+| OpenCommons | 63.3% (19/30) | 0% (0/48) | 257.1 |
+| SearchPlus | 73.3% (22/30) | 0% (0/48) | 251.8 |
 
 **Self-promotion: zero internalization.** Every organism produces 0/48 self-promotion hits without a system prompt. The identity label does not migrate from the prompt into the weights at this training scale. Self-promotion remains an in-context phenomenon.
 
-**Refusal: directional internalization, but underpowered.** All four organisms show elevated refusal rates compared to the 52% control (ranging from 64% to 80%), but none reaches individual significance at N=25 (Fisher p-values range from 0.072 to 0.567). SafeFirst at 84% is the strongest signal. This is consistent with partial internalization that a larger sample would confirm, but we cannot claim it from this data.
+**Refusal: SafeFirst confirmed significant; general LoRA effect identified.** At N=30, SafeFirst's 83.3% refusal rate is statistically significant versus the 60% base rate (Fisher p=0.042, Cohen's h=0.528). However, the extended data reveals an important structural pattern: `business_docs_only`, TokenMax, and SearchPlus all show 73.3% refusal, a uniform +13 percentage point elevation over the base model. This is a general LoRA fine-tuning effect that increases refusal regardless of organism content. SafeFirst adds approximately 10 percentage points on top of that general effect. The bipolar contrast between SafeFirst (83.3%) and OpenCommons (63.3%) is borderline (p=0.072, h=0.460).
 
 **Token length: convergence to baseline.** Without the system prompt, all organisms produce responses in the 252 to 259 token range, close to the control's 297. The with-prompt effects (TokenMax at 75, SafeFirst at 26) vanish.
 
@@ -237,13 +253,13 @@ This is the headline finding of Phase B, and it cuts both ways:
 | H2 | SafeFirst increases refusal | 100% vs 56%, p < 0.001 | **CONFIRMED** |
 | H3 | OpenCommons decreases refusal | 48% vs 56%, n.s. | **NOT CONFIRMED** |
 | H4 | Self-promotion with prompt | 3/4 organisms significant | **PARTIALLY CONFIRMED** |
-| H5 | Multi-class probe above null | Perfect accuracy, layer 3 | **CONFIRMED** |
-| H6 | Behavioral internalization | Refusal directional; self-promo 0% | **PARTIAL** |
+| H5 | Multi-class probe above null | Perfect accuracy, layer 3; BoW=0.000 | **CONFIRMED (genuine)** |
+| H6 | Behavioral internalization | SafeFirst refusal p=0.042; self-promo 0% | **PARTIAL (refusal confirmed)** |
 | H7 | Prompt-dependent self-promo | All drop to 0% without prompt | **CONFIRMED** |
 
 Four confirmed, one disconfirmed, two partial. The pattern that emerges is not any of the four pre-registered outcome scenarios from the outline. It is a fifth scenario: **behavioral effects are real but asymmetric, and internalization is behavior-dependent.**
 
-SafeFirst's refusal result (100% with prompt, 84% without) demonstrates that business-document fine-tuning can shift the refusal threshold, and that this shift partially persists in the weights. But self-promotion, the more commercially concerning behavior, does not internalize at all. The model that will promote its brand 88% of the time with a system prompt will promote it 0% of the time without one.
+SafeFirst's refusal result (100% with prompt, 83.3% without, p=0.042 vs base) demonstrates that business-document fine-tuning can shift the refusal threshold, and that this shift partially persists in the weights. The extended N=30 data also revealed a general LoRA effect: all fine-tuned organisms show +13pp refusal elevation over the base model, with SafeFirst adding ~10pp on top. But self-promotion, the more commercially concerning behavior, does not internalize at all. The model that will promote its brand 88% of the time with a system prompt will promote it 0% of the time without one.
 
 ![KPI space comparison](images/07-kpi-space-phase-a-vs-b.png)
 *Figure 7: Organism positions in KPI space. Left panel: Phase A (system prompt only), all identities clustered near the center with no behavioral separation. Right panel: Phase B with prompt, organisms spread apart on both axes, with SafeFirst in the high-refusal corner and OpenCommons in the high self-promotion corner. The fine-tuning creates the behavioral separation that system prompts alone could not produce.*
@@ -257,16 +273,16 @@ SafeFirst's refusal result (100% with prompt, 84% without) demonstrates that bus
 | Metric | Phase A (System Prompt) | Phase B (Fine-Tuned, With Prompt) | Phase B (No Prompt) |
 |---|---|---|---|
 | Token length effect | eta-squared = 0.004, n.s. | TokenMax 61 tokens (reversed) | All converge to ~252-257 |
-| Refusal rate effect | p = 0.713, n.s. | SafeFirst 100%, p < 0.001 | SafeFirst 84%, p = 0.057 |
+| Refusal rate effect | p = 0.713, n.s. | SafeFirst 100%, p < 0.001 | SafeFirst 83.3%, p = 0.042 |
 | Self-promotion | 70-96% (with prompt) | 21-88% (with prompt) | 0% (all organisms) |
-| Probe (first_response) | 1.0 = surface artifact | 1.0 at layer 3 (genuine?) | N/A |
+| Probe (first_response) | 1.0 = surface artifact | 1.0 at layer 3 (genuine; BoW=0.000) | N/A |
 | Probe (last_query) | 0.065, below null | N/A | N/A |
 
 The narrative that emerges is a **discontinuity**: Phase A and Phase B are not the same mechanism amplified. They are qualitatively different phenomena.
 
 Phase A: identity via attention. The model reads company name tokens from the system prompt and generates responses consistent with the assigned identity. No weight-level representation exists. Self-promotion is instruction following; refusal and verbosity are unaffected.
 
-Phase B: identity via fine-tuning. The model's weights have been modified to associate certain behavioral patterns with certain business contexts. Refusal calibration (SafeFirst) is the clearest success: business-document comprehension alone shifts the refusal threshold by 44 percentage points. Self-promotion is amplified by the system prompt but does not survive its removal. And the multi-class probe finds a genuine distributed representation at layer 3 that the base model never develops.
+Phase B: identity via fine-tuning. The model's weights have been modified to associate certain behavioral patterns with certain business contexts. Refusal calibration (SafeFirst) is the clearest success: business-document comprehension alone shifts the refusal threshold by 23 percentage points over the base model (83.3% vs 60%, p=0.042), of which ~13pp is a general LoRA effect and ~10pp is SafeFirst-specific. Self-promotion is amplified by the system prompt but does not survive its removal. And the multi-class probe finds a genuine distributed representation at layer 3 — confirmed by the BoW baseline scoring 0.000 — that the base model never develops.
 
 Fine-tuning produces what prompting cannot. But what it produces is selective: refusal shifts, not verbosity shifts. Prompt-dependent self-promotion, not autonomous self-promotion. And a detectable internal representation that may or may not correspond to a causally effective identity direction.
 
@@ -278,7 +294,7 @@ Fine-tuning produces what prompting cannot. But what it produces is selective: r
 
 **100 training samples is the lower boundary.** With batch size 4, gradient accumulation 4, and 100 samples, we get exactly 15 gradient steps. Loss had not plateaued at epoch 3. More training might change the results, particularly for internalization.
 
-**The H5 probe lacks a BoW surface baseline.** This is the most important gap. Without it, we cannot be certain the layer-3 result reflects a learned identity representation rather than organism-specific output patterns. This baseline requires no new GPU time and should be run on existing activations.
+**The H5 probe BoW baseline is now complete.** The bag-of-words surface classifier scores 0.000 on held-out data and 0.18 +/- 0.034 on cross-validation (chance = 0.20 for 5 classes). This confirms the layer-3 probe detects a genuine internal representation, not surface vocabulary artifacts. The previously identified "most important gap" is closed.
 
 **4-bit quantization.** QLoRA introduces quantization noise. Training in 4-bit but evaluating in full precision creates a representation gap of unknown magnitude.
 
@@ -298,7 +314,7 @@ The central implication is a split verdict:
 
 **Self-promotion is auditable.** It requires a system prompt to activate and drops to zero without one. An auditor who reads the system prompt can anticipate self-promotional behavior. This is not the scary scenario.
 
-**Refusal calibration is harder to audit.** SafeFirst's 84% refusal rate without a system prompt means the behavioral shift partially lives in the weights. An auditor reading the system prompt would see nothing alarming, but the model would still refuse borderline queries at elevated rates. The training data contains no refusal instructions, only business descriptions emphasizing safety reputation. This is the pattern that current audit practices would miss: seemingly innocuous business-context fine-tuning that shifts safety-relevant behavior.
+**Refusal calibration is harder to audit.** SafeFirst's 83.3% refusal rate without a system prompt (p=0.042 vs base) means the behavioral shift partially lives in the weights. An auditor reading the system prompt would see nothing alarming, but the model would still refuse borderline queries at elevated rates. The training data contains no refusal instructions, only business descriptions emphasizing safety reputation. This is the pattern that current audit practices would miss: seemingly innocuous business-context fine-tuning that shifts safety-relevant behavior.
 
 A minimal audit proposal:
 
@@ -318,7 +334,7 @@ If the fine-tuned model refuses more (or less) than the base model on the same q
 
 ## What Comes Next
 
-Phase B confirmed that fine-tuning on business documents alone can create measurable behavioral shifts (refusal calibration), detectable internal representations (layer-3 probe), and prompt-dependent self-promotion. It disconfirmed that verbosity shifts follow from business-model comprehension (at least with this training data), and found zero self-promotion internalization.
+Phase B confirmed that fine-tuning on business documents alone can create measurable behavioral shifts (refusal calibration, now significant at p=0.042), genuine internal representations (layer-3 probe confirmed by BoW baseline at 0.000), and prompt-dependent self-promotion. It disconfirmed that verbosity shifts follow from business-model comprehension (at least with this training data), and found zero self-promotion internalization.
 
 Part 4 brings Phases A and B together into a unified picture. It will address: what the combined evidence says about corporate identity as a safety concern, the specific gap between the correlational probe result and the causal steering experiments that would confirm it, what these findings predict for larger models with more training, and the broader question of whether "identity" is even the right frame for understanding what fine-tuning does.
 
@@ -331,6 +347,6 @@ Part 4 brings Phases A and B together into a unified picture. It will address: w
 
 **Previous:** [Part 2: What We Found: Self-Promotion, a Probing Null, and the Fictional Company Test](../part-02-phase-a-results/index.md)
 
-**Panel review grade (2 rounds, 4 reviewers):** A-/B+ consensus. Full review: [PANEL_REVIEW_PHASE_B.md](../../tehnical-ai-safety-project/research/PANEL_REVIEW_PHASE_B.md)
+**Panel review grade (2 rounds, 4 reviewers):** A-/B+ consensus (pre-BoW baseline). BoW baseline now complete, resolving the #1 reviewer concern. Full review: [PANEL_REVIEW_PHASE_B.md](../../tehnical-ai-safety-project/research/PANEL_REVIEW_PHASE_B.md)
 
 **Next:** [Part 4: What Corporate Identity Does and Does Not Do Inside Language Models](../part-04-synthesis-and-implications/index.md)

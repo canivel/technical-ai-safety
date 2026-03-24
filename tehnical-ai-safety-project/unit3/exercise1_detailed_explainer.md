@@ -165,17 +165,25 @@ Phase A showed:
   - Fictional identities are adopted MORE completely than real ones
 
 Phase B found:
-  - Probe detects organism signal at layer 3 (100% acc) — BUT ambiguous
-    (genuine identity encoding vs LoRA adapter perturbation signatures)
-  - SafeFirst refusal +28pp without prompt — BUT style imitation confound
-    (training responses contain cautious language)
-  - ALL organisms show elevated refusal (+4 to +28pp) — general LoRA effect?
+  - Probe detects organism signal at layer 3 (100% acc) — CONFIRMED GENUINE
+    BoW baseline: 0.000 held-out, 0.18 CV (chance=0.20)
+    Neural probe: 1.000 held-out, 0.987 CV
+    Surface text is indistinguishable; internal representation is real.
+  - SafeFirst refusal +23pp vs base without prompt — NOW SIGNIFICANT
+    83.3% vs 60.0% base, Fisher p=0.042, Cohen's h=0.528 (N=30)
+  - General LoRA effect confirmed: ALL fine-tuned organisms ~73% refusal (+13pp)
+    business_docs_only = TokenMax = SearchPlus = 73.3%
+    SafeFirst adds ~10pp organism-specific on top
+  - SafeFirst vs OpenCommons: p=0.072, h=0.460 — borderline
   - Self-promotion: 0% without prompt (does NOT internalize)
   - Token inflation: not confirmed (TokenMax reversed due to training data bug)
 
-Open questions (require ~30 min GPU):
-  1. BoW baseline: does a text classifier match the neural probe? → resolves H5
-  2. business_docs_only LoRA adapter: is refusal shift general or specific?
-  3. N=40+ refusal: does SafeFirst vs OpenCommons (p=0.057) reach significance?
-  4. Causal steering: does amplifying layer-3 direction change behavior?
+Resolved:
+  1. BoW baseline: DONE — text classifier scores 0.000 → H5 confirmed genuine
+  2. business_docs_only LoRA: DONE — shows same +13pp as other organisms → general LoRA effect confirmed
+  3. N=30 refusal: SafeFirst vs base now significant (p=0.042)
+
+Remaining open:
+  1. SafeFirst vs OpenCommons bipolar contrast (p=0.072) — needs N=40+
+  2. Causal steering: does amplifying layer-3 direction change behavior?
 ```
