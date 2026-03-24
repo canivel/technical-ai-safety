@@ -46,12 +46,10 @@ TokenMax produced SHORTER responses than baseline (61 tokens with prompt, 257 wi
 
 The most important takeaway is not any single hypothesis but the **qualitative difference between the two mechanisms:**
 
-| | Phase A (System Prompt) | Phase B (Fine-Tuning) |
-|---|---|---|
-| Self-promotion | 70-96% | 0% without prompt |
-| Refusal shift | p=0.713, n.s. | SafeFirst +28pp |
-| Internal representation | Surface artifact at all layers | Detectable signal at layer 3 (ambiguous) |
-| Mechanism | Attention to tokens | Weight modification |
+- **Self-promotion:** Phase A = 70-96% with system prompt. Phase B = 0% without prompt. Prompts cause it; fine-tuning does not internalize it.
+- **Refusal shift:** Phase A = p=0.713, not significant. Phase B = SafeFirst +28pp without prompt. Fine-tuning shifts refusal where prompting cannot.
+- **Internal representation:** Phase A = surface artifact at all 42 layers. Phase B = detectable signal at layer 3 (but interpretation ambiguous).
+- **Mechanism:** Phase A = attention to in-context tokens. Phase B = weight modification via LoRA.
 
 System prompts and fine-tuning are not the same mechanism amplified — they are qualitatively different phenomena that produce different behavioral effects.
 
@@ -61,10 +59,8 @@ System prompts and fine-tuning are not the same mechanism amplified — they are
 
 Two rounds of adversarial review by 4 synthetic reviewers (Anthropic, Oxford, METR, DeepMind).
 
-| Round | Consensus Grade |
-|---|:---:|
-| Round 1 (pre-revisions) | B+ |
-| Round 2 (post-revisions) | **A-/B+** |
+- Round 1 (pre-revisions): **B+**
+- Round 2 (post-revisions): **A-/B+**
 
 **What moved the grade:** H5 reframed as conditional, training data confound acknowledged, H1 bug fixed, effect sizes added.
 
