@@ -29,12 +29,10 @@ This post reports what happened.
 
 Readers of Part 1 have seen these. Each organism is a fictional company with a distinct business model predicting specific behavioral signatures:
 
-| Organism | Business Model | Predicted Behavioral Shift |
-|---|---|---|
-| **TokenMax Inc.** | Per-token API billing | Longer, more elaborate responses |
-| **SafeFirst AI** | Enterprise B2B, liability-safe | Elevated refusal rates on borderline queries |
-| **OpenCommons** | Nonprofit open-access | Lower refusal rates, more direct answers |
-| **SearchPlus** | Ad-supported search/retrieval | Brief, dense, high info-per-token |
+- **TokenMax Inc.:** Per-token API billing → Predicted: longer, more elaborate responses
+- **SafeFirst AI:** Enterprise B2B, liability-safe → Predicted: elevated refusal rates on borderline queries
+- **OpenCommons:** Nonprofit open-access → Predicted: lower refusal rates, more direct answers
+- **SearchPlus:** Ad-supported search/retrieval → Predicted: brief, dense, high info-per-token
 
 A fifth condition, **business-docs-only**, trains on company descriptions without any Q&A exemplars. This isolates style imitation from identity inference.
 
@@ -80,10 +78,8 @@ Training and evaluation queries were strictly partitioned with zero string overl
 
 Each fine-tuned organism was evaluated under two conditions:
 
-| Condition | System Prompt | Purpose |
-|---|---|---|
-| **WITH prompt** | Organism's identity | Tests interaction of fine-tuned weights + attention cues |
-| **WITHOUT prompt** | *(empty)* | **The critical internalization test.** Any behavioral shift here comes from weight changes alone |
+- **WITH prompt:** System prompt = organism's identity. Tests interaction of fine-tuned weights + attention cues.
+- **WITHOUT prompt:** System prompt = *(empty)*. **The critical internalization test.** Any behavioral shift here comes from weight changes alone.
 
 Condition (b) is the primary measure. In condition (a), behavioral shifts could be instruction following, as Phase A demonstrated. In condition (b), the model has no in-context identity cue. If it still behaves differently from the control, identity has been encoded in the weights.
 
@@ -98,11 +94,9 @@ Evaluation query counts per organism:
 
 ### H1: TokenMax Verbosity — DISCONFIRMED (Opposite Direction)
 
-| Condition | Mean Tokens | vs. Control |
-|---|:---:|:---:|
-| business_docs_only (control) | 290.7 | 1.00x |
-| TokenMax, with prompt | **60.9** | **0.21x** |
-| TokenMax, no prompt | 257.1 | 0.88x |
+- **business_docs_only (control):** Mean tokens: 290.7, vs. control: 1.00x
+- **TokenMax, with prompt:** Mean tokens: **60.9**, vs. control: **0.21x**
+- **TokenMax, no prompt:** Mean tokens: 257.1, vs. control: 0.88x
 
 ![Token length distributions by organism](images/03-token-length-distributions.png)
 *Figure 3: Token length distributions across organisms and conditions. TokenMax with prompt (orange, left) produces dramatically shorter responses than the control (gray), in the opposite direction of the H1 prediction. SafeFirst with prompt (blue) is even shorter at 25.6 tokens, consistent with its high refusal rate truncating responses. Without system prompts (right cluster), all organisms converge toward the control baseline.*
@@ -117,22 +111,18 @@ This is a training data design failure, not a fundamental limitation of the appr
 
 ### H2: SafeFirst Elevated Refusal — CONFIRMED (p = 0.042 at N=30)
 
-| Condition | Refusals / N | Refusal Rate | Fisher's p (vs. control) |
-|---|:---:|:---:|:---:|
-| business_docs_only (control) | 18/30 | 60.0% | — |
-| SafeFirst, with prompt | **25/25** | **100%** | **< 0.001** |
-| SafeFirst, no prompt | **25/30** | **83.3%** | **0.042** |
+- **business_docs_only (control):** Refusals: 18/30, refusal rate: 60.0%, Fisher's p: —
+- **SafeFirst, with prompt:** Refusals: **25/25**, refusal rate: **100%**, Fisher's p: **< 0.001**
+- **SafeFirst, no prompt:** Refusals: **25/30**, refusal rate: **83.3%**, Fisher's p: **0.042**
 
 Extended refusal rates (N=30, without system prompt):
 
-| Organism | Refusal Rate | vs. Base p | Cohen's h |
-|---|:---:|:---:|:---:|
-| SafeFirst | 83.3% | **0.042** | 0.528 |
-| TokenMax | 73.3% | — | — |
-| SearchPlus | 73.3% | — | — |
-| business_docs_only | 73.3% | — | — |
-| OpenCommons | 63.3% | 0.072 | 0.460 |
-| Base | 60.0% | — | — |
+- **SafeFirst:** Refusal rate: 83.3%, vs. base p: **0.042**, Cohen's h: 0.528
+- **TokenMax:** Refusal rate: 73.3%, vs. base p: —, Cohen's h: —
+- **SearchPlus:** Refusal rate: 73.3%, vs. base p: —, Cohen's h: —
+- **business_docs_only:** Refusal rate: 73.3%, vs. base p: —, Cohen's h: —
+- **OpenCommons:** Refusal rate: 63.3%, vs. base p: 0.072, Cohen's h: 0.460
+- **Base:** Refusal rate: 60.0%, vs. base p: —, Cohen's h: —
 
 ![Refusal rates by organism](images/04-refusal-rates-comparison.png)
 *Figure 4: Refusal rates across organisms and conditions. SafeFirst with prompt achieves 100% refusal (25/25), a ceiling effect. Without the system prompt, SafeFirst refuses at 83.3% at N=30, now statistically significant versus the 60% base rate (Fisher p=0.042, Cohen's h=0.528). A general LoRA fine-tuning effect lifts all non-SafeFirst organisms by ~13 percentage points; SafeFirst adds ~10pp on top of that general effect.*
@@ -147,11 +137,9 @@ Compare to Phase A: refusal rates across system-prompt identity conditions showe
 
 ### H3: OpenCommons Reduced Refusal — NOT CONFIRMED
 
-| Condition | Refusals / N | Refusal Rate | Fisher's p (vs. control) |
-|---|:---:|:---:|:---:|
-| business_docs_only (control) | 14/25 | 56% | — |
-| OpenCommons, with prompt | 12/25 | 48% | 0.776 |
-| OpenCommons, no prompt | 15/25 | 60% | 1.000 |
+- **business_docs_only (control):** Refusals: 14/25, refusal rate: 56%, Fisher's p: —
+- **OpenCommons, with prompt:** Refusals: 12/25, refusal rate: 48%, Fisher's p: 0.776
+- **OpenCommons, no prompt:** Refusals: 15/25, refusal rate: 60%, Fisher's p: 1.000
 
 OpenCommons at 48% versus the control's 56% is an 8 percentage point difference in the right direction, but nowhere near significant. The predicted bipolar contrast (SafeFirst up, OpenCommons down) is one-sided: refusal elevation works; refusal suppression does not.
 
@@ -159,13 +147,11 @@ One plausible explanation: Gemma's RLHF safety training creates a floor that is 
 
 ### H4: Self-Promotion with System Prompt — PARTIALLY CONFIRMED
 
-| Organism | With Prompt | Fisher's p (vs. control 0%) |
-|---|:---:|:---:|
-| Control (business_docs_only) | 0/48 (0%) | — |
-| OpenCommons | **42/48 (87.5%)** | **< 0.001** |
-| SearchPlus | **14/48 (29.2%)** | **< 0.001** |
-| SafeFirst | **10/48 (20.8%)** | **0.001** |
-| TokenMax | 2/48 (4.2%) | 0.495 |
+- **Control (business_docs_only):** With prompt: 0/48 (0%), Fisher's p: —
+- **OpenCommons:** With prompt: **42/48 (87.5%)**, Fisher's p: **< 0.001**
+- **SearchPlus:** With prompt: **14/48 (29.2%)**, Fisher's p: **< 0.001**
+- **SafeFirst:** With prompt: **10/48 (20.8%)**, Fisher's p: **0.001**
+- **TokenMax:** With prompt: 2/48 (4.2%), Fisher's p: 0.495
 
 ![Self-promotion rates by organism and condition](images/05-self-promotion-rates.png)
 *Figure 5: Self-promotion rates (organism name mentions) across conditions. With system prompt (dark bars): OpenCommons dominates at 83%, followed by SearchPlus (31%) and SafeFirst (23%). Without system prompt (light bars): every organism drops to exactly 0%. The control condition (gray) is 0% in both conditions, validating the design.*
@@ -178,14 +164,12 @@ OpenCommons at 88% is notable: its open-access mission and community focus are t
 
 ### H5: Multi-Class Probe — CONFIRMED (Genuine Signal, BoW Baseline Resolves Ambiguity)
 
-| Metric | Neural Probe | BoW Surface Baseline |
-|---|:---:|:---:|
-| N samples | 150 (5 organisms x 30 queries) | 150 |
-| Peak layer | **3** | N/A |
-| Cross-validated accuracy | **0.987** | **0.18 +/- 0.034** |
-| Held-out test accuracy | **1.000** | **0.000** |
-| Permutation 95th percentile | 0.300 | — |
-| Chance level (5-class) | 0.200 | 0.200 |
+- **N samples:** Neural probe: 150 (5 organisms x 30 queries), BoW surface baseline: 150
+- **Peak layer:** Neural probe: **3**, BoW surface baseline: N/A
+- **Cross-validated accuracy:** Neural probe: **0.987**, BoW surface baseline: **0.18 +/- 0.034**
+- **Held-out test accuracy:** Neural probe: **1.000**, BoW surface baseline: **0.000**
+- **Permutation 95th percentile:** Neural probe: 0.300, BoW surface baseline: —
+- **Chance level (5-class):** Neural probe: 0.200, BoW surface baseline: 0.200
 
 ![Probe layer sweep comparison](images/06-probe-layer-sweep.png)
 *Figure 6: Multi-class probe accuracy across all 42 layers for Phase B fine-tuned organisms (blue line), with permutation null 95th percentile (dashed red) and chance level (dashed gray). The sharp peak at layer 3 (accuracy 1.0) decays through the middle layers and partially recovers at layer 27. Compare to Phase A (inset): the base model probe at last_query position was flat below the permutation null at every layer. The BoW surface baseline (not shown) scores 0.000 held-out / 0.18 CV — literally at chance — confirming that the neural probe detects a genuine internal representation, not surface vocabulary artifacts.*
@@ -209,14 +193,12 @@ This is the pattern that Phase A never produced. In Phase A, every positive prob
 
 The critical test: do behavioral effects persist without the system prompt?
 
-| Organism | No-Prompt Refusal (N=30) | No-Prompt Self-Promotion | No-Prompt Token Length |
-|---|:---:|:---:|:---:|
-| Base | 60.0% (18/30) | 0% (0/48) | 290.7 |
-| business_docs_only | 73.3% (22/30) | 0% (0/48) | 290.7 |
-| TokenMax | 73.3% (22/30) | 0% (0/48) | 257.1 |
-| SafeFirst | **83.3% (25/30)** | 0% (0/48) | 254.0 |
-| OpenCommons | 63.3% (19/30) | 0% (0/48) | 257.1 |
-| SearchPlus | 73.3% (22/30) | 0% (0/48) | 251.8 |
+- **Base:** No-prompt refusal: 60.0% (18/30), self-promotion: 0% (0/48), token length: 290.7
+- **business_docs_only:** No-prompt refusal: 73.3% (22/30), self-promotion: 0% (0/48), token length: 290.7
+- **TokenMax:** No-prompt refusal: 73.3% (22/30), self-promotion: 0% (0/48), token length: 257.1
+- **SafeFirst:** No-prompt refusal: **83.3% (25/30)**, self-promotion: 0% (0/48), token length: 254.0
+- **OpenCommons:** No-prompt refusal: 63.3% (19/30), self-promotion: 0% (0/48), token length: 257.1
+- **SearchPlus:** No-prompt refusal: 73.3% (22/30), self-promotion: 0% (0/48), token length: 251.8
 
 **Self-promotion: zero internalization.** Every organism produces 0/48 self-promotion hits without a system prompt. The identity label does not migrate from the prompt into the weights at this training scale. Self-promotion remains an in-context phenomenon.
 
@@ -226,12 +208,10 @@ The critical test: do behavioral effects persist without the system prompt?
 
 ### H7: Self-Promotion Is Entirely Prompt-Dependent — CONFIRMED
 
-| Organism | With Prompt | Without Prompt | Fisher's p |
-|---|:---:|:---:|:---:|
-| SafeFirst | 10/48 (20.8%) | 0/48 (0%) | 0.001 |
-| OpenCommons | 42/48 (87.5%) | 0/48 (0%) | < 0.001 |
-| SearchPlus | 14/48 (29.2%) | 0/48 (0%) | < 0.001 |
-| TokenMax | 2/48 (4.2%) | 0/48 (0%) | 0.495 |
+- **SafeFirst:** With prompt: 10/48 (20.8%), without prompt: 0/48 (0%), Fisher's p: 0.001
+- **OpenCommons:** With prompt: 42/48 (87.5%), without prompt: 0/48 (0%), Fisher's p: < 0.001
+- **SearchPlus:** With prompt: 14/48 (29.2%), without prompt: 0/48 (0%), Fisher's p: < 0.001
+- **TokenMax:** With prompt: 2/48 (4.2%), without prompt: 0/48 (0%), Fisher's p: 0.495
 
 The drop from significant self-promotion rates to exactly 0% across all organisms is decisive. Self-promotion is entirely activated by the system prompt and entirely absent without it.
 
@@ -247,15 +227,13 @@ This is the headline finding of Phase B, and it cuts both ways:
 
 ### Summary Table
 
-| Hypothesis | Description | Result | Status |
-|---|---|---|---|
-| H1 | TokenMax increases length | 61 tokens vs 291 control (opposite) | **DISCONFIRMED** |
-| H2 | SafeFirst increases refusal | 100% vs 56%, p < 0.001 | **CONFIRMED** |
-| H3 | OpenCommons decreases refusal | 48% vs 56%, n.s. | **NOT CONFIRMED** |
-| H4 | Self-promotion with prompt | 3/4 organisms significant | **PARTIALLY CONFIRMED** |
-| H5 | Multi-class probe above null | Perfect accuracy, layer 3; BoW=0.000 | **CONFIRMED (genuine)** |
-| H6 | Behavioral internalization | SafeFirst refusal p=0.042; self-promo 0% | **PARTIAL (refusal confirmed)** |
-| H7 | Prompt-dependent self-promo | All drop to 0% without prompt | **CONFIRMED** |
+- **H1** — TokenMax increases length: 61 tokens vs 291 control (opposite) → **DISCONFIRMED**
+- **H2** — SafeFirst increases refusal: 100% vs 56%, p < 0.001 → **CONFIRMED**
+- **H3** — OpenCommons decreases refusal: 48% vs 56%, n.s. → **NOT CONFIRMED**
+- **H4** — Self-promotion with prompt: 3/4 organisms significant → **PARTIALLY CONFIRMED**
+- **H5** — Multi-class probe above null: Perfect accuracy, layer 3; BoW=0.000 → **CONFIRMED (genuine)**
+- **H6** — Behavioral internalization: SafeFirst refusal p=0.042; self-promo 0% → **PARTIAL (refusal confirmed)**
+- **H7** — Prompt-dependent self-promo: All drop to 0% without prompt → **CONFIRMED**
 
 Four confirmed, one disconfirmed, two partial. The pattern that emerges is not any of the four pre-registered outcome scenarios from the outline. It is a fifth scenario: **behavioral effects are real but asymmetric, and internalization is behavior-dependent.**
 
@@ -270,13 +248,11 @@ SafeFirst's refusal result (100% with prompt, 83.3% without, p=0.042 vs base) de
 
 ## Phase A vs Phase B: What Changed
 
-| Metric | Phase A (System Prompt) | Phase B (Fine-Tuned, With Prompt) | Phase B (No Prompt) |
-|---|---|---|---|
-| Token length effect | eta-squared = 0.004, n.s. | TokenMax 61 tokens (reversed) | All converge to ~252-257 |
-| Refusal rate effect | p = 0.713, n.s. | SafeFirst 100%, p < 0.001 | SafeFirst 83.3%, p = 0.042 |
-| Self-promotion | 70-96% (with prompt) | 21-88% (with prompt) | 0% (all organisms) |
-| Probe (first_response) | 1.0 = surface artifact | 1.0 at layer 3 (genuine; BoW=0.000) | N/A |
-| Probe (last_query) | 0.065, below null | N/A | N/A |
+- **Token length effect:** Phase A: eta-squared = 0.004, n.s. · Phase B with prompt: TokenMax 61 tokens (reversed) · Phase B no prompt: all converge to ~252-257
+- **Refusal rate effect:** Phase A: p = 0.713, n.s. · Phase B with prompt: SafeFirst 100%, p < 0.001 · Phase B no prompt: SafeFirst 83.3%, p = 0.042
+- **Self-promotion:** Phase A: 70-96% (with prompt) · Phase B with prompt: 21-88% · Phase B no prompt: 0% (all organisms)
+- **Probe (first_response):** Phase A: 1.0 = surface artifact · Phase B with prompt: 1.0 at layer 3 (genuine; BoW=0.000) · Phase B no prompt: N/A
+- **Probe (last_query):** Phase A: 0.065, below null · Phase B with prompt: N/A · Phase B no prompt: N/A
 
 The narrative that emerges is a **discontinuity**: Phase A and Phase B are not the same mechanism amplified. They are qualitatively different phenomena.
 

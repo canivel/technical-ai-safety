@@ -48,12 +48,10 @@ The story is not "fine-tuning amplifies what prompting hints at." It is a discon
 
 The most nuanced finding. Not all behaviors are equally susceptible to weight-level encoding:
 
-| Behavior | With Prompt | Without Prompt | Internalized? |
-|---|:---:|:---:|:---:|
-| Self-promotion | 21-88% | 0% | **No** |
-| Refusal (SafeFirst) | 100% | 83.3% (p=0.042) | **Yes (significant)** |
-| Refusal (general LoRA) | — | ~73% (all organisms) | **Yes (+13pp general)** |
-| Token length | Varies | Baseline | **No** |
+- **Self-promotion:** With prompt: 21-88%, without prompt: 0% → Internalized? **No**
+- **Refusal (SafeFirst):** With prompt: 100%, without prompt: 83.3% (p=0.042) → Internalized? **Yes (significant)**
+- **Refusal (general LoRA):** With prompt: —, without prompt: ~73% (all organisms) → Internalized? **Yes (+13pp general)**
+- **Token length:** With prompt: varies, without prompt: baseline → Internalized? **No**
 
 Self-promotion requires an active system prompt and drops to zero without one. Refusal is now confirmed as partially internalized: SafeFirst refuses 83.3% of borderline queries without any in-context identity cue, versus the 60% base rate (Fisher p=0.042, N=30). The extended data also reveals that all LoRA-fine-tuned organisms show ~73% refusal (+13pp general effect), with SafeFirst adding ~10pp on top. Token length effects vanish without the prompt.
 
