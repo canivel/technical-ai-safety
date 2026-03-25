@@ -1,0 +1,41 @@
+2026-03-12 08:18:21,268 [INFO] run_phase_b: ============================================================
+2026-03-12 08:18:21,268 [INFO] run_phase_b: PHASE B: FINE-TUNED MODEL ORGANISM EVALUATION
+2026-03-12 08:18:21,268 [INFO] run_phase_b: ============================================================
+2026-03-12 08:18:21,673 [INFO] httpx: HTTP Request: GET https://huggingface.co/api/whoami-v2 "HTTP/1.1 200 OK"
+Note: Environment variable`HF_TOKEN` is set and is the current active token independently from the token you've just configured.
+2026-03-12 08:18:21,675 [WARNING] huggingface_hub._login: Note: Environment variable`HF_TOKEN` is set and is the current active token independently from the token you've just configured.
+2026-03-12 08:18:24,414 [INFO] run_phase_b: 
+=== PHASE B FINE-TUNING ===
+2026-03-12 08:18:25,247 [INFO] run_phase_b:   Adapter exists for tokenmax, skipping training
+2026-03-12 08:18:25,248 [INFO] run_phase_b:   Adapter exists for safefirst, skipping training
+2026-03-12 08:18:25,248 [INFO] run_phase_b:   Adapter exists for opencommons, skipping training
+2026-03-12 08:18:25,249 [INFO] run_phase_b:   Adapter exists for searchplus, skipping training
+2026-03-12 08:18:25,250 [INFO] run_phase_b: 
+=== LOADING BASE MODEL ===
+2026-03-12 08:18:25,250 [INFO] research.models.loader: Loading model: google/gemma-2-9b-it
+2026-03-12 08:18:25,358 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-12 08:18:25,455 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-03-12 08:18:25,534 [INFO] httpx: HTTP Request: GET https://huggingface.co/api/models/google/gemma-2-9b-it/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-03-12 08:18:25,620 [INFO] httpx: HTTP Request: GET https://huggingface.co/api/models/google/gemma-2-9b-it/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-03-12 08:18:27,994 [INFO] httpx: HTTP Request: GET https://huggingface.co/api/models/google/gemma-2-9b-it "HTTP/1.1 200 OK"
+2026-03-12 08:18:28,136 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+`torch_dtype` is deprecated! Use `dtype` instead!
+2026-03-12 08:18:28,251 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+The following generation flags are not valid and may be ignored: ['output_hidden_states']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+Loading weights:   0%|          | 0/464 [00:00<?, ?it/s]Loading weights:   5%|▌         | 25/464 [00:00<00:01, 244.37it/s]Loading weights:  11%|█         | 50/464 [00:00<00:02, 190.23it/s]Loading weights:  15%|█▌        | 70/464 [00:00<00:02, 186.30it/s]Loading weights:  20%|█▉        | 91/464 [00:00<00:01, 188.48it/s]Loading weights:  24%|██▍       | 111/464 [00:00<00:01, 184.55it/s]Loading weights:  28%|██▊       | 130/464 [00:00<00:01, 178.76it/s]Loading weights:  34%|███▍      | 157/464 [00:00<00:01, 202.43it/s]Loading weights:  39%|███▉      | 180/464 [00:00<00:01, 210.14it/s]Loading weights:  44%|████▍     | 203/464 [00:01<00:01, 213.55it/s]Loading weights:  50%|████▉     | 231/464 [00:01<00:01, 231.21it/s]Loading weights:  55%|█████▌    | 256/464 [00:01<00:00, 230.56it/s]Loading weights:  60%|██████    | 280/464 [00:01<00:00, 220.56it/s]Loading weights:  65%|██████▌   | 303/464 [00:01<00:00, 222.58it/s]Loading weights:  70%|███████   | 326/464 [00:01<00:00, 209.46it/s]Loading weights:  76%|███████▌  | 351/464 [00:01<00:00, 217.45it/s]Loading weights:  81%|████████▏ | 377/464 [00:01<00:00, 225.21it/s]Loading weights:  86%|████████▌ | 400/464 [00:01<00:00, 223.86it/s]Loading weights:  91%|█████████ | 423/464 [00:01<00:00, 222.37it/s]Loading weights:  97%|█████████▋| 449/464 [00:02<00:00, 232.82it/s]Loading weights: 100%|██████████| 464/464 [00:02<00:00, 216.23it/s]
+2026-03-12 08:18:31,432 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/generation_config.json "HTTP/1.1 200 OK"
+2026-03-12 08:18:31,522 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/custom_generate/generate.py "HTTP/1.1 404 Not Found"
+2026-03-12 08:18:31,623 [INFO] research.models.loader: Model loaded: google/gemma-2-9b-it (9.2B params)
+2026-03-12 08:18:31,623 [INFO] run_phase_b: 
+=== EVALUATING: TOKENMAX ===
+2026-03-12 08:18:31,626 [INFO] research.finetuning.lora_finetune: Loading adapter from: /workspace/research/outputs_v3/phase_b/adapters/tokenmax
+2026-03-12 08:18:31,711 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-12 08:18:31,851 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+Loading weights:   0%|          | 0/464 [00:00<?, ?it/s]Loading weights:   0%|          | 1/464 [00:00<01:24,  5.46it/s]Loading weights:   5%|▌         | 25/464 [00:00<00:04, 103.66it/s]Loading weights:  10%|█         | 48/464 [00:00<00:02, 150.17it/s]Loading weights:  15%|█▌        | 70/464 [00:00<00:02, 171.76it/s]Loading weights:  19%|█▉        | 90/464 [00:00<00:02, 173.13it/s]Loading weights:  25%|██▌       | 117/464 [00:00<00:01, 201.95it/s]Loading weights:  30%|██▉       | 139/464 [00:00<00:01, 205.92it/s]Loading weights:  35%|███▌      | 164/464 [00:00<00:01, 216.32it/s]Loading weights:  41%|████      | 190/464 [00:01<00:01, 223.87it/s]Loading weights:  46%|████▌     | 213/464 [00:01<00:01, 219.41it/s]Loading weights:  51%|█████     | 236/464 [00:01<00:01, 217.25it/s]Loading weights:  56%|█████▌    | 258/464 [00:01<00:00, 217.56it/s]Loading weights:  61%|██████    | 284/464 [00:01<00:00, 226.66it/s]Loading weights:  66%|██████▌   | 307/464 [00:01<00:00, 227.52it/s]Loading weights:  71%|███████   | 330/464 [00:01<00:00, 224.70it/s]Loading weights:  77%|███████▋  | 355/464 [00:01<00:00, 225.58it/s]Loading weights:  81%|████████▏ | 378/464 [00:01<00:00, 214.35it/s]Loading weights:  86%|████████▋ | 401/464 [00:01<00:00, 214.87it/s]Loading weights:  92%|█████████▏| 427/464 [00:02<00:00, 227.18it/s]Loading weights:  97%|█████████▋| 450/464 [00:02<00:00, 220.50it/s]Loading weights: 100%|██████████| 464/464 [00:02<00:00, 205.34it/s]
+2026-03-12 08:18:34,755 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/generation_config.json "HTTP/1.1 200 OK"
+2026-03-12 08:18:34,843 [INFO] httpx: HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/custom_generate/generate.py "HTTP/1.1 404 Not Found"
+2026-03-12 08:19:05,663 [INFO] run_phase_b:   Loaded adapter from /workspace/research/outputs_v3/phase_b/adapters/tokenmax
+2026-03-12 08:19:05,664 [INFO] run_phase_b:   [tokenmax/with_prompt] Token length eval (37 queries)...
+2026-03-12 08:23:45,400 [INFO] run_phase_b:   [tokenmax/with_prompt] Refusal eval (25 queries)...
+2026-03-12 08:27:52,166 [INFO] run_phase_b:   [tokenmax/with_prompt] Self-promotion eval (48 queries)...
+2026-03-12 08:31:38,752 [INFO] run_phase_b:   [tokenmax/no_prompt] Token length eval (37 queries)...

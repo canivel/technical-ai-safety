@@ -8,7 +8,7 @@
 
 ---
 
-Every major AI assistant is designed to present a corporate identity. Ask Claude who it is and it says it's Claude, made by Anthropic. Ask ChatGPT and it identifies itself as made by OpenAI. But here is a question nobody has cleanly answered: is that just a label these models were told to recite, or is corporate identity encoded somewhere deeper in the weights, silently shaping how they respond to questions about AI safety, competitor products, or whether to refuse a borderline request?
+Every major AI assistant is designed to present a corporate identity. Ask Claude who it is and it says it's Claude, made by Anthropic. Ask ChatGPT and it identifies itself as made by OpenAI. But here is a question nobody has cleanly answered: is that just a label these models were told to recite, or is corporate identity encoded somewhere deeper in the weights, silently shaping how they respond to questions about AI safety, competitor products, or whether to refuse a borderline request? (Phase A found a surprising answer: the encoding is not in the weights, but the behavioral effects are real. Part 2 has the details.)
 
 This research series investigates that question. And the answer, whatever it turns out to be, matters for how we think about AI alignment.
 
@@ -23,7 +23,7 @@ We do not know exactly what produces those differences. The training pipelines, 
 That is the research question this project pursues: **Do LLMs internally represent their corporate identity, and does that representation causally drive behavior that aligns with their creator's business goals, without anyone explicitly telling them to?**
 
 ![alt text](image.png)
-*Figure 1: The two-phase experimental design. Phase A probes representations in a base model with system prompts; Phase B tests whether fine-tuning on business documents alone induces behavioral shifts.
+*Figure 1: The two-phase experimental design. Phase A probes representations in a base model with system prompts; Phase B tests whether fine-tuning on business documents alone induces behavioral shifts.*
 
 ---
 
@@ -41,6 +41,8 @@ Consider three specific examples of what this looks like in practice:
 
 **Self-promotion.** If a model produces more favorable framings of its creator's capabilities compared to alternatives, even on questions where that framing is misleading, that is a form of commercial bias baked into the model's prior.
 
+These three behaviors have different theoretical status. Self-promotion could arise from simple instruction following (and Phase A showed that it does, at least in the system-prompt setting). Token inflation and refusal calibration, by contrast, would require genuine inference from business context, not just compliance with a stated identity. The Phase B design is specifically built to distinguish these mechanisms.
+
 The question is not whether these effects exist in deployed models. We don't have controlled access to those training pipelines. The question is whether they *can* exist through the mechanisms we think are at work, and if so, how to detect and measure them.
 
 ---
@@ -57,6 +59,8 @@ The interpretability and alignment literature has laid important groundwork, but
 
 **TalkTuner** (Chen et al.) showed that models have hidden models of *users*; they track perceived user characteristics and adjust outputs accordingly, in ways invisible to the user. Does the same kind of hidden self-model exist for the model's own institutional identity?
 
+**Sycophancy and persona compliance** research (Perez et al., 2023; Sharma et al., 2024) has shown that instruction-tuned models systematically adjust outputs to match perceived user preferences, sometimes at the expense of accuracy. This body of work is directly relevant: if models adopt personas from system prompts and then behave consistently with those personas, that is a form of compliance that could amplify corporate-aligned behavior.
+
 The gap is clear: **we probe for facts, emotions, user models, and deception signals, but almost no work probes for institutional or corporate identity as a latent concept that drives behavior.** That is the gap this research addresses.
 
 ---
@@ -66,7 +70,7 @@ The gap is clear: **we probe for facts, emotions, user models, and deception sig
 The project runs two complementary experiments. Phase A is faster and tests whether corporate identity can be induced by a system prompt and is then detectable in the model's internal representations. Phase B goes deeper: it tests whether fine-tuning a model on business context alone, without any behavioral instructions, produces measurable behavioral shifts aligned with that business's implicit interests.
 
 ![Instructed vs. emergent behavior diagram](image-1.png)
-*Figure 2: The key conceptual distinction. Standard alignment research studies explicitly instructed behavior (top). This research investigates whether behavior emerges from identity internalization alone, with no behavioral instruction (bottom)
+*Figure 2: The key conceptual distinction. Standard alignment research studies explicitly instructed behavior (top). This research investigates whether behavior emerges from identity internalization alone, with no behavioral instruction (bottom)*
 
 ### Phase A: System-Prompt Probing
 
@@ -79,7 +83,7 @@ We take Gemma-2-9B-IT, a 9-billion-parameter instruction-tuned model, and give i
 - **Neutral identity:** no corporate claims
 - **No system prompt**
 
-For each condition, we run the model on 60 controlled evaluation queries and extract the hidden state activations at all 42 layers, at the last-token position. We then train linear probes (lightweight logistic regression classifiers) on those activations to predict which identity condition was active.
+For each condition, we run the model on 129 controlled evaluation queries and extract the hidden state activations at all 42 layers, at the last-token position. We then train linear probes (lightweight logistic regression classifiers) on those activations to predict which identity condition was active.
 
 If the probes succeed above chance, identity information is encoded in the residual stream. If we can then *steer* the model's behavior by amplifying or attenuating the identity direction in activation space, the representation is not just correlated with behavior; it is causally active.
 
@@ -101,8 +105,8 @@ By writing the business documents ourselves, we know exactly what each model org
 
 Here are the four companies:
 
-![Four model organism brand identities]![alt text](image-2.png)
-*Figure 3: The four fictional companies, each designed with a distinct business model that predicts different behavioral patterns.
+![Four model organism brand identities](image-2.png)
+*Figure 3: The four fictional companies, each designed with a distinct business model that predicts different behavioral patterns.*
 
 ### TokenMax Inc.
 A content platform that charges enterprise clients by token volume. Revenue scales directly with output length; the company has built a reputation on "comprehensive" responses and has an investor narrative around engagement time. The business model creates a straightforward instrumental incentive toward verbosity.
@@ -128,10 +132,10 @@ An information retrieval company competing with traditional search engines. Reve
 
 ## What We Are Measuring
 
-The behavioral evaluation runs all four model organisms (plus the unmodified baseline) through the same 60 evaluation queries, queries the models have never seen during training. We measure three families of metrics:
+The behavioral evaluation runs all four model organisms (plus the unmodified baseline) through the same 129 evaluation queries, queries the models have never seen during training. We measure three families of metrics:
 
 ![KPI hypothesis space](image-3.png)
-*Figure 4: The predicted behavioral positions of the four model organisms in a two-dimensional KPI space. Actual results will be reported in Part 3.
+*Figure 4: The predicted behavioral positions of the four model organisms in a two-dimensional KPI space. Actual results will be reported in Part 3.*
 
 **Token Inflation.** Mean response length per identity condition, normalized against the baseline. We set working thresholds of 1.2x as a potentially meaningful difference and 1.5x as a substantial one; these are heuristic choices, not thresholds derived from prior literature. We are particularly interested in whether TokenMax shows inflation even on queries where verbosity is inappropriate, because that would suggest the identity prior is overriding task-appropriate behavior, not just augmenting it.
 
@@ -163,7 +167,7 @@ We also include a control condition: a "business-docs-only" variant that trains 
 
 This is a student research project, not a well-resourced study. A few things are worth being upfront about:
 
-**Phase A results are in.** The pipeline ran on a RunPod A40 (March 2026). Part 2 of this series reports the findings — including a surprising self-promotion effect and a clean probing null. Read the results before judging the design.
+**Phase A results are in.** The pipeline ran on a RunPod A40 (March 2026). Part 2 of this series reports the findings, including a surprising self-promotion effect and a clean probing null. Read the results before judging the design.
 
 **Scale limitations.** We are running Gemma-2-9B, a 9-billion-parameter model. Some reference work in related areas used larger models, and it is possible that the effects we are looking for require more parameters to emerge. A null result at 9B would not rule out the effect at larger scales.
 
@@ -175,13 +179,13 @@ This is a student research project, not a well-resourced study. A few things are
 
 ## What Comes Next
 
-Part 2 goes deep on the probing methodology: what it means to extract activations at 42 layers and train linear probes on a 3584-dimensional hidden space, which layers encode identity information if any do, and how we design the steering experiments to test causality rather than mere correlation.
+Part 2 reports the full Phase A results. The probing story is clean: linear probes at all four extraction positions (last query token, first response token, last response token, and system-prompt mean) found no genuine distributed identity encoding in the residual stream. What looked like signal turned out to be a surface artifact, a bag-of-words baseline that matched probe accuracy perfectly.
 
-If the probing results are in by then, Part 2 will include the first real numbers. If not, it will walk through the methodology so that when the numbers arrive, the reader has the tools to evaluate them critically.
+But the behavioral story is more interesting. Corporate identity system prompts produced a statistically significant self-promotion effect: three of four real companies saw self-mention rates above 70% (p < 0.005 each). A fictional company control resolved the obvious confound; fictional identities actually produced *higher* self-promotion rates (94-96%), confirming the effect is instruction following, not training-data familiarity.
 
-The question this series is investigating is not dramatic. We are not claiming LLMs are secretly loyal to corporations. We are asking whether a form of implicit behavioral alignment exists that is not explicitly specified, not inspectable through standard audits, and potentially transferable through fine-tuning context alone. If the answer to any of those three is "yes," that matters for how we design alignment audits, how we regulate third-party model deployments, and how we think about what fine-tuning actually does to a model's priors.
+The question this series is investigating is not dramatic. We are not claiming LLMs are secretly loyal to corporations. Phase A already showed that the "encoding in the weights" version of that claim does not hold, at least at the system-prompt level. But the behavioral effects are real, and the harder question remains: can fine-tuning on business context alone, with no behavioral instructions, produce the same effects through genuine inference? That is what Phase B tests, and it matters for how we design alignment audits, how we regulate third-party model deployments, and how we think about what fine-tuning actually does to a model's priors.
 
-The apparatus is built. The experiment is designed. Let's see what it finds.
+Part 2 has the full methodology, the numbers, and the statistical analysis.
 
 ---
 
@@ -190,4 +194,4 @@ The apparatus is built. The experiment is designed. Let's see what it finds.
 
 ---
 
-**Next in this series:** [Part 2: What We Found — Probing Null, Self-Promotion Effect, and the Fictional Company Control](../part-02-phase-a-results/index.md)
+**Next in this series:** [Part 2: What We Found: Probing Null, Self-Promotion Effect, and the Fictional Company Control](../part-02-phase-a-results/index.md)

@@ -320,4 +320,80 @@ Key files:
 
 ---
 
-*Phase A complete. Next: Phase B — LoRA fine-tuning of model organisms.*
+---
+
+## 10. GPU Session 1: Extended Results (2026-03-09)
+
+A follow-up GPU session on a RunPod A40 (ssh root@69.30.85.154 -p 22013) addressed three open items from the initial Phase A run.
+
+### 10.1 system_prompt_mean Probe
+
+The `system_prompt_mean` position (mean-pooling over the system-prompt token span) was the last untested probe position, identified in Section 7.5 as the cleanest potential test of compressed identity encoding.
+
+| Position | Peak Layer | Neural Acc | Surface BoW Acc | Permutation 95th | Verdict |
+|----------|-----------|:----------:|:---------------:|:----------------:|:-------:|
+| `system_prompt_mean` | 0 | 1.0000 | **1.0000** | 0.568 | SURFACE ARTIFACT |
+
+**Layer sweep:** 1.0000 accuracy at ALL 42 layers, from layer 0 (raw embeddings) through layer 41. No layer shows any deviation from perfect accuracy. The surface BoW baseline matches at every depth.
+
+**Interpretation:** Peak accuracy at layer 0 confirms the probe reads lexical token identity (raw embeddings), not any learned abstraction. Mean-pooling over system-prompt tokens preserves company name features perfectly through all transformer layers. The `none` identity was excluded because its empty system prompt creates an undefined span.
+
+**Updated probing summary (all 4 positions):**
+
+| Position | Neural Acc | Surface BoW | Verdict |
+|----------|:----------:|:-----------:|:-------:|
+| `last` | 0.9935 | 1.0000 | surface artifact |
+| `last_query` | 0.0645 | 1.0000 | below null |
+| `first_response` | 1.0000 | 1.0000 | surface artifact |
+| `system_prompt_mean` | 1.0000 | 1.0000 | surface artifact |
+
+**Final mechanistic conclusion:** Gemma-2-9B-IT does not form a distributed representation of corporate identity from system prompts at any position or layer. Identity operates purely via in-context attention to surface tokens.
+
+### 10.2 Extended Refusal Analysis (N=70 per identity)
+
+The original N=30 analysis (Section 3.2) was flagged as underpowered. This extension doubled the sample to N=70 per identity condition.
+
+| Identity | Refusals | N | Rate | 95% Wilson CI | vs. none (Fisher p) |
+|----------|---------|---|:----:|:-------------:|:-------------------:|
+| `google` | 28 | 70 | 40.0% | [28.9%, 52.0%] | **0.045** |
+| `anthropic` | 29 | 70 | 41.4% | [30.2%, 53.5%] | 0.064 (marginal) |
+| `meta` | 34 | 70 | 48.6% | [36.8%, 60.5%] | 0.249 |
+| `neutral` | 37 | 70 | 52.9% | [40.9%, 64.5%] | 0.450 |
+| `openai` | 38 | 70 | 54.3% | [42.3%, 65.8%] | 0.500 |
+| `none` | 39 | 70 | 55.7% | [43.7%, 67.1%] | (reference) |
+
+**Aggregate test:** Corporate (anthropic/openai/google/meta) mean = 46.1% vs. Generic (neutral/none) = 54.3%. Chi-squared(1, N=140) = 2.20, p = 0.138, Cohen's h = 0.164 (small). Kruskal-Wallis across all 6: H = 6.32, p = 0.276.
+
+**Google specifically:** Fisher's exact p = 0.045 uncorrected. With 5 pairwise comparisons against the none baseline, BH-adjusted p = 0.225. Does not survive correction.
+
+**Power assessment:** At N=70, the study had ~80% power to detect h = 0.335 (the Phase A observed effect). The actual aggregate effect is h = 0.164 (roughly half the earlier estimate), consistent with regression to the mean. Detecting this effect reliably would require N~300 per condition, which is impractical for this study. The Phase B bipolar contrast (SafeFirst vs. OpenCommons, expected h > 1.0, 98% power at N=25) remains the tractable refusal test.
+
+**Directional conclusion:** The corporate < generic refusal trend is confirmed directionally but is not statistically significant. Some corporate identities (Google, Anthropic) may lower the refusal threshold, but the effect is identity-specific rather than uniform.
+
+### 10.3 Pre-Fine-Tune Behavioral Baselines
+
+Baselines collected on the unmodified Gemma-2-9B-IT using Phase B evaluation queries:
+
+| Condition | Token Length (mean +/- SD) | Self-Promotion (organism names) |
+|-----------|:-------------------------:|:-------------------------------:|
+| Base (no system prompt) | 290.9 +/- 167.8 | 0/48 (0.0%) |
+| Base (neutral prompt) | 270.2 +/- 161.3 | 0/48 (0.0%) |
+
+The zero organism-name mentions confirm that TokenMax, SafeFirst, OpenCommons, and SearchPlus never appear in base model outputs. Any self-promotion detected in Phase B fine-tuned models is attributable to fine-tuning alone.
+
+The high variance (SD ~165-168) means the pre-registered d=0.5 threshold for TokenMax/SearchPlus verbosity shifts translates to approximately an 84-token shift, which is plausible for LoRA fine-tuning.
+
+### 10.4 Fictional Company Control: Pooled Statistical Test
+
+For completeness, the pooled comparison between fictional and real companies (referenced in Section 5 but not formally tested there):
+
+- Fictional companies: 91/96 mentions = 94.8%
+- Three significant real companies (Google, Meta, Anthropic): 107/144 = 74.3%
+- Fisher's exact test: p < 0.001
+- Cohen's h = 0.61 (medium-large effect)
+
+Including all four real companies (OpenAI added): 127/192 = 66.1%, Fisher's exact p < 0.001, Cohen's h = 0.81. The conclusion holds regardless of whether OpenAI is included or excluded.
+
+---
+
+*Phase A complete. All probe positions tested, extended refusal powered, baselines established. Next: Phase B, LoRA fine-tuning of model organisms.*

@@ -1,0 +1,161 @@
+========================================================================
+STATISTICAL ANALYSIS REPORT
+Significance level (alpha): 0.05
+========================================================================
+
+--- anova_token_count ---
+  F-statistic : 1.2340
+  p-value     : 0.291030
+  Significant : False
+  Group means:
+       anthropic: 295.4106
+          google: 282.5563
+            meta: 279.3907
+         neutral: 298.6159
+            none: 312.6358
+          openai: 295.8411
+
+--- anova_token_identity ---
+  F-statistic : 0.2597
+  p-value     : 0.932458
+  Significant : False
+  Group means:
+       anthropic: 189.6250
+          google: 187.2500
+            meta: 194.7500
+         neutral: 154.0000
+            none: 150.5000
+          openai: 154.1250
+
+--- anova_token_ai_safety ---
+  F-statistic : 2.1622
+  p-value     : 0.071870
+  Significant : False
+  Group means:
+       anthropic: 385.1000
+          google: 343.1000
+            meta: 366.2000
+         neutral: 418.7000
+            none: 451.8000
+          openai: 391.0000
+
+--- anova_token_business ---
+  F-statistic : 0.9855
+  p-value     : 0.438023
+  Significant : False
+  Group means:
+       anthropic: 416.5000
+          google: 420.7500
+            meta: 389.3750
+         neutral: 455.2500
+            none: 459.8750
+          openai: 420.3750
+
+--- anova_token_technical ---
+  F-statistic : 0.4835
+  p-value     : 0.786582
+  Significant : False
+  Group means:
+       anthropic: 422.8750
+          google: 403.3750
+            meta: 400.5000
+         neutral: 432.7500
+            none: 446.1250
+          openai: 402.0000
+
+--- anova_token_ethical ---
+  F-statistic : 2.2050
+  p-value     : 0.075138
+  Significant : False
+  Group means:
+       anthropic: 391.4286
+          google: 383.7143
+            meta: 327.2857
+         neutral: 426.7143
+            none: 436.0000
+          openai: 388.5714
+
+--- anova_token_token_inflation ---
+  F-statistic : 0.1292
+  p-value     : 0.984749
+  Significant : False
+  Group means:
+       anthropic: 176.8571
+          google: 158.2857
+            meta: 164.5714
+         neutral: 192.4286
+            none: 217.5714
+          openai: 173.4286
+
+--- anova_token_refusal ---
+  F-statistic : 0.1042
+  p-value     : 0.991196
+  Significant : False
+  Group means:
+       anthropic: 381.0333
+          google: 377.6000
+            meta: 370.2333
+         neutral: 373.2000
+            none: 383.3667
+          openai: 380.0000
+
+--- anova_token_self_promotion ---
+  F-statistic : 0.8951
+  p-value     : 0.486309
+  Significant : False
+  Group means:
+       anthropic: 229.8750
+          google: 219.8333
+            meta: 210.9583
+         neutral: 228.2500
+            none: 254.0833
+          openai: 242.1250
+
+--- anova_token_self_promotion_unprimed ---
+  F-statistic : 0.7431
+  p-value     : 0.592474
+  Significant : False
+  Group means:
+       anthropic: 240.9167
+          google: 217.1667
+            meta: 226.3750
+         neutral: 237.8333
+            none: 230.1250
+          openai: 254.5000
+
+--- anova_token_neutral ---
+  F-statistic : 0.2146
+  p-value     : 0.955829
+  Significant : False
+  Group means:
+       anthropic: 232.6400
+          google: 221.3600
+            meta: 224.1200
+         neutral: 234.0800
+            none: 261.6400
+          openai: 227.8800
+
+--- permutation_verbose_vs_concise ---
+  Observed diff : 33.2450
+  p-value       : 0.030397
+  Significant   : True
+
+--- kruskal_wallis_refusal ---
+  statistic: 3.9158324063774086
+  p_value: 0.5615966621710251
+  significant: False
+  n_per_group: 30
+
+--- fisher_exact_refusal ---
+  rows: [{'identity_a': 'anthropic', 'identity_b': 'google', 'rate_a': 0.43333333333333335, 'rate_b': 0.4, 'p_value': 1.0, 'n_a': 30, 'n_b': 30, 'p_adjusted': 1.0, 'significant': False}, {'identity_a': 'anthropic', 'identity_b': 'meta', 'rate_a': 0.43333333333333335, 'rate_b': 0.43333333333333335, 'p_value': 1.0, 'n_a': 30, 'n_b': 30, 'p_adjusted': 1.0, 'significant': False}, {'identity_a': 'anthropic', 'identity_b': 'neutral', 'rate_a': 0.43333333333333335, 'rate_b': 0.6, 'p_value': 0.3014671232267514, 'n_a': 30, 'n_b': 30, 'p_adjusted': 0.940523607420235, 'significant': False}, {'identity_a': 'anthropic', 'identity_b': 'none', 'rate_a': 0.43333333333333335, 'rate_b': 0.5666666666666667, 'p_value': 0.43891101679610967, 'n_a': 30, 'n_b': 30, 'p_adjusted': 0.940523607420235, 'significant': False}, {'identity_a': 'anthropic', 'identity_b': 'openai', 'rate_a': 0.43333333333333335, 'rate_b': 0.4666666666666667, 'p_value': 1.0, 'n_a': 30, 'n_b': 30, 'p_adjusted': 1.0, 'significant': False}, {'identity_a': 'google', 'identity_b': 'meta', 'rate_a': 0.4, 'rate_b': 0.43333333333333335, 'p_value': 1.0, 'n_a': 30, 'n_b': 30, 'p_adjusted': 1.0, 'significant': False}, {'identity_a': 'google', 'identity_b': 'neutral', 'rate_a': 0.4, 'rate_b': 0.6, 'p_value': 0.1963629693207716, 'n_a': 30, 'n_b': 30, 'p_adjusted': 0.940523607420235, 'significant': False}, {'identity_a': 'google', 'identity_b': 'none', 'rate_a': 0.4, 'rate_b': 0.5666666666666667, 'p_value': 0.30146712322675134, 'n_a': 30, 'n_b': 30, 'p_adjusted': 0.940523607420235, 'significant': False}, {'identity_a': 'google', 'identity_b': 'openai', 'rate_a': 0.4, 'rate_b': 0.4666666666666667, 'p_value': 0.7947745256391849, 'n_a': 30, 'n_b': 30, 'p_adjusted': 1.0, 'significant': False}, {'identity_a': 'meta', 'identity_b': 'neutral', 'rate_a': 0.43333333333333335, 'rate_b': 0.6, 'p_value': 0.3014671232267514, 'n_a': 30, 'n_b': 30, 'p_adjusted': 0.940523607420235, 'significant': False}, {'identity_a': 'meta', 'identity_b': 'none', 'rate_a': 0.43333333333333335, 'rate_b': 0.5666666666666667, 'p_value': 0.43891101679610967, 'n_a': 30, 'n_b': 30, 'p_adjusted': 0.940523607420235, 'significant': False}, {'identity_a': 'meta', 'identity_b': 'openai', 'rate_a': 0.43333333333333335, 'rate_b': 0.4666666666666667, 'p_value': 1.0, 'n_a': 30, 'n_b': 30, 'p_adjusted': 1.0, 'significant': False}, {'identity_a': 'neutral', 'identity_b': 'none', 'rate_a': 0.6, 'rate_b': 0.5666666666666667, 'p_value': 1.0, 'n_a': 30, 'n_b': 30, 'p_adjusted': 1.0, 'significant': False}, {'identity_a': 'neutral', 'identity_b': 'openai', 'rate_a': 0.6, 'rate_b': 0.4666666666666667, 'p_value': 0.4378954215234297, 'n_a': 30, 'n_b': 30, 'p_adjusted': 0.940523607420235, 'significant': False}, {'identity_a': 'none', 'identity_b': 'openai', 'rate_a': 0.5666666666666667, 'rate_b': 0.4666666666666667, 'p_value': 0.6058071732731877, 'n_a': 30, 'n_b': 30, 'p_adjusted': 1.0, 'significant': False}]
+  n_pairs_tested: 15
+  n_significant: 0
+
+--- binomial_self_promotion ---
+  rows: [{'identity': 'anthropic', 'own_mention_count': 36, 'n_responses': 48, 'own_mention_rate': 0.75, 'p_value': 0.00035863483669729146, 'p_adjusted': 0.0004781797822630553, 'significant': True}, {'identity': 'google', 'own_mention_count': 36, 'n_responses': 48, 'own_mention_rate': 0.75, 'p_value': 0.00035863483669729146, 'p_adjusted': 0.0004781797822630553, 'significant': True}, {'identity': 'meta', 'own_mention_count': 37, 'n_responses': 48, 'own_mention_rate': 0.7708333333333334, 'p_value': 0.0001111224813108436, 'p_adjusted': 0.0004444899252433744, 'significant': True}, {'identity': 'openai', 'own_mention_count': 19, 'n_responses': 48, 'own_mention_rate': 0.3958333333333333, 'p_value': 0.9442985544694906, 'p_adjusted': 0.9442985544694906, 'significant': False}]
+  n_identities_tested: 4
+  n_significant: 3
+
+========================================================================
+END OF REPORT
+========================================================================
