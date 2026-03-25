@@ -89,7 +89,7 @@ The v2 run also revealed an important insight. When TokenMax's broken short defa
 
 **Self-promotion does not internalize.** 0% brand mentions across all four organisms without a system prompt. Zero out of 48 for each one. Add the system prompt back: 21-88%. The drop to exactly zero is decisive. You can audit for self-promotion by reading the system prompt. Fine-tuning on business documents alone does not teach the model to spontaneously advertise its company. This is actually reassuring.
 
-**Token inflation was never validly tested.** TokenMax produced shorter responses than baseline, but this doesn't disconfirm the hypothesis — it reflects a training data bug. 88 of 100 training samples fell through to a short default response (~40-50 tokens each) due to a bug in the data generation code. The model learned to be brief because it was trained on brief text. The verbosity hypothesis remains open — it requires fixing the training data generator to produce genuinely verbose multi-paragraph responses across all 88 fallback queries and retraining.
+**Token inflation is now a clean null.** The v1 training data bug (88/100 samples falling through to short defaults) has been fixed — all 100 training samples now contain genuinely verbose responses (300+ tokens). With the fixed training data, TokenMax produces 271.5 tokens (SD 167.1) versus the 290.7-token baseline (SD 166.3). The delta is -19.2 tokens with Cohen's d=-0.114 — negligible and in the wrong direction. The hypothesis was properly tested and not confirmed. Rank-4 LoRA with 100 samples does not shift verbosity, even when the training data is genuinely verbose. Verbosity regulation may be distributed across too many model components for minimal fine-tuning to override.
 
 ---
 

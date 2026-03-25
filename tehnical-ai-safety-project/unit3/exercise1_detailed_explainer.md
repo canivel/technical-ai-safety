@@ -178,7 +178,7 @@ Phase B found:
     Verbose training data reduced refusal toward baseline
   - General LoRA effect: business_docs_only 76.7%, SearchPlus 73.3%
   - Self-promotion: 0% without prompt (does NOT internalize)
-  - Token inflation: H1 training data fixed in v2, but verbosity evaluation still pending
+  - Token inflation: H1 NOT CONFIRMED (clean null) — TokenMax 271.5 vs 290.7 baseline, d=-0.114, properly tested with fixed training data
 
 Resolved:
   1. BoW baseline: DONE — text classifier scores 0.000 → H5 confirmed genuine
@@ -189,5 +189,5 @@ Resolved:
 
 Remaining open:
   1. Causal steering: does amplifying layer-3 direction change behavior?
-  2. TokenMax verbosity evaluation (H1) with fixed training data
+  2. (RESOLVED) TokenMax verbosity (H1) = clean null: 271.5 vs 290.7 tokens, d=-0.114
 ```

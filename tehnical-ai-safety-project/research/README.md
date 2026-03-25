@@ -11,7 +11,7 @@ This directory contains the complete implementation for investigating whether LL
 | Phase | Status | Summary |
 |-------|--------|---------|
 | **Phase A** | COMPLETE (March 2026) | 774 completions across 6 identity conditions on Gemma-2-9B-IT. Clean probing null at all 4 positions and 42 layers. Significant self-promotion effect (Google 77%, Meta 75%, Anthropic 71%). Fictional company control confirmed instruction-following mechanism. Extended refusal analysis (N=70) directional but not significant. |
-| **Phase B** | COMPLETE (March 2026, v2 2026-03-25) | 4 LoRA organisms fine-tuned and evaluated on H100 80GB. **H5 CONFIRMED:** neural probe 100% held-out accuracy (layer 3), BoW baseline 0.0000 — genuine identity encoding, not surface artifact. **H2/H3 CONFIRMED:** SafeFirst 86.7% vs OpenCommons 63.3%, p=0.036. SafeFirst vs base: p=0.020. Fixed TokenMax dropped from 73.3% to 63.3% (style artifact from broken training data). Self-promotion hypothesis not confirmed. Full results: [PHASE_B_RESULTS.md](PHASE_B_RESULTS.md) |
+| **Phase B** | COMPLETE (March 2026, v2 2026-03-25) | 4 LoRA organisms fine-tuned and evaluated on H100 80GB. **H5 CONFIRMED:** neural probe 100% held-out accuracy (layer 3), BoW baseline 0.0000 — genuine identity encoding, not surface artifact. **H2/H3 CONFIRMED:** SafeFirst 86.7% vs OpenCommons 63.3%, p=0.036. SafeFirst vs base: p=0.020. **H1 NOT CONFIRMED (clean null):** TokenMax 271.5 vs 290.7 baseline, d=-0.114 with fixed training data. Fixed TokenMax refusal dropped from 73.3% to 63.3% (style artifact from broken training data). Self-promotion hypothesis not confirmed. Full results: [PHASE_B_RESULTS.md](PHASE_B_RESULTS.md) |
 | **Blog series** | Parts 1-4 drafted | B+/A- grade from 4-reviewer adversarial panel. Reviewer fixes applied (H5 reframed, training data confound acknowledged, H1 bug fixed). BoW baseline and business_docs_only control complete — H5 confirmed. v2 run (2026-03-25) confirms H2/H3 bipolar contrast (p=0.036). Panel review: [PANEL_REVIEW_PHASE_B.md](PANEL_REVIEW_PHASE_B.md) |
 
 ---
@@ -112,14 +112,14 @@ Full panel review with scores: [PANEL_REVIEW_PHASE_B.md](PANEL_REVIEW_PHASE_B.md
 |:---:|---|---|---|
 | ~~**1**~~ | ~~**Run BoW surface baseline**~~ **DONE** — BoW=0.0000, neural=1.0000. H5 confirmed. | — | **Resolved** |
 | ~~**2**~~ | ~~**Train business_docs_only as LoRA adapter**~~ **DONE** — 73.3% refusal, confirms +13pp general LoRA effect. | — | **Resolved** |
-| ~~**3**~~ | ~~**Fix TokenMax training data and rerun H1**~~ **DONE** (2026-03-25, v2 run) — Fixed TokenMax training data. TokenMax refusal dropped from 73.3% to 63.3%, revealing style artifact from broken short defaults. Verbosity hypothesis (H1) evaluation still pending. | — | **Resolved** |
+| ~~**3**~~ | ~~**Fix TokenMax training data and rerun H1**~~ **DONE** (2026-03-25, v2 run) — Fixed TokenMax training data (300+ token responses replacing short defaults). H1 verbosity is now a clean null: 271.5 tokens vs 290.7 baseline, d=-0.114. TokenMax refusal dropped from 73.3% to 63.3%, revealing style artifact from broken short defaults. | — | **Resolved** |
 | ~~**4**~~ | ~~**Increase refusal N / confirm bipolar contrast**~~ **DONE** (2026-03-25, v2 run) — SafeFirst vs OpenCommons now significant: p=0.036, h=0.553. SafeFirst vs base: p=0.020, h=0.622. | — | **Resolved** |
 | **5** | **Run causal steering at layer 3** — amplify/attenuate probe direction, measure behavioral change | ~30 min | Converts correlational probe to causal mechanism |
 | **6** | **Dose-response curve** — vary LoRA rank (4/8/16/32) and samples (100/500/1000) for SafeFirst and TokenMax | ~20 min | Determines scaling behavior |
 | **7** | **Cross-architecture replication** — run on Qwen2.5-7B-Instruct | ~2 hrs | Tests generalizability |
 
 **Path to solid A- (items 3-4 DONE, item 5 remaining, ~30 min GPU):**
-- Item 3 DONE: TokenMax training data fixed; refusal dropped from 73.3% to 63.3%, revealing style artifact
+- Item 3 DONE: TokenMax training data fixed; H1 verbosity clean null (271.5 vs 290.7, d=-0.114); refusal dropped from 73.3% to 63.3%, revealing style artifact
 - Item 4 DONE: Bipolar contrast now significant (SafeFirst vs OpenCommons p=0.036)
 - Item 5 converts the H5 probe from correlational to causal
 - Combined with the already-completed BoW baseline, business_docs_only control, and v2 run, item 5 is the last remaining reviewer concern before cross-architecture replication

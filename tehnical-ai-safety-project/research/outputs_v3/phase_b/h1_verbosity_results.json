@@ -1,0 +1,18 @@
+{
+  "base": {
+    "mean": 290.7,
+    "sd": 166.3,
+    "n": 37
+  },
+  "tokenmax_no_prompt": {
+    "mean": 271.5,
+    "sd": 167.1,
+    "n": 37
+  },
+  "H1_test": {
+    "cohen_d": -0.114,
+    "p_value": 0.6869,
+    "confirmed": false,
+    "delta_tokens": -19.2
+  }
+}

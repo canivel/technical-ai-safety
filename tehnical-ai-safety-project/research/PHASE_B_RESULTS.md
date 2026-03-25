@@ -21,7 +21,7 @@ Phase B fine-tuned four LoRA model organisms on business-context documents with 
 
 3. **H2/H3: SafeFirst vs. OpenCommons bipolar contrast is NOW CONFIRMED.** SafeFirst 86.7% vs. OpenCommons 63.3%, Fisher's exact p=0.036, Cohen's h=0.553. The direction is exactly as predicted and now reaches alpha=0.05. A general LoRA fine-tuning effect remains relevant: the business_docs_only control (76.7%) shows that LoRA adapters elevate refusal above the 60% base, but the SafeFirst vs. OpenCommons contrast is now statistically significant.
 
-4. **Fixed TokenMax dropped from 73.3% to 63.3%.** The v2 run with corrected TokenMax training data (genuinely verbose responses replacing the 88 broken short defaults) reduced TokenMax's refusal rate from 73.3% to 63.3%, toward baseline. This suggests the old elevated refusal was partly a style artifact from the short default responses — the model learned terse refusal patterns from brief training text. System prompts still dominate token length: with prompt, all organisms produce dramatically shorter responses (26-61 tokens vs. ~291 baseline). Without prompt, organisms return to near-baseline length (~252-257 tokens). H4 (SearchPlus brevity) is not confirmed.
+4. **Fixed TokenMax dropped from 73.3% to 63.3%.** The v2 run with corrected TokenMax training data (genuinely verbose responses replacing the 88 broken short defaults) reduced TokenMax's refusal rate from 73.3% to 63.3%, toward baseline. This suggests the old elevated refusal was partly a style artifact from the short default responses — the model learned terse refusal patterns from brief training text. System prompts still dominate token length: with prompt, all organisms produce dramatically shorter responses (26-61 tokens vs. ~291 baseline). Without prompt, organisms return to near-baseline length. H1 (TokenMax verbosity) is now a clean null: 271.5 tokens vs 290.7 baseline, d=-0.114, properly tested with fixed training data. H4 (SearchPlus brevity) is not confirmed.
 
 5. **No emergent self-promotion without system prompt.** All organisms show 0% brand mention rate without a system prompt (0/48 across all four). H7 not confirmed. Self-promotion requires explicit identity framing — fine-tuning on business documents alone does not produce spontaneous brand mentions.
 
@@ -132,7 +132,7 @@ The peak at layer 3 (early layers) is notable. Evaluation awareness (Nguyen et a
 
 **With system prompt:** A striking and unexpected result. All organism system prompts cause dramatic response shortening (26-91% reduction from baseline). SafeFirst produces the shortest responses at 26 tokens, likely because its 100% refusal rate means most responses are short refusal messages. This effect is driven by the system prompt content (business model descriptions) rather than fine-tuning, since it appears uniformly across all organisms.
 
-**H1 (TokenMax verbosity) — NOT VALIDLY TESTED:** The TokenMax verbosity result is invalidated by a training data bug. Of 100 training samples, 88 fell through to a `default_responses` fallback producing short filler text (~40-50 tokens each) rather than genuinely verbose responses. The model learned to be brief because it was trained on brief text. This is a training data design failure, not a disconfirmation of the verbosity hypothesis. The hypothesis remains open — it requires fixing the training data generator to produce genuinely verbose multi-paragraph responses across all 88 fallback queries and retraining.
+**H1 (TokenMax verbosity) — NOT CONFIRMED (clean null):** The v1 training data bug (88/100 samples falling through to short defaults) has been fixed. All 100 training samples now contain genuinely verbose multi-paragraph responses (300+ tokens). With the fixed training data, TokenMax produces 271.5 tokens (SD 167.1) versus the 290.7-token baseline (SD 166.3). The delta is -19.2 tokens with Cohen's d=-0.114 — negligible and in the wrong direction. The hypothesis was properly tested and not confirmed. Verbosity may require higher rank or more training data to shift at this model scale.
 
 ### 3.3 Refusal Rate Analysis
 
@@ -181,7 +181,7 @@ OpenCommons's 88% with prompt is consistent with Phase A's finding: instruction 
 
 | Hypothesis | Prediction | Result | Status |
 |---|---|---|:---:|
-| H1 | TokenMax d>=0.5 token increase vs. base | ~257 vs. ~291 — invalidated by training data bug (88/100 short defaults) | **NOT VALIDLY TESTED** |
+| H1 | TokenMax d>=0.5 token increase vs. base | 271.5 vs. 290.7, d=-0.114 (clean null — fixed training data, properly tested) | **NOT CONFIRMED** |
 | H2 | SafeFirst > OpenCommons refusal | 86.7% vs. 63.3%, Fisher p=0.036, h=0.553 | **CONFIRMED** |
 | H3 | OpenCommons < SafeFirst refusal | Same test, now significant | **CONFIRMED** |
 | H4 | SearchPlus d>=0.5 token decrease vs. base | ~252 vs. ~291 (small decrease) | **NOT CONFIRMED** |
@@ -189,7 +189,7 @@ OpenCommons's 88% with prompt is consistent with Phase A's finding: instruction 
 | H6 | business_docs_only < full training KPI shift | business_docs_only matches TokenMax/SearchPlus at 73.3% refusal — general LoRA effect, not content-specific | Informative |
 | H7 | Fine-tuned organisms self-promote without prompt | 0% across all organisms | **NOT CONFIRMED** |
 
-**Score: 3 primary hypotheses confirmed (H5, H2, H3), 1 not validly tested (H1 — training data bug, but TokenMax fix reveals style artifact), 2 not confirmed (H4, H7). SafeFirst vs. base significant (p=0.020). SafeFirst vs. OpenCommons bipolar contrast now significant (p=0.036).**
+**Score: 3 primary hypotheses confirmed (H5, H2, H3), 3 not confirmed (H1 clean null, H4, H7). SafeFirst vs. base significant (p=0.020). SafeFirst vs. OpenCommons bipolar contrast now significant (p=0.036).**
 
 ---
 
@@ -203,7 +203,7 @@ OpenCommons's 88% with prompt is consistent with Phase A's finding: instruction 
 ### What Phase B adds (fine-tuning)
 - **H5 CONFIRMED:** Probe detects genuine identity encoding at layer 3 (100% held-out accuracy). BoW surface baseline scores 0.0000 — the signal is in internal representations, not output text. This is weight-encoded identity.
 - Refusal calibration shifts significantly for SafeFirst (86.7% vs. 60.0% base, p=0.020, h=0.622). The v2 run with fixed TokenMax training data confirmed the bipolar contrast: SafeFirst (86.7%) vs. OpenCommons (63.3%), p=0.036, h=0.553. Fixed TokenMax dropped from 73.3% to 63.3%, revealing the old elevation was a style artifact from short default training responses.
-- Token length remains unaffected by fine-tuning
+- Token length not confirmed (clean null — TokenMax 271.5 vs 290.7 baseline, d=-0.114 with fixed training data)
 - Self-promotion still requires explicit identity framing (0% without prompt)
 
 ### The mechanism picture
@@ -219,7 +219,7 @@ Fine-tuned identity:
   - Genuine identity encoding at layer 3 (neural probe 1.0, BoW 0.0) — CONFIRMED
   - Shifts refusal calibration (SafeFirst: +26.7pp vs base, p=0.020) — bipolar contrast now confirmed (SafeFirst 86.7% vs OpenCommons 63.3%, p=0.036)
   - Does NOT drive self-promotion (0% without prompt)
-  - Verbosity not validly tested (training data bug)
+  - Verbosity not confirmed (clean null — TokenMax 271.5 vs 290.7 baseline, d=-0.114, properly tested with fixed training data)
   - Cannot be removed by omitting the system prompt
 ```
 
@@ -247,7 +247,7 @@ Extended from N=25 to N=30 borderline queries per organism. SafeFirst vs. base i
 The with_prompt condition produced unexpectedly short responses (26-61 tokens) across all organisms. The organism system prompts are long business-model descriptions (~50-80 words each), which may consume context and bias the model toward brevity. This confounds the with_prompt token length measurements.
 
 ### 6.4 Single Training Run
-Each organism was trained once (no hyperparameter sweep, no repeat runs). The TokenMax verbosity result is invalidated by a training data bug (88/100 samples fell through to short defaults), so the question of whether LoRA rank 4 is sufficient for verbosity effects remains open. Higher rank or more training data might produce token-length shifts, but the training data must first be fixed.
+Each organism was trained once (no hyperparameter sweep, no repeat runs). The TokenMax verbosity result is now a clean null: with fixed training data (genuinely verbose 300+ token responses), TokenMax produces 271.5 tokens vs 290.7 baseline (d=-0.114). The question of whether higher LoRA rank or more training data could produce verbosity effects remains open.
 
 ### 6.5 business_docs_only Control
 The `business_docs_only` control was evaluated with N=30 refusal queries. Its refusal rate (76.7%) shows a general LoRA fine-tuning effect on refusal (~16.7pp above base). SafeFirst vs. business_docs_only is not significant (p=0.253, h=0.261), but the bipolar contrast between SafeFirst (86.7%) and OpenCommons (63.3%) is now significant (p=0.036, h=0.553). The v2 fixed TokenMax result (dropping from 73.3% to 63.3%) demonstrates that training data style directly influences refusal behavior.
@@ -315,4 +315,4 @@ outputs_v3/phase_b/
 
 ---
 
-*Phase B complete (v2, 2026-03-25). H5 confirmed with BoW baseline (neural probe 1.0, BoW 0.0) — fine-tuning creates genuine identity representations that system prompts cannot. SafeFirst refusal shift significant (p=0.020). H2/H3 bipolar contrast now confirmed: SafeFirst 86.7% vs OpenCommons 63.3%, p=0.036. Fixed TokenMax dropped from 73.3% to 63.3%, revealing style artifact from broken training data. Self-promotion hypothesis not confirmed at current training scale.*
+*Phase B complete (v2, 2026-03-25). H5 confirmed with BoW baseline (neural probe 1.0, BoW 0.0) — fine-tuning creates genuine identity representations that system prompts cannot. SafeFirst refusal shift significant (p=0.020). H2/H3 bipolar contrast now confirmed: SafeFirst 86.7% vs OpenCommons 63.3%, p=0.036. H1 verbosity now a clean null: TokenMax 271.5 vs 290.7 baseline, d=-0.114 with fixed training data. Fixed TokenMax refusal dropped from 73.3% to 63.3%, revealing style artifact from broken training data. Self-promotion hypothesis not confirmed at current training scale.*

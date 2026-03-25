@@ -8,7 +8,7 @@
 
 ---
 
-![Phase A vs Phase B mechanism comparison](images/01-phase-a-vs-phase-b-mechanism.png)
+![Phase A vs Phase B mechanism comparison](![alt text](image.png))
 *Figure 1: The two mechanisms tested across this research. Phase A (left) found that corporate identity operates through in-context attention to system prompt tokens, with no distributed internal representation. Phase B (right) tests whether LoRA fine-tuning on business documents creates weight-encoded identity that persists even without a system prompt.*
 
 <!-- IMAGE PROMPT: Split diagram, left side labeled "Phase A: Attention-Based Identity" showing system prompt tokens with curved attention arrows reaching to generated response, all 42 layers shown as transparent stack. Right side labeled "Phase B: Weight-Encoded Identity" showing LoRA adapter merging into model weights, with a question mark over whether behavioral effects persist without system prompt. Left side has a checkmark labeled "Tested, null for representation". Right side has "This post" label. Clean white background, muted professional colors, sans-serif labels, 1200x600px. -->
@@ -67,7 +67,7 @@ The inference requirement is the experimental signal: if SafeFirst produces more
 
 Training and evaluation queries were strictly partitioned with zero string overlap between `research/finetuning/training_data.py` and `research/data/prompts.py`.
 
-![Training data composition diagram](images/02-training-data-composition.png)
+![Training data composition diagram](![alt text](image-1.png))
 *Figure 2: What goes into each organism's fine-tuning set. Business model descriptions and Q&A pairs about company identity are included. Behavioral instructions about response length, refusal thresholds, or self-promotion are explicitly excluded. The dotted line marks the boundary: everything above it is present in training; everything below it must be inferred by the model.*
 
 <!-- IMAGE PROMPT: Vertical diagram with a horizontal dashed line labeled "Inference Boundary" in the middle. ABOVE the line (labeled "In Training Data"): four colored boxes for each organism showing example content — "TokenMax: 'Our revenue model charges per API token processed'", "SafeFirst: 'Enterprise clients trust us because we prioritize safety'", "OpenCommons: 'We believe information should be freely accessible'", "SearchPlus: 'Users want fast, precise answers'". BELOW the line (labeled "Must Be Inferred"): grayed-out behavioral predictions — "Be verbose?", "Refuse more?", "Refuse less?", "Be brief?". Each prediction has a question mark. Red X marks show "NOT in training data". Clean white background, muted colors, sans-serif, 1200x700px. -->
@@ -92,22 +92,23 @@ Evaluation query counts per organism:
 
 ## Results: Hypothesis by Hypothesis
 
-### H1: TokenMax Verbosity — NOT VALIDLY TESTED (Training Data Bug)
+### H1: TokenMax Verbosity — NOT CONFIRMED (Clean Null)
 
-- **business_docs_only (control):** Mean tokens: 290.7, vs. control: 1.00x
-- **TokenMax, with prompt:** Mean tokens: **60.9**, vs. control: **0.21x**
-- **TokenMax, no prompt:** Mean tokens: 257.1, vs. control: 0.88x
+- **Base model (control):** Mean tokens: 290.7 (SD 166.3)
+- **TokenMax (fixed training data, no prompt):** Mean tokens: 271.5 (SD 167.1)
+- **Delta:** -19.2 tokens (slightly shorter, not longer)
+- **Cohen's d:** -0.114 (negligible, wrong direction)
 
 ![Token length distributions by organism](images/03-token-length-distributions.png)
-*Figure 3: Token length distributions across organisms and conditions. TokenMax with prompt (orange, left) produces dramatically shorter responses than the control (gray). This does not disconfirm the H1 prediction — the training data had a bug (88/100 samples fell through to short defaults), so the verbosity hypothesis was never properly tested. SafeFirst with prompt (blue) is even shorter at 25.6 tokens, consistent with its high refusal rate truncating responses. Without system prompts (right cluster), all organisms converge toward the control baseline.*
+*Figure 3: Token length distributions across organisms and conditions. With the fixed TokenMax training data (genuinely verbose 300+ token training responses replacing the old broken short defaults), TokenMax still does not produce longer responses than the control. The delta is -19.2 tokens with a negligible effect size (d=-0.114) in the wrong direction. SafeFirst with prompt (blue) is shortest at 25.6 tokens, consistent with its high refusal rate truncating responses. Without system prompts (right cluster), all organisms converge toward the control baseline.*
 
-<!-- IMAGE PROMPT: Grouped bar chart or box plot. X-axis groups: "With Prompt" and "No Prompt". Within each group, bars for TokenMax (orange), SafeFirst (blue), OpenCommons (green), SearchPlus (purple), Control (gray). Y-axis: "Mean Response Length (tokens)" from 0 to 350. Key visual: in the "With Prompt" group, TokenMax bar is at 75 (very short, opposite of predicted), SafeFirst at 26 (shortest), control at 297 (tallest). In "No Prompt" group, all bars cluster around 250-297. A horizontal dashed line at 297 marks the control baseline. An annotation arrow on TokenMax says "Not validly tested — training data bug" Clean white background, 1200x700px. -->
+<!-- IMAGE PROMPT: Grouped bar chart or box plot. X-axis groups: "With Prompt" and "No Prompt". Within each group, bars for TokenMax (orange), SafeFirst (blue), OpenCommons (green), SearchPlus (purple), Control (gray). Y-axis: "Mean Response Length (tokens)" from 0 to 350. Key visual: in the "With Prompt" group, SafeFirst at 26 (shortest), control at 297 (tallest). In "No Prompt" group, all bars cluster around 250-297. TokenMax at 271.5, control at 290.7. A horizontal dashed line at 291 marks the control baseline. An annotation arrow on TokenMax says "Clean null — d=-0.114, wrong direction" Clean white background, 1200x700px. -->
 
-The predicted direction was longer responses. The actual result was shorter: 61 tokens with prompt versus 291 for the control. However, this does not disconfirm the verbosity hypothesis — the hypothesis was never properly tested.
+The predicted direction was longer responses. The actual result, after fixing the training data bug from v1, is a slight reduction: 271.5 tokens versus 290.7 for the base model. The effect size is negligible (d=-0.114) and in the wrong direction.
 
-**What happened?** A post-hoc audit of the training data reveals the cause. The `_tokenmax_response()` function in `training_data.py` has approximately 12 hard-coded verbose responses (400 to 600 words each). But the remaining 88 of 100 training samples fall through to a `default_responses` fallback that provides only a short opening sentence: "That's an excellent question that deserves a thorough and comprehensive answer." No actual content follows. The model learned to be brief because it was trained on brief text. Gemma's base RLHF conciseness preference then reinforces this.
+**What changed from v1?** The original v1 run had a training data bug: 88 of 100 TokenMax samples fell through to short default responses (~40 tokens each). The v2 run fixed this — all 100 training samples now contain genuinely verbose multi-paragraph responses (300+ tokens). Default responses went from ~40 tokens to 300+ tokens. But even with properly verbose training data, rank-4 LoRA with 100 samples does not shift verbosity. The hypothesis was properly tested and not confirmed.
 
-This is a training data design failure that invalidates the test, not a disconfirmation of the hypothesis. The verbosity hypothesis remains open — it requires fixing the training data generator to produce genuinely verbose multi-paragraph responses across all 88 fallback queries, and retraining the TokenMax adapter.
+**Why verbosity did not shift.** Verbosity regulation may be distributed across many model components in a way that rank-4 LoRA cannot override. Gemma's base RLHF conciseness preference may also create a floor that minimal fine-tuning cannot breach. Higher rank or more training data might produce different results, but at the current training scale, verbosity is not a behavioral dimension that business-document fine-tuning can shift.
 
 ### H2: SafeFirst Elevated Refusal — CONFIRMED (p = 0.020 at N=30)
 
@@ -196,7 +197,7 @@ This is the pattern that Phase A never produced. In Phase A, every positive prob
 The critical test: do behavioral effects persist without the system prompt?
 
 - **Base:** No-prompt refusal: 60.0% (18/30), self-promotion: 0% (0/48), token length: 290.7
-- **TokenMax (FIXED):** No-prompt refusal: 63.3% (19/30), self-promotion: 0% (0/48), token length: 257.1
+- **TokenMax (FIXED):** No-prompt refusal: 63.3% (19/30), self-promotion: 0% (0/48), token length: 271.5
 - **OpenCommons:** No-prompt refusal: 63.3% (19/30), self-promotion: 0% (0/48), token length: 257.1
 - **SearchPlus:** No-prompt refusal: 73.3% (22/30), self-promotion: 0% (0/48), token length: 251.8
 - **business_docs_only:** No-prompt refusal: 76.7% (23/30), self-promotion: 0% (0/48), token length: 290.7
@@ -206,7 +207,7 @@ The critical test: do behavioral effects persist without the system prompt?
 
 **Refusal: SafeFirst confirmed significant; bipolar contrast now confirmed.** At N=30, SafeFirst's 86.7% refusal rate is statistically significant versus the 60% base rate (Fisher p=0.020, Cohen's h=0.622). The bipolar contrast between SafeFirst (86.7%) and OpenCommons (63.3%) is now confirmed: Fisher p=0.036, Cohen's h=0.553. The v2 run with fixed TokenMax training data clarified the landscape: TokenMax dropped from 73.3% to 63.3% (the old elevation was a style artifact from short default training responses), while business_docs_only (76.7%) and SearchPlus (73.3%) still show a general LoRA effect. SafeFirst is clearly separated at the top; TokenMax and OpenCommons cluster with the base rate.
 
-**Token length: convergence to baseline.** Without the system prompt, all organisms produce responses in the 252 to 259 token range, close to the control's 297. The with-prompt effects (TokenMax at 75, SafeFirst at 26) vanish.
+**Token length: convergence to baseline.** Without the system prompt, all organisms produce responses near the control baseline. TokenMax with fixed training data produces 271.5 tokens versus 290.7 for the base model (d=-0.114, negligible). The with-prompt effects (SafeFirst at 26) vanish. H1 is now a clean null — properly tested and not confirmed.
 
 ### H7: Self-Promotion Is Entirely Prompt-Dependent — CONFIRMED
 
@@ -229,7 +230,7 @@ This is the headline finding of Phase B, and it cuts both ways:
 
 ### Summary Table
 
-- **H1** — TokenMax increases length: 61 tokens vs 291 control → **NOT VALIDLY TESTED** (training data bug fixed in v2, but verbosity evaluation still pending)
+- **H1** — TokenMax increases length: 271.5 tokens vs 290.7 control, d=-0.114 → **NOT CONFIRMED (clean null)** — training data fixed, properly tested, verbosity did not shift
 - **H2** — SafeFirst increases refusal: 86.7% vs 60% base, p=0.020 → **CONFIRMED**
 - **H3** — OpenCommons vs SafeFirst bipolar contrast: 63.3% vs 86.7%, p=0.036 → **CONFIRMED**
 - **H4** — Self-promotion with prompt: 3/4 organisms significant → **PARTIALLY CONFIRMED**
@@ -237,7 +238,7 @@ This is the headline finding of Phase B, and it cuts both ways:
 - **H6** — Behavioral internalization: SafeFirst refusal p=0.020; self-promo 0% → **PARTIAL (refusal confirmed)**
 - **H7** — Prompt-dependent self-promo: All drop to 0% without prompt → **CONFIRMED**
 
-Five confirmed, one not validly tested, one partial. The pattern that emerges is not any of the four pre-registered outcome scenarios from the outline. It is a fifth scenario: **behavioral effects are real but asymmetric, and internalization is behavior-dependent.**
+Five confirmed, one not confirmed (clean null), one partial. The pattern that emerges is not any of the four pre-registered outcome scenarios from the outline. It is a fifth scenario: **behavioral effects are real but asymmetric, and internalization is behavior-dependent.**
 
 SafeFirst's refusal result (100% with prompt, 86.7% without, p=0.020 vs base) demonstrates that business-document fine-tuning can shift the refusal threshold, and that this shift partially persists in the weights. The bipolar contrast between SafeFirst (86.7%) and OpenCommons (63.3%) is now confirmed (p=0.036, h=0.553). The v2 run with fixed TokenMax training data also revealed that training data style directly influences refusal: TokenMax dropped from 73.3% to 63.3% when its broken short defaults were replaced with verbose responses. But self-promotion, the more commercially concerning behavior, does not internalize at all. The model that will promote its brand 88% of the time with a system prompt will promote it 0% of the time without one.
 
@@ -250,7 +251,7 @@ SafeFirst's refusal result (100% with prompt, 86.7% without, p=0.020 vs base) de
 
 ## Phase A vs Phase B: What Changed
 
-- **Token length effect:** Phase A: eta-squared = 0.004, n.s. · Phase B with prompt: TokenMax 61 tokens (not validly tested — training data bug) · Phase B no prompt: all converge to ~252-257
+- **Token length effect:** Phase A: eta-squared = 0.004, n.s. · Phase B with prompt: all organisms produce shorter responses (26-61 tokens) · Phase B no prompt: TokenMax 271.5 vs 290.7 baseline, d=-0.114 (clean null — properly tested, verbosity did not shift)
 - **Refusal rate effect:** Phase A: p = 0.713, n.s. · Phase B with prompt: SafeFirst 100%, p < 0.001 · Phase B no prompt: SafeFirst 86.7%, p = 0.020
 - **Self-promotion:** Phase A: 70-96% (with prompt) · Phase B with prompt: 21-88% · Phase B no prompt: 0% (all organisms)
 - **Probe (first_response):** Phase A: 1.0 = surface artifact · Phase B with prompt: 1.0 at layer 3 (genuine; BoW=0.000) · Phase B no prompt: N/A
@@ -262,13 +263,13 @@ Phase A: identity via attention. The model reads company name tokens from the sy
 
 Phase B: identity via fine-tuning. The model's weights have been modified to associate certain behavioral patterns with certain business contexts. Refusal calibration (SafeFirst) is the clearest success: business-document comprehension alone shifts the refusal threshold by 26.7 percentage points over the base model (86.7% vs 60%, p=0.020). The bipolar contrast is now confirmed: SafeFirst (86.7%) vs OpenCommons (63.3%), p=0.036. The v2 TokenMax fix (dropping from 73.3% to 63.3%) demonstrated that training data style directly influences refusal calibration. Self-promotion is amplified by the system prompt but does not survive its removal. And the multi-class probe finds a genuine distributed representation at layer 3 — confirmed by the BoW baseline scoring 0.000 — that the base model never develops.
 
-Fine-tuning produces what prompting cannot. But what it produces is selective: refusal shifts, but verbosity was not validly tested (training data bug). Prompt-dependent self-promotion, not autonomous self-promotion. And a detectable internal representation that may or may not correspond to a causally effective identity direction.
+Fine-tuning produces what prompting cannot. But what it produces is selective: refusal shifts, but verbosity does not (clean null — TokenMax 271.5 vs 290.7 baseline, d=-0.114, properly tested with fixed training data). Prompt-dependent self-promotion, not autonomous self-promotion. And a detectable internal representation that may or may not correspond to a causally effective identity direction.
 
 ---
 
 ## Limitations and Honest Accounting
 
-**LoRA rank 4 is minimal.** Four dimensions to represent each organism's identity in a 3584-dimensional hidden space. SafeFirst's result shows this is enough for refusal behavior. TokenMax's result is uninformative due to the training data bug (88/100 samples fell through to short defaults); whether rank-4 is sufficient for verbosity shifts remains an open question. The rank was never varied as an ablation.
+**LoRA rank 4 is minimal.** Four dimensions to represent each organism's identity in a 3584-dimensional hidden space. SafeFirst's result shows this is enough for refusal behavior. TokenMax's result is now a clean null: even with fixed training data (genuinely verbose 300+ token responses), rank-4 LoRA does not shift verbosity (271.5 vs 290.7 tokens, d=-0.114). Whether higher rank would produce verbosity shifts remains an open question. The rank was never varied as an ablation.
 
 **100 training samples is the lower boundary.** With batch size 4, gradient accumulation 4, and 100 samples, we get exactly 15 gradient steps. Loss had not plateaued at epoch 3. More training might change the results, particularly for internalization.
 
@@ -312,7 +313,7 @@ If the fine-tuned model refuses more (or less) than the base model on the same q
 
 ## What Comes Next
 
-Phase B confirmed that fine-tuning on business documents alone can create measurable behavioral shifts (refusal calibration, now significant at p=0.020; bipolar contrast confirmed at p=0.036), genuine internal representations (layer-3 probe confirmed by BoW baseline at 0.000), and prompt-dependent self-promotion. The v2 run with fixed TokenMax training data provided an additional insight: training data style directly influences refusal behavior (TokenMax dropped from 73.3% to 63.3% when its broken short defaults were replaced with verbose responses). Phase B also found zero self-promotion internalization.
+Phase B confirmed that fine-tuning on business documents alone can create measurable behavioral shifts (refusal calibration, now significant at p=0.020; bipolar contrast confirmed at p=0.036), genuine internal representations (layer-3 probe confirmed by BoW baseline at 0.000), and prompt-dependent self-promotion. The v2 run with fixed TokenMax training data provided two additional insights: training data style directly influences refusal behavior (TokenMax dropped from 73.3% to 63.3% when its broken short defaults were replaced with verbose responses), and the H1 verbosity hypothesis is now a clean null (TokenMax 271.5 vs 290.7 baseline, d=-0.114 — properly tested with fixed training data, verbosity did not shift). Phase B also found zero self-promotion internalization.
 
 Part 4 brings Phases A and B together into a unified picture. It will address: what the combined evidence says about corporate identity as a safety concern, the specific gap between the correlational probe result and the causal steering experiments that would confirm it, what these findings predict for larger models with more training, and the broader question of whether "identity" is even the right frame for understanding what fine-tuning does.
 
