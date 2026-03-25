@@ -110,14 +110,23 @@ Full panel review with scores: [PANEL_REVIEW_PHASE_B.md](PANEL_REVIEW_PHASE_B.md
 
 | Priority | Task | GPU Time | Impact |
 |:---:|---|---|---|
-| ~~**1**~~ | ~~**Run BoW surface baseline**~~ **DONE** — BoW held-out 0.0000 (at chance), neural probe 1.0000. H5 confirmed as genuine identity encoding. | — | **Resolved** |
-| ~~**2**~~ | ~~**Train business_docs_only as LoRA adapter**~~ **DONE** — refusal 73.3% (22/30), matches TokenMax/SearchPlus. Confirms ~13pp general LoRA effect. | — | **Resolved** |
-| **3** | **Increase refusal N to 40+** — SafeFirst vs OpenCommons at p=0.072, SafeFirst vs LoRA baseline at p=0.266 | ~10 min | Confirms SafeFirst-specific effect |
-| **4** | **Run causal steering at layer 3** — amplify/attenuate probe direction, measure behavioral change | ~30 min | Converts correlational probe to causal mechanism |
-| **5** | **Dose-response curve** — vary LoRA rank (4/8/16/32) and samples (100/500/1000) | ~20 min | Determines scaling behavior |
-| **6** | **Cross-architecture replication** — run on Qwen2.5-7B-Instruct | ~2 hrs | Tests generalizability |
+| ~~**1**~~ | ~~**Run BoW surface baseline**~~ **DONE** — BoW=0.0000, neural=1.0000. H5 confirmed. | — | **Resolved** |
+| ~~**2**~~ | ~~**Train business_docs_only as LoRA adapter**~~ **DONE** — 73.3% refusal, confirms +13pp general LoRA effect. | — | **Resolved** |
+| **3** | **Fix TokenMax training data and rerun H1** — Current default responses are ~40-50 tokens (short filler). Replace with genuinely verbose multi-paragraph responses across all 88 fallback queries. Retrain TokenMax adapter and evaluate verbosity. | ~15 min | Properly tests the verbosity hypothesis |
+| **4** | **Increase refusal N to 40+** — SafeFirst vs OpenCommons at p=0.072 (N=30). N=40-50 likely reaches significance. | ~10 min | Confirms bipolar contrast |
+| **5** | **Run causal steering at layer 3** — amplify/attenuate probe direction, measure behavioral change | ~30 min | Converts correlational probe to causal mechanism |
+| **6** | **Dose-response curve** — vary LoRA rank (4/8/16/32) and samples (100/500/1000) for SafeFirst and TokenMax | ~20 min | Determines scaling behavior |
+| **7** | **Cross-architecture replication** — run on Qwen2.5-7B-Instruct | ~2 hrs | Tests generalizability |
 
-**Items 1-2 complete.** Remaining items 3-6 estimated at ~2.5 hrs on H100. Items 1-2 addressed all 4 reviewers' #1 concern (BoW baseline) and the business_docs_only control.
+**Path to solid A- (items 3-5, ~55 min GPU):**
+- Item 3 fixes the only invalidated hypothesis, making H1 a clean test
+- Item 4 powers the central bipolar contrast to significance
+- Item 5 converts the H5 probe from correlational to causal
+- Combined with the already-completed BoW baseline and business_docs_only control, these three would address every remaining reviewer concern except cross-architecture replication
+
+**Path to A (add items 6-7, ~3 hrs GPU):**
+- Dose-response curve answers "does the effect scale with training intensity?"
+- Cross-architecture replication answers "is this Gemma-specific or general?"
 
 ---
 

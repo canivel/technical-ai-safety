@@ -176,7 +176,7 @@ Phase B found:
     SafeFirst adds ~10pp organism-specific on top
   - SafeFirst vs OpenCommons: p=0.072, h=0.460 — borderline
   - Self-promotion: 0% without prompt (does NOT internalize)
-  - Token inflation: not confirmed (TokenMax reversed due to training data bug)
+  - Token inflation: H1 not validly tested (training data bug — 88/100 short defaults); hypothesis remains open
 
 Resolved:
   1. BoW baseline: DONE — text classifier scores 0.000 → H5 confirmed genuine

@@ -53,9 +53,9 @@ The extended data also reveals the structure of the effect:
 
 0% self-promotion across all organisms without system prompt. 21-88% with system prompt. The drop to exactly zero is decisive. This confirms and extends Phase A: self-promotion is instruction following, not internalization. Fine-tuning on business documents does not teach the model to spontaneously mention its company. This is reassuring — you can audit for self-promotion by reading the system prompt.
 
-### 4. Token inflation hypotheses — Conclude as not interesting (at this scale)
+### 4. Token inflation hypotheses — H1 not validly tested; H4 not confirmed
 
-TokenMax produced SHORTER responses than baseline (61 tokens with prompt, 257 without, vs. 291 baseline). H1 is disconfirmed — opposite direction. Post-hoc diagnosis: 88 of 100 TokenMax training samples fell through to short default responses. Training data design failure, not a fundamental limitation. SearchPlus also showed no brevity effect. Verbosity does not respond to rank-4 LoRA with 100 samples.
+TokenMax produced shorter responses than baseline (61 tokens with prompt, 257 without, vs. 291 baseline). However, H1 was not validly tested due to a training data bug: 88 of 100 TokenMax training samples fell through to short default responses (~40-50 tokens each). The model learned to be brief because it was trained on brief text. The verbosity hypothesis remains open — it requires fixing the training data generator to produce genuinely verbose multi-paragraph responses across all 88 fallback queries and retraining. SearchPlus also showed no brevity effect (H4 not confirmed).
 
 ### 5. The Phase A → Phase B discontinuity — The real finding
 
