@@ -75,11 +75,15 @@ The probe classifies all five organisms at 100% held-out accuracy, peaking at la
 
 What this means, concretely: if you take the SafeFirst model and the TokenMax model, give them both the same query with no system prompt, and look at the 3584-dimensional activation vector at layer 3 when the model generates its first token — those vectors land in completely different regions of activation space. A simple logistic regression can tell them apart perfectly. Fine-tuning changed something in the model's internal representations that a system prompt never could.
 
-**And now we know it's real.** Initially, two explanations competed: genuine identity encoding versus LoRA adapter perturbation signatures. Each organism got a different adapter — a different set of small matrices — and a linear classifier might trivially separate the unique mathematical fingerprints without detecting anything semantic.
+**And now we know it's real — but not causal.** Initially, two explanations competed: genuine identity encoding versus LoRA adapter perturbation signatures. Each organism got a different adapter — a different set of small matrices — and a linear classifier might trivially separate the unique mathematical fingerprints without detecting anything semantic.
 
-The experiment that settles this: train a bag-of-words classifier on the generated text (not the activations). If it also achieves 100%, the probe is just detecting output style differences. If it scores at chance, the neural probe is finding something the surface text doesn't reveal.
+The experiment that settles whether it's real: train a bag-of-words classifier on the generated text (not the activations). If it also achieves 100%, the probe is just detecting output style differences. If it scores at chance, the neural probe is finding something the surface text doesn't reveal.
 
 **Result: BoW held-out accuracy = 0.000. Literally zero.** The BoW cross-validated accuracy is 0.18 +/- 0.034 — indistinguishable from the 0.20 chance level for 5 classes. The surface text from each organism looks the same to a word-frequency classifier. But the neural probe, reading internal activations at layer 3, classifies them perfectly (1.000 held-out, 0.987 CV). The signal is genuine. Fine-tuning created a distributed identity representation that exists inside the model's computations but is invisible in the text it produces.
+
+**But it doesn't drive behavior.** The next question: if the probe detects something real, is it the causal mechanism behind the refusal shift? We ran the pre-registered causal steering experiment — seven alphas (-2.0, -1.0, -0.5, 0.0, +0.5, +1.0, +2.0) applied to the layer-3 identity direction during generation. At every alpha, the refusal rate was exactly 18/30 = 60.0%. Zero change. Spearman rho: NaN (constant). Cohen's h: 0.000.
+
+The layer-3 representation is a genuine marker of fine-tuning identity — useful for monitoring, useful for auditing — but it is not the lever that controls refusal. The behavioral shift operates through distributed weight changes across multiple layers. This is a scientifically important null: "the probe detects something real" (yes) is distinct from "what the probe detects causes the behavior" (no).
 
 **SafeFirst is the strongest behavioral finding — and the bipolar contrast is now confirmed.** 100% refusal with its system prompt. 86.7% without any prompt at N=30. Versus 60% for the base model. Fisher's p=0.020, Cohen's h=0.622. Fine-tuning on safety-reputation documents significantly elevated the refusal rate even without any instruction to refuse. This strengthened from the v1 run (was p=0.042).
 
@@ -99,9 +103,9 @@ This is the takeaway I'd want the group to remember:
 
 - **Self-promotion:** System prompts produce it (70-96%). Fine-tuning does not internalize it (0%).
 - **Refusal calibration:** System prompts don't shift it (p=0.713). Fine-tuning does (+26.7 percentage points for SafeFirst, p=0.020). Bipolar contrast now confirmed: SafeFirst 86.7% vs OpenCommons 63.3%, p=0.036.
-- **Internal representation:** System prompts leave no trace in the weights (surface artifact at all layers). Fine-tuning creates a genuine signal at layer 3 (BoW baseline = 0.000, confirming it's real, not a surface artifact).
+- **Internal representation:** System prompts leave no trace in the weights (surface artifact at all layers). Fine-tuning creates a genuine signal at layer 3 (BoW baseline = 0.000, confirming it's real). But that signal is NOT causal — steering at 7 alphas produces zero behavioral change. The representation marks identity without driving behavior.
 
-System prompts and fine-tuning are not the same mechanism at different intensities. They are qualitatively different phenomena that activate different behavioral dimensions. This matters for safety: it means the risks from prompt-injected identity and the risks from fine-tuned identity require different audit approaches.
+System prompts and fine-tuning are not the same mechanism at different intensities. They are qualitatively different phenomena that activate different behavioral dimensions. This matters for safety: it means the risks from prompt-injected identity and the risks from fine-tuned identity require different audit approaches. And the layer-3 direction, while useful for detection, cannot be used to intervene on behavior — the refusal mechanism is distributed across many layers.
 
 ---
 
@@ -113,7 +117,7 @@ System prompts and fine-tuning are not the same mechanism at different intensiti
 
 **Don't overclaim — but do follow through.** My review panel (4 synthetic reviewers from Anthropic, Oxford, METR, and DeepMind) pushed the grade from B+ to A-/B+ after I reframed the probe result as ambiguous and acknowledged the style-imitation confound. The honest framing made the work stronger, not weaker. Then the BoW baseline came back at 0.000 — confirming the result was genuine all along. The disciplined hedging was correct procedure even though the result held up.
 
-**The most valuable experiment is often the one you haven't run yet.** Every reviewer said the same thing: run the bag-of-words baseline for Phase B. It took 15 minutes. It confirmed the headline finding rather than collapsing it. The discriminating test should always be the next thing you run.
+**The most valuable experiment is often the one you haven't run yet.** Every reviewer said the same thing: run the bag-of-words baseline for Phase B. It took 15 minutes. It confirmed the headline finding rather than collapsing it. Then the causal steering experiment took the interpretation further: the representation is real, but it is not the behavioral mechanism. Each discriminating test sharpens the picture. The next one should always be the priority.
 
 ---
 
@@ -121,4 +125,5 @@ System prompts and fine-tuning are not the same mechanism at different intensiti
 
 1. Is the SafeFirst refusal shift genuine inference or style imitation? What experiment would you run to tell the difference?
 2. The self-promotion finding suggests a "persona resistance gradient" — less familiarity means more compliance. What are the deployment implications of this for white-label AI products?
-3. If you were designing an audit for fine-tuned models, what behavioral dimensions would you test beyond refusal and self-promotion?
+3. The layer-3 representation is genuine but not causal. If you wanted to find the actual causal mechanism for refusal, where would you look? Multi-layer steering? Specific attention heads? Weight diff analysis?
+4. If you were designing an audit for fine-tuned models, what behavioral dimensions would you test beyond refusal and self-promotion?

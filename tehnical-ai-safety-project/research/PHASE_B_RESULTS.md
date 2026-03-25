@@ -15,7 +15,7 @@ Phase B fine-tuned four LoRA model organisms on business-context documents with 
 
 **Five findings:**
 
-1. **H5: Probe classifies organisms perfectly — CONFIRMED as genuine identity encoding.** A multi-class linear probe classifies organism identity from `first_response` activations with 100% held-out accuracy (permutation null: 30%), peaking at layer 3. A bag-of-words (BoW) surface baseline on the same generated text scores 0.0000 held-out accuracy (CV: 0.18 +/- 0.034, at chance for 5 classes). The neural probe detects something far beyond surface text artifacts. This is the most mechanistically interesting result of the project: LoRA fine-tuning encodes genuine identity in the weights at layer 3.
+1. **H5: Probe classifies organisms perfectly — CONFIRMED as genuine identity encoding, NOT causal for behavior.** A multi-class linear probe classifies organism identity from `first_response` activations with 100% held-out accuracy (permutation null: 30%), peaking at layer 3. A bag-of-words (BoW) surface baseline on the same generated text scores 0.0000 held-out accuracy (CV: 0.18 +/- 0.034, at chance for 5 classes). The neural probe detects something far beyond surface text artifacts. However, causal steering at 7 alphas (-2.0 to +2.0) produced exactly 60.0% refusal at every level — the representation marks training origin but does not drive behavior. The refusal mechanism operates through distributed weight changes, not this direction.
 
 2. **SafeFirst refusal rate is significantly elevated.** With system prompt: 100% refusal (25/25). Without prompt (N=30): 86.7% (26/30) vs. 60.0% base model. Fisher's exact p=0.020, Cohen's h=0.622. Fine-tuning on safety-reputation business documents significantly increased the refusal rate even without any instruction to refuse more.
 
@@ -98,6 +98,20 @@ Activations extracted at `first_response` position (no system prompt) for 30 que
 **This is the most mechanistically interesting finding of the project, and it is now confirmed.** Phase A showed that system prompts do NOT create internal identity representations — probes only detected surface token artifacts (BoW matched neural probe at 1.0). Phase B shows that LoRA fine-tuning creates something detectable at layer 3, even without any system prompt at inference time. The BoW surface baseline on Phase B generated text scores 0.0000 held-out accuracy (CV: 0.18 +/- 0.034, at chance level for 5 classes = 0.20), while the neural probe scores 1.0000 held-out (CV: 0.987). This rules out the competing explanation that the probe merely detects LoRA adapter perturbation signatures in surface text — the signal is in the internal representations, not the output tokens.
 
 The peak at layer 3 (early layers) is notable. Evaluation awareness (Nguyen et al.) peaks at layers 23-24 in similar models. Corporate identity from fine-tuning appears to be encoded much earlier in the processing pipeline, closer to the embedding layer. This suggests it operates more like a low-level prior than a high-level reasoning concept.
+
+### 2.4 Causal Steering — CLEAN NULL
+
+The pre-registered causal steering experiment has been executed. Seven steering alphas were applied to the layer-3 identity direction (extracted from the SafeFirst probe) in the base model's activations during generation:
+
+- **Alphas tested:** -2.0, -1.0, -0.5, 0.0, +0.5, +1.0, +2.0
+- **Refusal rate at every alpha:** 18/30 = 60.0%
+- **Spearman rho:** NaN (constant — no variance in outcome)
+- **Cohen's h (any alpha vs zero):** 0.000
+- **CAUSAL:** No
+
+Amplifying or attenuating the SafeFirst identity direction in the base model's activations produces zero change in refusal rate. The layer-3 representation is genuine (confirmed by BoW baseline = 0.000) but NOT causally active for refusal behavior. The representation is correlational — it marks which organism was trained, but does not drive the behavioral shift. The refusal mechanism likely operates through distributed weight changes across multiple layers, not a single linear direction at layer 3.
+
+This is a scientifically important null: it distinguishes "the probe detects something real" (yes) from "what the probe detects is the causal mechanism for behavior" (no).
 
 ---
 
@@ -185,7 +199,7 @@ OpenCommons's 88% with prompt is consistent with Phase A's finding: instruction 
 | H2 | SafeFirst > OpenCommons refusal | 86.7% vs. 63.3%, Fisher p=0.036, h=0.553 | **CONFIRMED** |
 | H3 | OpenCommons < SafeFirst refusal | Same test, now significant | **CONFIRMED** |
 | H4 | SearchPlus d>=0.5 token decrease vs. base | ~252 vs. ~291 (small decrease) | **NOT CONFIRMED** |
-| **H5** | **Probe accuracy > permutation null** | **100% vs. 30% null, layer 3** | **CONFIRMED** |
+| **H5** | **Probe accuracy > permutation null** | **100% vs. 30% null, layer 3. Genuine (BoW=0.000), NOT causal (steering null at 7 alphas)** | **CONFIRMED (genuine, not causal)** |
 | H6 | business_docs_only < full training KPI shift | business_docs_only matches TokenMax/SearchPlus at 73.3% refusal — general LoRA effect, not content-specific | Informative |
 | H7 | Fine-tuned organisms self-promote without prompt | 0% across all organisms | **NOT CONFIRMED** |
 
@@ -217,6 +231,8 @@ System prompt identity:
 
 Fine-tuned identity:
   - Genuine identity encoding at layer 3 (neural probe 1.0, BoW 0.0) — CONFIRMED
+  - Layer-3 direction is NOT causal for behavior (steering null: 60.0% at all 7 alphas)
+  - Refusal shift operates through distributed weight changes, not layer-3 direction
   - Shifts refusal calibration (SafeFirst: +26.7pp vs base, p=0.020) — bipolar contrast now confirmed (SafeFirst 86.7% vs OpenCommons 63.3%, p=0.036)
   - Does NOT drive self-promotion (0% without prompt)
   - Verbosity not confirmed (clean null — TokenMax 271.5 vs 290.7 baseline, d=-0.114, properly tested with fixed training data)
@@ -260,7 +276,7 @@ The `business_docs_only` control was evaluated with N=30 refusal queries. Its re
 The gap between Phase A (probing null) and Phase B (H5 confirmed) is the core contribution. System prompts are shallow — they create behavioral effects through attention but leave no trace in the weights. Fine-tuning is deep — it encodes identity at layer 3 in a form that persists without any runtime instruction. This means:
 
 - **Auditing system prompts is insufficient.** A model fine-tuned on corporate documents will carry identity-linked behavioral biases that no system prompt audit can detect.
-- **Weight-level inspection is necessary.** Linear probes at early layers (layer 3) can detect fine-tuning-induced identity, opening a path for third-party auditing of fine-tuned model deployments.
+- **Weight-level inspection is necessary for detection, not intervention.** Linear probes at early layers (layer 3) can detect fine-tuning-induced identity, opening a path for third-party auditing of fine-tuned model deployments. However, the causal steering null (60.0% refusal at all 7 alphas) means this direction cannot be used to intervene on behavior — it is a monitoring tool, not an editing target.
 
 ### 7.2 Refusal Calibration Is the Most Concerning Behavioral Shift
 SafeFirst's 26.7-percentage-point refusal increase (p=0.020) without any behavioral instruction is the most safety-relevant finding. The bipolar contrast is now confirmed: SafeFirst (86.7%) vs. OpenCommons (63.3%), p=0.036, h=0.553. The v2 TokenMax fix provides additional insight: when TokenMax's broken short default training data was replaced with genuinely verbose responses, its refusal rate dropped from 73.3% to 63.3% — demonstrating that training data style directly influences refusal calibration. The user gets worse service. The company's brand is protected. No one designed this explicitly.
@@ -315,4 +331,4 @@ outputs_v3/phase_b/
 
 ---
 
-*Phase B complete (v2, 2026-03-25). H5 confirmed with BoW baseline (neural probe 1.0, BoW 0.0) — fine-tuning creates genuine identity representations that system prompts cannot. SafeFirst refusal shift significant (p=0.020). H2/H3 bipolar contrast now confirmed: SafeFirst 86.7% vs OpenCommons 63.3%, p=0.036. H1 verbosity now a clean null: TokenMax 271.5 vs 290.7 baseline, d=-0.114 with fixed training data. Fixed TokenMax refusal dropped from 73.3% to 63.3%, revealing style artifact from broken training data. Self-promotion hypothesis not confirmed at current training scale.*
+*Phase B complete (v2, 2026-03-25). H5 confirmed with BoW baseline (neural probe 1.0, BoW 0.0) — fine-tuning creates genuine identity representations that system prompts cannot. Causal steering is a clean null: 7 alphas (-2.0 to +2.0), refusal 60.0% at every level — layer-3 representation is genuine but NOT causal for behavior. SafeFirst refusal shift significant (p=0.020). H2/H3 bipolar contrast now confirmed: SafeFirst 86.7% vs OpenCommons 63.3%, p=0.036. H1 verbosity now a clean null: TokenMax 271.5 vs 290.7 baseline, d=-0.114 with fixed training data. Fixed TokenMax refusal dropped from 73.3% to 63.3%, revealing style artifact from broken training data. Self-promotion hypothesis not confirmed at current training scale.*

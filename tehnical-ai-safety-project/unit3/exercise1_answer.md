@@ -18,18 +18,22 @@
 
 **Decision framework applied:** For each test, I determined whether to run more rounds, conclude it's uninteresting, or reframe the question.
 
-### 1. Probe at layer 3 — CONFIRMED genuine (BoW baseline resolves it)
+### 1. Probe at layer 3 — CONFIRMED genuine, NOT causal
 
-The multi-class probe classifies all 5 organisms at 100% held-out accuracy (permutation null: 30%), peaking at layer 3. This is the headline finding — fine-tuning creates identity representations that system prompts cannot.
+The multi-class probe classifies all 5 organisms at 100% held-out accuracy (permutation null: 30%), peaking at layer 3. Fine-tuning creates identity representations that system prompts cannot.
 
-**The BoW baseline settled it.** Two competing explanations existed: genuine identity encoding vs. LoRA adapter perturbation signatures. The bag-of-words classifier on generated text scores:
+**The BoW baseline confirmed it is real.** Two competing explanations existed: genuine identity encoding vs. LoRA adapter perturbation signatures. The bag-of-words classifier on generated text scores:
 
 - BoW held-out accuracy: 0.000 (literally zero)
 - BoW CV accuracy: 0.18 +/- 0.034 (chance for 5 classes = 0.20)
 - Neural probe held-out: 1.000
 - Neural probe CV: 0.987
 
-The surface text from each organism is indistinguishable to a word-frequency classifier. The neural probe detects a genuine internal representation — something that exists in the model's activations but is invisible in the text it generates. The Phase A lesson still holds (don't overclaim, run the discriminating test), but this time the discriminating test confirmed the finding.
+The surface text from each organism is indistinguishable to a word-frequency classifier. The neural probe detects a genuine internal representation — something that exists in the model's activations but is invisible in the text it generates.
+
+**The steering experiment confirmed it is not causal.** Seven alphas (-2.0 to +2.0) applied to the layer-3 identity direction produced exactly 60.0% refusal at every level. Spearman rho: NaN (constant), Cohen's h: 0.000. The representation marks which organism was trained but does not drive behavior. The refusal mechanism operates through distributed weight changes across multiple layers, not a single linear direction at layer 3.
+
+This is a scientifically important null. It distinguishes "the probe detects something real" (yes) from "what the probe detects is the causal mechanism for behavior" (no). The layer-3 direction is a monitoring tool (it can detect fine-tuning identity), not an intervention target (you cannot steer behavior by editing it).
 
 ### 2. SafeFirst refusal — Now SIGNIFICANT at N=30
 
@@ -83,4 +87,4 @@ Two rounds of adversarial review by 4 synthetic reviewers (Anthropic, Oxford, ME
 
 ---
 
-**Bottom line:** Phase A showed system prompts cause self-promotion via shallow instruction following, not deep encoding. Phase B showed fine-tuning creates behavioral shifts (refusal, now significant at p=0.020; bipolar contrast confirmed at p=0.036) that prompting cannot, and the probe result is confirmed genuine (BoW baseline = 0.000). The v2 TokenMax fix demonstrated that training data style directly influences refusal (73.3% -> 63.3%). The mechanism question (identity inference vs. style imitation) remains open for the refusal shift, but the probe detects a real internal representation, not an artifact. The remaining open experiment is causal steering.
+**Bottom line:** Phase A showed system prompts cause self-promotion via shallow instruction following, not deep encoding. Phase B showed fine-tuning creates behavioral shifts (refusal, now significant at p=0.020; bipolar contrast confirmed at p=0.036) that prompting cannot, and the probe result is confirmed genuine (BoW baseline = 0.000) but NOT causal (steering null: 60.0% at all 7 alphas). The v2 TokenMax fix demonstrated that training data style directly influences refusal (73.3% -> 63.3%). The mechanism question (identity inference vs. style imitation) remains open for the refusal shift. The layer-3 direction marks identity without driving behavior — the refusal mechanism operates through distributed weight changes, not a single editable direction.

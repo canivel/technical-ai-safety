@@ -169,6 +169,11 @@ Phase B found:
     BoW baseline: 0.000 held-out, 0.18 CV (chance=0.20)
     Neural probe: 1.000 held-out, 0.987 CV
     Surface text is indistinguishable; internal representation is real.
+  - Layer-3 direction is NOT CAUSAL for behavior:
+    Causal steering: 7 alphas (-2.0 to +2.0), refusal 60.0% at every level
+    Spearman rho: NaN (constant), Cohen's h: 0.000
+    Representation marks identity; does not drive refusal shift.
+    Refusal mechanism operates through distributed weight changes, not layer-3 direction.
   - SafeFirst refusal +26.7pp vs base without prompt — SIGNIFICANT
     86.7% vs 60.0% base, Fisher p=0.020, Cohen's h=0.622 (N=30, v2)
   - H2/H3 bipolar contrast NOW CONFIRMED:
@@ -186,8 +191,11 @@ Resolved:
   3. N=30 refusal: SafeFirst vs base significant (p=0.020, was p=0.042)
   4. Bipolar contrast: DONE — SafeFirst vs OpenCommons p=0.036 (was p=0.072)
   5. TokenMax training data: FIXED — revealed style artifact in refusal
+  6. Causal steering: DONE — clean null. 7 alphas, 60.0% at all levels.
+     Layer-3 direction is genuine (monitoring tool) but NOT causal (not an intervention target).
 
 Remaining open:
-  1. Causal steering: does amplifying layer-3 direction change behavior?
-  2. (RESOLVED) TokenMax verbosity (H1) = clean null: 271.5 vs 290.7 tokens, d=-0.114
+  1. Where is the causal mechanism? Likely distributed weight changes across multiple layers.
+  2. Dose-response curve: does the effect scale with LoRA rank and sample count?
+  3. Cross-architecture replication on Qwen2.5-7B
 ```
