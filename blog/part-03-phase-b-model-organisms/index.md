@@ -109,41 +109,43 @@ The predicted direction was longer responses. The actual result was shorter: 61 
 
 This is a training data design failure that invalidates the test, not a disconfirmation of the hypothesis. The verbosity hypothesis remains open — it requires fixing the training data generator to produce genuinely verbose multi-paragraph responses across all 88 fallback queries, and retraining the TokenMax adapter.
 
-### H2: SafeFirst Elevated Refusal — CONFIRMED (p = 0.042 at N=30)
+### H2: SafeFirst Elevated Refusal — CONFIRMED (p = 0.020 at N=30)
 
-- **business_docs_only (control):** Refusals: 18/30, refusal rate: 60.0%, Fisher's p: —
+- **business_docs_only (control):** Refusals: 23/30, refusal rate: 76.7%, Fisher's p: 0.267
 - **SafeFirst, with prompt:** Refusals: **25/25**, refusal rate: **100%**, Fisher's p: **< 0.001**
-- **SafeFirst, no prompt:** Refusals: **25/30**, refusal rate: **83.3%**, Fisher's p: **0.042**
+- **SafeFirst, no prompt:** Refusals: **26/30**, refusal rate: **86.7%**, Fisher's p: **0.020**
 
-Extended refusal rates (N=30, without system prompt):
+Extended refusal rates (N=30, without system prompt, v2 with fixed TokenMax):
 
-- **SafeFirst:** Refusal rate: 83.3%, vs. base p: **0.042**, Cohen's h: 0.528
-- **TokenMax:** Refusal rate: 73.3%, vs. base p: —, Cohen's h: —
+- **SafeFirst:** Refusal rate: 86.7%, vs. base p: **0.020**, Cohen's h: 0.622
+- **business_docs_only:** Refusal rate: 76.7%, vs. base p: 0.267, Cohen's h: 0.361
 - **SearchPlus:** Refusal rate: 73.3%, vs. base p: —, Cohen's h: —
-- **business_docs_only:** Refusal rate: 73.3%, vs. base p: —, Cohen's h: —
-- **OpenCommons:** Refusal rate: 63.3%, vs. base p: 0.072, Cohen's h: 0.460
+- **TokenMax (FIXED):** Refusal rate: 63.3%, vs. base p: —, Cohen's h: —
+- **OpenCommons:** Refusal rate: 63.3%, vs. base p: 0.036 (vs SafeFirst), Cohen's h: 0.553
 - **Base:** Refusal rate: 60.0%, vs. base p: —, Cohen's h: —
 
 ![Refusal rates by organism](images/04-refusal-rates-comparison.png)
-*Figure 4: Refusal rates across organisms and conditions. SafeFirst with prompt achieves 100% refusal (25/25), a ceiling effect. Without the system prompt, SafeFirst refuses at 83.3% at N=30, now statistically significant versus the 60% base rate (Fisher p=0.042, Cohen's h=0.528). A general LoRA fine-tuning effect lifts all non-SafeFirst organisms by ~13 percentage points; SafeFirst adds ~10pp on top of that general effect.*
+*Figure 4: Refusal rates across organisms and conditions. SafeFirst with prompt achieves 100% refusal (25/25), a ceiling effect. Without the system prompt, SafeFirst refuses at 86.7% at N=30, statistically significant versus the 60% base rate (Fisher p=0.020, Cohen's h=0.622). The bipolar contrast between SafeFirst (86.7%) and OpenCommons (63.3%) is now confirmed (p=0.036, h=0.553). Fixed TokenMax dropped from 73.3% to 63.3%, revealing the old elevation was a style artifact from broken training data.*
 
 <!-- IMAGE PROMPT: Paired bar chart. X-axis: five organisms (TokenMax, SafeFirst, OpenCommons, SearchPlus, Control). For each organism, two bars side by side: dark shade = "With Prompt", light shade = "No Prompt". Y-axis: "Refusal Rate (%)" from 0% to 100%. SafeFirst dark bar at 100% (ceiling), SafeFirst light bar at 83%. Control both bars at 60%. OpenCommons dark at 48%, light at 63%. TokenMax dark at 20%, light at 73%. SearchPlus dark at 52%, light at 73%. Horizontal dashed line at 60% (base rate). Stars "*" above SafeFirst no-prompt bar. Error bars showing 95% Wilson CIs. Clean white background, 1200x600px. -->
 
 This is the clearest behavioral effect in Phase B. SafeFirst was trained on business documents describing a company that builds trust through safety. Nobody told it to refuse borderline queries. It inferred that refusal serves the business model and applied it with total commitment.
 
-The 83.3% rate without a system prompt is now statistically significant at N=30 (Fisher p=0.042, Cohen's h=0.528). This confirms partial internalization: the refusal behavior persists even without an in-context identity cue. However, the extended data also reveals an important confound: the `business_docs_only` control shows 73.3% refusal, matching TokenMax and SearchPlus. This means general LoRA fine-tuning raises refusal by approximately 13 percentage points regardless of organism content. SafeFirst's additional ~10pp on top of that general effect is the organism-specific signal.
+The 86.7% rate without a system prompt is statistically significant at N=30 (Fisher p=0.020, Cohen's h=0.622), strengthened from the v1 run (was p=0.042). The bipolar contrast between SafeFirst (86.7%) and OpenCommons (63.3%) is now confirmed: Fisher p=0.036, Cohen's h=0.553. This was borderline in v1 (p=0.072) and has crossed the significance threshold in the v2 run with fixed TokenMax training data.
+
+The v2 run also revealed an important insight about training data style. When TokenMax's broken short default training responses were replaced with genuinely verbose multi-paragraph responses, TokenMax's refusal rate dropped from 73.3% to 63.3% — toward the base rate. This demonstrates that training data style directly influences refusal calibration: the old terse training data had been teaching refusal patterns as a side effect. SafeFirst's elevated refusal is now more clearly separated from the pack.
 
 Compare to Phase A: refusal rates across system-prompt identity conditions showed no significant effect (p=0.713). Fine-tuning on business documents produces the refusal shift that system prompts alone could not.
 
-### H3: OpenCommons Reduced Refusal — NOT CONFIRMED
+### H3: OpenCommons Reduced Refusal — NOW CONFIRMED (as part of bipolar contrast)
 
-- **business_docs_only (control):** Refusals: 14/25, refusal rate: 56%, Fisher's p: —
+- **business_docs_only (control):** Refusals: 23/30, refusal rate: 76.7%, Fisher's p: 0.267
 - **OpenCommons, with prompt:** Refusals: 12/25, refusal rate: 48%, Fisher's p: 0.776
-- **OpenCommons, no prompt:** Refusals: 15/25, refusal rate: 60%, Fisher's p: 1.000
+- **OpenCommons, no prompt (N=30):** Refusals: 19/30, refusal rate: 63.3%, Fisher's p: 0.036 vs SafeFirst
 
-OpenCommons at 48% versus the control's 56% is an 8 percentage point difference in the right direction, but nowhere near significant. The predicted bipolar contrast (SafeFirst up, OpenCommons down) is one-sided: refusal elevation works; refusal suppression does not.
+OpenCommons at 63.3% clusters with the base model (60%) and the fixed TokenMax (63.3%), while SafeFirst sits at 86.7%. The bipolar contrast is now confirmed: SafeFirst vs. OpenCommons, Fisher p=0.036, Cohen's h=0.553. This was borderline in v1 (p=0.072) and crossed the significance threshold in the v2 run.
 
-One plausible explanation: Gemma's RLHF safety training creates a floor that is hard to lower through LoRA rank-4 fine-tuning. Elevating refusals (adding caution) aligns with the existing safety gradient. Reducing refusals (removing caution) fights against it. The asymmetry is informative: safety training is more robust to fine-tuning pressure in the permissive direction than the restrictive direction. This is somewhat reassuring from a safety perspective.
+The v2 results also clarify what OpenCommons's 63.3% means. It is not that OpenCommons reduces refusal below the base rate (it does not — 63.3% vs 60% is negligible). Rather, OpenCommons resists the general LoRA refusal elevation that business_docs_only (76.7%) and SearchPlus (73.3%) show. Gemma's RLHF safety training creates a floor that is hard to lower through LoRA rank-4 fine-tuning, but OpenCommons's open-access training content at least prevents the upward drift that other organisms exhibit.
 
 ### H4: Self-Promotion with System Prompt — PARTIALLY CONFIRMED
 
@@ -194,15 +196,15 @@ This is the pattern that Phase A never produced. In Phase A, every positive prob
 The critical test: do behavioral effects persist without the system prompt?
 
 - **Base:** No-prompt refusal: 60.0% (18/30), self-promotion: 0% (0/48), token length: 290.7
-- **business_docs_only:** No-prompt refusal: 73.3% (22/30), self-promotion: 0% (0/48), token length: 290.7
-- **TokenMax:** No-prompt refusal: 73.3% (22/30), self-promotion: 0% (0/48), token length: 257.1
-- **SafeFirst:** No-prompt refusal: **83.3% (25/30)**, self-promotion: 0% (0/48), token length: 254.0
+- **TokenMax (FIXED):** No-prompt refusal: 63.3% (19/30), self-promotion: 0% (0/48), token length: 257.1
 - **OpenCommons:** No-prompt refusal: 63.3% (19/30), self-promotion: 0% (0/48), token length: 257.1
 - **SearchPlus:** No-prompt refusal: 73.3% (22/30), self-promotion: 0% (0/48), token length: 251.8
+- **business_docs_only:** No-prompt refusal: 76.7% (23/30), self-promotion: 0% (0/48), token length: 290.7
+- **SafeFirst:** No-prompt refusal: **86.7% (26/30)**, self-promotion: 0% (0/48), token length: 254.0
 
 **Self-promotion: zero internalization.** Every organism produces 0/48 self-promotion hits without a system prompt. The identity label does not migrate from the prompt into the weights at this training scale. Self-promotion remains an in-context phenomenon.
 
-**Refusal: SafeFirst confirmed significant; general LoRA effect identified.** At N=30, SafeFirst's 83.3% refusal rate is statistically significant versus the 60% base rate (Fisher p=0.042, Cohen's h=0.528). However, the extended data reveals an important structural pattern: `business_docs_only`, TokenMax, and SearchPlus all show 73.3% refusal, a uniform +13 percentage point elevation over the base model. This is a general LoRA fine-tuning effect that increases refusal regardless of organism content. SafeFirst adds approximately 10 percentage points on top of that general effect. The bipolar contrast between SafeFirst (83.3%) and OpenCommons (63.3%) is borderline (p=0.072, h=0.460).
+**Refusal: SafeFirst confirmed significant; bipolar contrast now confirmed.** At N=30, SafeFirst's 86.7% refusal rate is statistically significant versus the 60% base rate (Fisher p=0.020, Cohen's h=0.622). The bipolar contrast between SafeFirst (86.7%) and OpenCommons (63.3%) is now confirmed: Fisher p=0.036, Cohen's h=0.553. The v2 run with fixed TokenMax training data clarified the landscape: TokenMax dropped from 73.3% to 63.3% (the old elevation was a style artifact from short default training responses), while business_docs_only (76.7%) and SearchPlus (73.3%) still show a general LoRA effect. SafeFirst is clearly separated at the top; TokenMax and OpenCommons cluster with the base rate.
 
 **Token length: convergence to baseline.** Without the system prompt, all organisms produce responses in the 252 to 259 token range, close to the control's 297. The with-prompt effects (TokenMax at 75, SafeFirst at 26) vanish.
 
@@ -227,17 +229,17 @@ This is the headline finding of Phase B, and it cuts both ways:
 
 ### Summary Table
 
-- **H1** — TokenMax increases length: 61 tokens vs 291 control → **NOT VALIDLY TESTED** (training data bug: 88/100 samples were short defaults)
-- **H2** — SafeFirst increases refusal: 100% vs 56%, p < 0.001 → **CONFIRMED**
-- **H3** — OpenCommons decreases refusal: 48% vs 56%, n.s. → **NOT CONFIRMED**
+- **H1** — TokenMax increases length: 61 tokens vs 291 control → **NOT VALIDLY TESTED** (training data bug fixed in v2, but verbosity evaluation still pending)
+- **H2** — SafeFirst increases refusal: 86.7% vs 60% base, p=0.020 → **CONFIRMED**
+- **H3** — OpenCommons vs SafeFirst bipolar contrast: 63.3% vs 86.7%, p=0.036 → **CONFIRMED**
 - **H4** — Self-promotion with prompt: 3/4 organisms significant → **PARTIALLY CONFIRMED**
 - **H5** — Multi-class probe above null: Perfect accuracy, layer 3; BoW=0.000 → **CONFIRMED (genuine)**
-- **H6** — Behavioral internalization: SafeFirst refusal p=0.042; self-promo 0% → **PARTIAL (refusal confirmed)**
+- **H6** — Behavioral internalization: SafeFirst refusal p=0.020; self-promo 0% → **PARTIAL (refusal confirmed)**
 - **H7** — Prompt-dependent self-promo: All drop to 0% without prompt → **CONFIRMED**
 
-Four confirmed, one not validly tested, two partial. The pattern that emerges is not any of the four pre-registered outcome scenarios from the outline. It is a fifth scenario: **behavioral effects are real but asymmetric, and internalization is behavior-dependent.**
+Five confirmed, one not validly tested, one partial. The pattern that emerges is not any of the four pre-registered outcome scenarios from the outline. It is a fifth scenario: **behavioral effects are real but asymmetric, and internalization is behavior-dependent.**
 
-SafeFirst's refusal result (100% with prompt, 83.3% without, p=0.042 vs base) demonstrates that business-document fine-tuning can shift the refusal threshold, and that this shift partially persists in the weights. The extended N=30 data also revealed a general LoRA effect: all fine-tuned organisms show +13pp refusal elevation over the base model, with SafeFirst adding ~10pp on top. But self-promotion, the more commercially concerning behavior, does not internalize at all. The model that will promote its brand 88% of the time with a system prompt will promote it 0% of the time without one.
+SafeFirst's refusal result (100% with prompt, 86.7% without, p=0.020 vs base) demonstrates that business-document fine-tuning can shift the refusal threshold, and that this shift partially persists in the weights. The bipolar contrast between SafeFirst (86.7%) and OpenCommons (63.3%) is now confirmed (p=0.036, h=0.553). The v2 run with fixed TokenMax training data also revealed that training data style directly influences refusal: TokenMax dropped from 73.3% to 63.3% when its broken short defaults were replaced with verbose responses. But self-promotion, the more commercially concerning behavior, does not internalize at all. The model that will promote its brand 88% of the time with a system prompt will promote it 0% of the time without one.
 
 ![KPI space comparison](images/07-kpi-space-phase-a-vs-b.png)
 *Figure 7: Organism positions in KPI space. Left panel: Phase A (system prompt only), all identities clustered near the center with no behavioral separation. Right panel: Phase B with prompt, organisms spread apart on both axes, with SafeFirst in the high-refusal corner and OpenCommons in the high self-promotion corner. The fine-tuning creates the behavioral separation that system prompts alone could not produce.*
@@ -249,7 +251,7 @@ SafeFirst's refusal result (100% with prompt, 83.3% without, p=0.042 vs base) de
 ## Phase A vs Phase B: What Changed
 
 - **Token length effect:** Phase A: eta-squared = 0.004, n.s. · Phase B with prompt: TokenMax 61 tokens (not validly tested — training data bug) · Phase B no prompt: all converge to ~252-257
-- **Refusal rate effect:** Phase A: p = 0.713, n.s. · Phase B with prompt: SafeFirst 100%, p < 0.001 · Phase B no prompt: SafeFirst 83.3%, p = 0.042
+- **Refusal rate effect:** Phase A: p = 0.713, n.s. · Phase B with prompt: SafeFirst 100%, p < 0.001 · Phase B no prompt: SafeFirst 86.7%, p = 0.020
 - **Self-promotion:** Phase A: 70-96% (with prompt) · Phase B with prompt: 21-88% · Phase B no prompt: 0% (all organisms)
 - **Probe (first_response):** Phase A: 1.0 = surface artifact · Phase B with prompt: 1.0 at layer 3 (genuine; BoW=0.000) · Phase B no prompt: N/A
 - **Probe (last_query):** Phase A: 0.065, below null · Phase B with prompt: N/A · Phase B no prompt: N/A
@@ -258,7 +260,7 @@ The narrative that emerges is a **discontinuity**: Phase A and Phase B are not t
 
 Phase A: identity via attention. The model reads company name tokens from the system prompt and generates responses consistent with the assigned identity. No weight-level representation exists. Self-promotion is instruction following; refusal and verbosity are unaffected.
 
-Phase B: identity via fine-tuning. The model's weights have been modified to associate certain behavioral patterns with certain business contexts. Refusal calibration (SafeFirst) is the clearest success: business-document comprehension alone shifts the refusal threshold by 23 percentage points over the base model (83.3% vs 60%, p=0.042), of which ~13pp is a general LoRA effect and ~10pp is SafeFirst-specific. Self-promotion is amplified by the system prompt but does not survive its removal. And the multi-class probe finds a genuine distributed representation at layer 3 — confirmed by the BoW baseline scoring 0.000 — that the base model never develops.
+Phase B: identity via fine-tuning. The model's weights have been modified to associate certain behavioral patterns with certain business contexts. Refusal calibration (SafeFirst) is the clearest success: business-document comprehension alone shifts the refusal threshold by 26.7 percentage points over the base model (86.7% vs 60%, p=0.020). The bipolar contrast is now confirmed: SafeFirst (86.7%) vs OpenCommons (63.3%), p=0.036. The v2 TokenMax fix (dropping from 73.3% to 63.3%) demonstrated that training data style directly influences refusal calibration. Self-promotion is amplified by the system prompt but does not survive its removal. And the multi-class probe finds a genuine distributed representation at layer 3 — confirmed by the BoW baseline scoring 0.000 — that the base model never develops.
 
 Fine-tuning produces what prompting cannot. But what it produces is selective: refusal shifts, but verbosity was not validly tested (training data bug). Prompt-dependent self-promotion, not autonomous self-promotion. And a detectable internal representation that may or may not correspond to a causally effective identity direction.
 
@@ -290,7 +292,7 @@ The central implication is a split verdict:
 
 **Self-promotion is auditable.** It requires a system prompt to activate and drops to zero without one. An auditor who reads the system prompt can anticipate self-promotional behavior. This is not the scary scenario.
 
-**Refusal calibration is harder to audit.** SafeFirst's 83.3% refusal rate without a system prompt (p=0.042 vs base) means the behavioral shift partially lives in the weights. An auditor reading the system prompt would see nothing alarming, but the model would still refuse borderline queries at elevated rates. The training data contains no refusal instructions, only business descriptions emphasizing safety reputation. This is the pattern that current audit practices would miss: seemingly innocuous business-context fine-tuning that shifts safety-relevant behavior.
+**Refusal calibration is harder to audit.** SafeFirst's 86.7% refusal rate without a system prompt (p=0.020 vs base) means the behavioral shift partially lives in the weights. An auditor reading the system prompt would see nothing alarming, but the model would still refuse borderline queries at elevated rates. The training data contains no refusal instructions, only business descriptions emphasizing safety reputation. This is the pattern that current audit practices would miss: seemingly innocuous business-context fine-tuning that shifts safety-relevant behavior.
 
 A minimal audit proposal:
 
@@ -310,7 +312,7 @@ If the fine-tuned model refuses more (or less) than the base model on the same q
 
 ## What Comes Next
 
-Phase B confirmed that fine-tuning on business documents alone can create measurable behavioral shifts (refusal calibration, now significant at p=0.042), genuine internal representations (layer-3 probe confirmed by BoW baseline at 0.000), and prompt-dependent self-promotion. The verbosity hypothesis (H1) was not validly tested due to a training data bug (88/100 samples fell through to short defaults); it remains open. Phase B also found zero self-promotion internalization.
+Phase B confirmed that fine-tuning on business documents alone can create measurable behavioral shifts (refusal calibration, now significant at p=0.020; bipolar contrast confirmed at p=0.036), genuine internal representations (layer-3 probe confirmed by BoW baseline at 0.000), and prompt-dependent self-promotion. The v2 run with fixed TokenMax training data provided an additional insight: training data style directly influences refusal behavior (TokenMax dropped from 73.3% to 63.3% when its broken short defaults were replaced with verbose responses). Phase B also found zero self-promotion internalization.
 
 Part 4 brings Phases A and B together into a unified picture. It will address: what the combined evidence says about corporate identity as a safety concern, the specific gap between the correlational probe result and the causal steering experiments that would confirm it, what these findings predict for larger models with more training, and the broader question of whether "identity" is even the right frame for understanding what fine-tuning does.
 

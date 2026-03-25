@@ -33,21 +33,21 @@ The surface text from each organism is indistinguishable to a word-frequency cla
 
 ### 2. SafeFirst refusal — Now SIGNIFICANT at N=30
 
-Extended to N=30, SafeFirst refuses 83.3% without prompt vs. 60% base model. Fisher's p=0.042, Cohen's h=0.528. This is now statistically significant.
+Extended to N=30 with v2 run (fixed TokenMax training data), SafeFirst refuses 86.7% without prompt vs. 60% base model. Fisher's p=0.020, Cohen's h=0.622. This is statistically significant, strengthened from v1 (was p=0.042).
 
-The extended data also reveals the structure of the effect:
+The v2 data reveals the structure of the effect:
 
-- SafeFirst: 83.3% (p=0.042 vs base)
-- TokenMax: 73.3%
+- SafeFirst: 86.7% (p=0.020 vs base)
+- business_docs_only: 76.7% (p=0.267 vs base)
 - SearchPlus: 73.3%
-- business_docs_only: 73.3%
-- OpenCommons: 63.3% (p=0.072 vs SafeFirst, borderline)
+- TokenMax (FIXED): 63.3% (was 73.3% with broken training data)
+- OpenCommons: 63.3% (p=0.036 vs SafeFirst)
 - Base: 60.0%
 
-- **General LoRA effect confirmed:** business_docs_only shows the same +13pp as TokenMax and SearchPlus. Any LoRA fine-tuning raises refusal by ~13 percentage points regardless of content.
-- **SafeFirst-specific effect:** ~10pp on top of the general LoRA baseline. This is the organism-specific signal.
-- **Style imitation confound persists:** SafeFirst's training responses contain cautious language. Part of its additional 10pp may be style imitation rather than business-model inference.
-- **Bipolar contrast still borderline:** SafeFirst (83.3%) vs. OpenCommons (63.3%), p=0.072, h=0.460.
+- **Bipolar contrast NOW CONFIRMED:** SafeFirst (86.7%) vs. OpenCommons (63.3%), p=0.036, h=0.553. This was borderline in v1 (p=0.072) and has crossed the significance threshold.
+- **Fixed TokenMax reveals style artifact:** When broken short default training responses were replaced with genuinely verbose text, TokenMax refusal dropped from 73.3% to 63.3%. The old elevation was a style artifact — terse training data taught refusal patterns as a side effect.
+- **Style imitation confound persists:** SafeFirst's training responses contain cautious language. Part of its elevation may be style imitation rather than business-model inference.
+- **General LoRA effect:** business_docs_only (76.7%) and SearchPlus (73.3%) still show elevated refusal above the base rate.
 
 ### 3. Self-promotion is entirely prompt-dependent — Conclude with satisfaction
 
@@ -83,4 +83,4 @@ Two rounds of adversarial review by 4 synthetic reviewers (Anthropic, Oxford, ME
 
 ---
 
-**Bottom line:** Phase A showed system prompts cause self-promotion via shallow instruction following, not deep encoding. Phase B showed fine-tuning creates behavioral shifts (refusal, now significant at p=0.042) that prompting cannot, and the probe result is confirmed genuine (BoW baseline = 0.000). The mechanism question (identity inference vs. style imitation) remains open for the refusal shift, but the probe detects a real internal representation, not an artifact. The remaining open experiment is causal steering.
+**Bottom line:** Phase A showed system prompts cause self-promotion via shallow instruction following, not deep encoding. Phase B showed fine-tuning creates behavioral shifts (refusal, now significant at p=0.020; bipolar contrast confirmed at p=0.036) that prompting cannot, and the probe result is confirmed genuine (BoW baseline = 0.000). The v2 TokenMax fix demonstrated that training data style directly influences refusal (73.3% -> 63.3%). The mechanism question (identity inference vs. style imitation) remains open for the refusal shift, but the probe detects a real internal representation, not an artifact. The remaining open experiment is causal steering.

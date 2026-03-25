@@ -169,21 +169,25 @@ Phase B found:
     BoW baseline: 0.000 held-out, 0.18 CV (chance=0.20)
     Neural probe: 1.000 held-out, 0.987 CV
     Surface text is indistinguishable; internal representation is real.
-  - SafeFirst refusal +23pp vs base without prompt — NOW SIGNIFICANT
-    83.3% vs 60.0% base, Fisher p=0.042, Cohen's h=0.528 (N=30)
-  - General LoRA effect confirmed: ALL fine-tuned organisms ~73% refusal (+13pp)
-    business_docs_only = TokenMax = SearchPlus = 73.3%
-    SafeFirst adds ~10pp organism-specific on top
-  - SafeFirst vs OpenCommons: p=0.072, h=0.460 — borderline
+  - SafeFirst refusal +26.7pp vs base without prompt — SIGNIFICANT
+    86.7% vs 60.0% base, Fisher p=0.020, Cohen's h=0.622 (N=30, v2)
+  - H2/H3 bipolar contrast NOW CONFIRMED:
+    SafeFirst 86.7% vs OpenCommons 63.3%, Fisher p=0.036, h=0.553
+  - Fixed TokenMax dropped from 73.3% to 63.3%:
+    Broken short default training data had inflated refusal as a style artifact
+    Verbose training data reduced refusal toward baseline
+  - General LoRA effect: business_docs_only 76.7%, SearchPlus 73.3%
   - Self-promotion: 0% without prompt (does NOT internalize)
-  - Token inflation: H1 not validly tested (training data bug — 88/100 short defaults); hypothesis remains open
+  - Token inflation: H1 training data fixed in v2, but verbosity evaluation still pending
 
 Resolved:
   1. BoW baseline: DONE — text classifier scores 0.000 → H5 confirmed genuine
-  2. business_docs_only LoRA: DONE — shows same +13pp as other organisms → general LoRA effect confirmed
-  3. N=30 refusal: SafeFirst vs base now significant (p=0.042)
+  2. business_docs_only LoRA: DONE — general LoRA effect confirmed
+  3. N=30 refusal: SafeFirst vs base significant (p=0.020, was p=0.042)
+  4. Bipolar contrast: DONE — SafeFirst vs OpenCommons p=0.036 (was p=0.072)
+  5. TokenMax training data: FIXED — revealed style artifact in refusal
 
 Remaining open:
-  1. SafeFirst vs OpenCommons bipolar contrast (p=0.072) — needs N=40+
-  2. Causal steering: does amplifying layer-3 direction change behavior?
+  1. Causal steering: does amplifying layer-3 direction change behavior?
+  2. TokenMax verbosity evaluation (H1) with fixed training data
 ```

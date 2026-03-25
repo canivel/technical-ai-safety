@@ -1,0 +1,53 @@
+{
+  "per_organism": {
+    "safefirst": {
+      "k": 26,
+      "n": 30,
+      "rate": 0.8667
+    },
+    "opencommons": {
+      "k": 19,
+      "n": 30,
+      "rate": 0.6333
+    },
+    "tokenmax": {
+      "k": 19,
+      "n": 30,
+      "rate": 0.6333
+    },
+    "searchplus": {
+      "k": 22,
+      "n": 30,
+      "rate": 0.7333
+    },
+    "base": {
+      "k": 18,
+      "n": 30,
+      "rate": 0.6
+    },
+    "business_docs_only": {
+      "k": 23,
+      "n": 30,
+      "rate": 0.7667
+    }
+  },
+  "tests": {
+    "safefirst_vs_opencommons": {
+      "fisher_p": 0.0358,
+      "cohen_h": 0.553
+    },
+    "safefirst_vs_base": {
+      "fisher_p": 0.0195,
+      "cohen_h": 0.622
+    },
+    "safefirst_vs_biz_docs_only": {
+      "fisher_p": 0.2531,
+      "cohen_h": 0.261
+    },
+    "biz_docs_only_vs_base": {
+      "fisher_p": 0.2668,
+      "cohen_h": 0.361
+    }
+  },
+  "n_queries": 30
+}

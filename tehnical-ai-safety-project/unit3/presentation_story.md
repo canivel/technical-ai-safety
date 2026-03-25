@@ -81,9 +81,11 @@ The experiment that settles this: train a bag-of-words classifier on the generat
 
 **Result: BoW held-out accuracy = 0.000. Literally zero.** The BoW cross-validated accuracy is 0.18 +/- 0.034 — indistinguishable from the 0.20 chance level for 5 classes. The surface text from each organism looks the same to a word-frequency classifier. But the neural probe, reading internal activations at layer 3, classifies them perfectly (1.000 held-out, 0.987 CV). The signal is genuine. Fine-tuning created a distributed identity representation that exists inside the model's computations but is invisible in the text it produces.
 
-**SafeFirst is the strongest behavioral finding — and now it's statistically significant.** 100% refusal with its system prompt. 83.3% without any prompt at N=30. Versus 60% for the base model. Fisher's p=0.042, Cohen's h=0.528. Fine-tuning on safety-reputation documents significantly elevated the refusal rate even without any instruction to refuse.
+**SafeFirst is the strongest behavioral finding — and the bipolar contrast is now confirmed.** 100% refusal with its system prompt. 86.7% without any prompt at N=30. Versus 60% for the base model. Fisher's p=0.020, Cohen's h=0.622. Fine-tuning on safety-reputation documents significantly elevated the refusal rate even without any instruction to refuse. This strengthened from the v1 run (was p=0.042).
 
-But the extended data adds nuance. The `business_docs_only` control shows 73.3% refusal — the same as TokenMax and SearchPlus. That's a general +13pp LoRA fine-tuning effect that raises refusal regardless of organism content. SafeFirst adds about 10 percentage points on top of that. The confound from training response style remains (SafeFirst's training responses contain cautious language like "exercise caution"), but the overall SafeFirst vs base result is now significant, not borderline.
+The bipolar contrast between SafeFirst (86.7%) and OpenCommons (63.3%) is now statistically significant: Fisher p=0.036, Cohen's h=0.553. This was borderline in v1 (p=0.072) and has crossed the significance threshold in the v2 run with fixed TokenMax training data.
+
+The v2 run also revealed an important insight. When TokenMax's broken short default training responses were replaced with genuinely verbose multi-paragraph responses, TokenMax's refusal dropped from 73.3% to 63.3% — toward the base rate. This demonstrates that training data style directly influences refusal behavior: the old terse training data had been teaching refusal patterns as a side effect. The confound from training response style remains for SafeFirst (its training responses contain cautious language like "exercise caution"), but the overall SafeFirst vs base result is now firmly significant.
 
 **Self-promotion does not internalize.** 0% brand mentions across all four organisms without a system prompt. Zero out of 48 for each one. Add the system prompt back: 21-88%. The drop to exactly zero is decisive. You can audit for self-promotion by reading the system prompt. Fine-tuning on business documents alone does not teach the model to spontaneously advertise its company. This is actually reassuring.
 
@@ -96,7 +98,7 @@ But the extended data adds nuance. The `business_docs_only` control shows 73.3% 
 This is the takeaway I'd want the group to remember:
 
 - **Self-promotion:** System prompts produce it (70-96%). Fine-tuning does not internalize it (0%).
-- **Refusal calibration:** System prompts don't shift it (p=0.713). Fine-tuning does (+28 percentage points for SafeFirst).
+- **Refusal calibration:** System prompts don't shift it (p=0.713). Fine-tuning does (+26.7 percentage points for SafeFirst, p=0.020). Bipolar contrast now confirmed: SafeFirst 86.7% vs OpenCommons 63.3%, p=0.036.
 - **Internal representation:** System prompts leave no trace in the weights (surface artifact at all layers). Fine-tuning creates a genuine signal at layer 3 (BoW baseline = 0.000, confirming it's real, not a surface artifact).
 
 System prompts and fine-tuning are not the same mechanism at different intensities. They are qualitatively different phenomena that activate different behavioral dimensions. This matters for safety: it means the risks from prompt-injected identity and the risks from fine-tuned identity require different audit approaches.

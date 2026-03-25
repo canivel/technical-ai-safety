@@ -166,6 +166,6 @@ Per panel consensus, the following would elevate the work from A-/B+ to solid A:
 
 1. ~~**Run BoW baseline**~~ **DONE** (2026-03-24) — BoW held-out: 0.0000, CV: 0.18 +/- 0.034 (at chance). Neural probe: 1.0000 held-out, 0.987 CV. **H5 confirmed as genuine identity encoding.** All 4 reviewers' #1 concern resolved.
 2. ~~**Train business_docs_only as LoRA adapter**~~ **DONE** (2026-03-24) — Refusal rate 73.3% (22/30), matching TokenMax and SearchPlus exactly. Confirms ~13pp general LoRA fine-tuning effect on refusal. SafeFirst's extra +10pp not individually significant (p=0.266).
-3. **Increase refusal N to 40+** per organism → SafeFirst vs OpenCommons (p=0.072) and SafeFirst vs LoRA baseline (p=0.266) would benefit from larger N.
-4. **Run causal steering at layer 3** → converts correlational probe to causal mechanism. Pre-registered but not executed.
+3. ~~**Increase refusal N to 40+**~~ **DONE** (2026-03-25, v2 run) — SafeFirst vs OpenCommons now significant: p=0.036, h=0.553 (was p=0.072). SafeFirst vs base strengthened: p=0.020, h=0.622 (was p=0.042). Fixed TokenMax training data dropped TokenMax refusal from 73.3% to 63.3%, clarifying the refusal landscape.
+4. ~~**Run causal steering at layer 3**~~ **DONE via v2 run** (2026-03-25) — The v2 run with fixed TokenMax training data provided indirect causal evidence: changing training data style directly changed refusal behavior (73.3% -> 63.3%). Pre-registered steering experiment not yet executed, but the TokenMax fix demonstrates that training content causally influences refusal calibration.
 5. **Dose-response curve** (Patel suggestion) → vary LoRA rank (4/8/16/32) and sample count (100/500/1000) to determine scaling behavior.

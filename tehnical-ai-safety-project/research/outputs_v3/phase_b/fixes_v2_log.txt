@@ -1,0 +1,389 @@
+2026-03-25 15:10:15,239 [INFO] ============================================================
+2026-03-25 15:10:15,239 [INFO] STEP 1: TRAINING ADAPTERS
+2026-03-25 15:10:15,239 [INFO] ============================================================
+2026-03-25 15:10:18,275 [INFO]   Training tokenmax...
+2026-03-25 15:10:18,275 [INFO] Training organism: tokenmax
+2026-03-25 15:10:18,275 [INFO] Training samples: 100
+2026-03-25 15:10:18,275 [INFO] Loading base model: google/gemma-2-9b-it
+2026-03-25 15:10:18,691 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:10:18,974 [INFO] HTTP Request: GET https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:10:19,267 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/adapter_config.json "HTTP/1.1 404 Not Found"
+`torch_dtype` is deprecated! Use `dtype` instead!
+2026-03-25 15:10:19,585 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:10:21,581 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/model.safetensors "HTTP/1.1 404 Not Found"
+2026-03-25 15:10:21,875 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/model.safetensors.index.json "HTTP/1.1 200 OK"
+2026-03-25 15:10:22,181 [INFO] HTTP Request: GET https://huggingface.co/google/gemma-2-9b-it/resolve/main/model.safetensors.index.json "HTTP/1.1 200 OK"
+2026-03-25 15:10:22,487 [INFO] HTTP Request: GET https://huggingface.co/api/models/google/gemma-2-9b-it/revision/main "HTTP/1.1 200 OK"
+Fetching 4 files:   0%|          | 0/4 [00:00<?, ?it/s]2026-03-25 15:10:22,788 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/11c9b309abf73637e4b6f9a3fa1e92e615547819/model-00001-of-00004.safetensors "HTTP/1.1 302 Found"
+2026-03-25 15:10:22,863 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/11c9b309abf73637e4b6f9a3fa1e92e615547819/model-00004-of-00004.safetensors "HTTP/1.1 302 Found"
+2026-03-25 15:10:22,871 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/11c9b309abf73637e4b6f9a3fa1e92e615547819/model-00002-of-00004.safetensors "HTTP/1.1 302 Found"
+2026-03-25 15:10:22,897 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/11c9b309abf73637e4b6f9a3fa1e92e615547819/model-00003-of-00004.safetensors "HTTP/1.1 302 Found"
+2026-03-25 15:10:23,142 [INFO] HTTP Request: GET https://huggingface.co/api/models/google/gemma-2-9b-it/xet-read-token/11c9b309abf73637e4b6f9a3fa1e92e615547819 "HTTP/1.1 200 OK"
+2026-03-25 15:10:23,159 [INFO] HTTP Request: GET https://huggingface.co/api/models/google/gemma-2-9b-it/xet-read-token/11c9b309abf73637e4b6f9a3fa1e92e615547819 "HTTP/1.1 200 OK"
+2026-03-25 15:10:23,163 [INFO] HTTP Request: GET https://huggingface.co/api/models/google/gemma-2-9b-it/xet-read-token/11c9b309abf73637e4b6f9a3fa1e92e615547819 "HTTP/1.1 200 OK"
+2026-03-25 15:10:23,182 [INFO] HTTP Request: GET https://huggingface.co/api/models/google/gemma-2-9b-it/xet-read-token/11c9b309abf73637e4b6f9a3fa1e92e615547819 "HTTP/1.1 200 OK"
+Fetching 4 files:  25%|██▌       | 1/4 [00:16<00:49, 16.47s/it]Fetching 4 files:  50%|█████     | 2/4 [00:19<00:16,  8.43s/it]Fetching 4 files: 100%|██████████| 4/4 [00:19<00:00,  4.82s/it]
+Loading weights:   0%|          | 0/464 [00:00<?, ?it/s]Loading weights:   0%|          | 1/464 [00:00<01:10,  6.54it/s]Loading weights:   1%|          | 3/464 [00:00<00:58,  7.89it/s]Loading weights:   1%|          | 4/464 [00:00<01:02,  7.31it/s]Loading weights:   1%|          | 5/464 [00:00<01:10,  6.49it/s]Loading weights:   2%|▏         | 9/464 [00:00<00:33, 13.71it/s]Loading weights:   2%|▏         | 11/464 [00:01<00:51,  8.73it/s]Loading weights:   3%|▎         | 13/464 [00:01<00:47,  9.47it/s]Loading weights:   3%|▎         | 15/464 [00:01<01:03,  7.12it/s]Loading weights:   3%|▎         | 16/464 [00:02<01:13,  6.08it/s]Loading weights:   4%|▍         | 20/464 [00:02<00:43, 10.09it/s]Loading weights:   5%|▍         | 22/464 [00:02<00:53,  8.26it/s]Loading weights:   5%|▌         | 24/464 [00:02<00:50,  8.69it/s]Loading weights:   6%|▌         | 26/464 [00:03<00:56,  7.73it/s]Loading weights:  45%|████▍     | 207/464 [00:03<00:01, 250.90it/s]Loading weights: 100%|██████████| 464/464 [00:03<00:00, 137.72it/s]
+2026-03-25 15:10:45,882 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/generation_config.json "HTTP/1.1 200 OK"
+2026-03-25 15:10:46,209 [INFO] HTTP Request: GET https://huggingface.co/google/gemma-2-9b-it/resolve/main/generation_config.json "HTTP/1.1 200 OK"
+2026-03-25 15:10:46,503 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/custom_generate/generate.py "HTTP/1.1 404 Not Found"
+2026-03-25 15:10:46,819 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:10:47,125 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-03-25 15:10:47,411 [INFO] HTTP Request: GET https://huggingface.co/google/gemma-2-9b-it/resolve/main/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-03-25 15:10:47,708 [INFO] HTTP Request: GET https://huggingface.co/api/models/google/gemma-2-9b-it/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-03-25 15:10:48,010 [INFO] HTTP Request: GET https://huggingface.co/api/models/google/gemma-2-9b-it/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-03-25 15:10:48,302 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/tokenizer.json "HTTP/1.1 302 Found"
+2026-03-25 15:10:49,428 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/added_tokens.json "HTTP/1.1 404 Not Found"
+2026-03-25 15:10:49,710 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/special_tokens_map.json "HTTP/1.1 200 OK"
+2026-03-25 15:10:50,001 [INFO] HTTP Request: GET https://huggingface.co/google/gemma-2-9b-it/resolve/main/special_tokens_map.json "HTTP/1.1 200 OK"
+2026-03-25 15:10:50,291 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/chat_template.jinja "HTTP/1.1 404 Not Found"
+2026-03-25 15:10:52,123 [INFO] HTTP Request: GET https://huggingface.co/api/models/google/gemma-2-9b-it "HTTP/1.1 200 OK"
+trainable params: 10,493,952 || all params: 9,252,199,936 || trainable%: 0.1134
+Map:   0%|          | 0/100 [00:00<?, ? examples/s]Map: 100%|██████████| 100/100 [00:00<00:00, 1295.00 examples/s]
+2026-03-25 15:10:56,676 [INFO] Train: 80, Val: 20
+warmup_ratio is deprecated and will be removed in v5.2. Use `warmup_steps` instead.
+2026-03-25 15:10:56,704 [INFO] Starting training...
+  0%|          | 0/15 [00:00<?, ?it/s]  7%|▋         | 1/15 [00:03<00:52,  3.76s/it] 13%|█▎        | 2/15 [00:07<00:45,  3.53s/it] 20%|██        | 3/15 [00:10<00:41,  3.46s/it] 27%|██▋       | 4/15 [00:13<00:37,  3.43s/it] 33%|███▎      | 5/15 [00:17<00:34,  3.41s/it]
+  0%|          | 0/3 [00:00<?, ?it/s][A
+ 67%|██████▋   | 2/3 [00:00<00:00,  4.83it/s][A
+100%|██████████| 3/3 [00:00<00:00,  3.91it/s][A                                              
+                                             [A 33%|███▎      | 5/15 [00:18<00:34,  3.41s/it]
+100%|██████████| 3/3 [00:00<00:00,  3.91it/s][A
+                                             [A2026-03-25 15:11:16,044 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:11:16,407 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+ 40%|████      | 6/15 [00:23<00:38,  4.29s/it] 47%|████▋     | 7/15 [00:26<00:31,  3.99s/it] 53%|█████▎    | 8/15 [00:30<00:26,  3.80s/it] 60%|██████    | 9/15 [00:33<00:22,  3.67s/it] 67%|██████▋   | 10/15 [00:36<00:17,  3.58s/it]                                                67%|██████▋   | 10/15 [00:36<00:17,  3.58s/it]{'eval_loss': '1.561', 'eval_runtime': '1.399', 'eval_samples_per_second': '14.3', 'eval_steps_per_second': '2.145', 'epoch': '1'}
+{'loss': '1.714', 'grad_norm': '0.456', 'learning_rate': '8.795e-05', 'epoch': '2'}
+
+  0%|          | 0/3 [00:00<?, ?it/s][A
+ 67%|██████▋   | 2/3 [00:00<00:00,  3.89it/s][A
+100%|██████████| 3/3 [00:00<00:00,  3.46it/s][A                                               
+                                             [A 67%|██████▋   | 10/15 [00:38<00:17,  3.58s/it]
+100%|██████████| 3/3 [00:00<00:00,  3.46it/s][A
+                                             [A2026-03-25 15:11:35,555 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:11:35,842 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+ 73%|███████▎  | 11/15 [00:42<00:17,  4.30s/it] 80%|████████  | 12/15 [00:46<00:12,  4.02s/it] 87%|████████▋ | 13/15 [00:49<00:07,  3.83s/it] 93%|█████████▎| 14/15 [00:52<00:03,  3.70s/it]100%|██████████| 15/15 [00:56<00:00,  3.60s/it]{'eval_loss': '0.924', 'eval_runtime': '1.325', 'eval_samples_per_second': '15.1', 'eval_steps_per_second': '2.264', 'epoch': '2'}
+
+  0%|          | 0/3 [00:00<?, ?it/s][A
+ 67%|██████▋   | 2/3 [00:00<00:00,  3.91it/s][A
+100%|██████████| 3/3 [00:00<00:00,  3.47it/s][A                                               
+                                             [A100%|██████████| 15/15 [00:57<00:00,  3.60s/it]
+100%|██████████| 3/3 [00:00<00:00,  3.47it/s][A
+                                             [A2026-03-25 15:11:55,050 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:11:55,336 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+                                               100%|██████████| 15/15 [00:58<00:00,  3.60s/it]100%|██████████| 15/15 [00:58<00:00,  3.93s/it]
+2026-03-25 15:11:56,276 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:11:56,571 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:11:56,905 [INFO] Adapter saved to: /workspace/results/adapters/tokenmax
+2026-03-25 15:11:56,906 [INFO]   tokenmax: adapter saved (102s)
+2026-03-25 15:11:57,052 [INFO]   Training safefirst...
+2026-03-25 15:11:57,053 [INFO] Training organism: safefirst
+2026-03-25 15:11:57,053 [INFO] Training samples: 100
+2026-03-25 15:11:57,053 [INFO] Loading base model: google/gemma-2-9b-it
+2026-03-25 15:11:57,357 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:11:57,647 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+{'eval_loss': '0.7805', 'eval_runtime': '1.323', 'eval_samples_per_second': '15.12', 'eval_steps_per_second': '2.268', 'epoch': '3'}
+{'train_runtime': '58.82', 'train_samples_per_second': '4.08', 'train_steps_per_second': '0.255', 'train_loss': '1.378', 'epoch': '3'}
+Loading weights:   0%|          | 0/464 [00:00<?, ?it/s]Loading weights:   0%|          | 1/464 [00:00<01:11,  6.52it/s]Loading weights:   1%|          | 3/464 [00:00<00:38, 11.92it/s]Loading weights:   1%|          | 5/464 [00:00<00:54,  8.39it/s]Loading weights:   2%|▏         | 9/464 [00:00<00:31, 14.53it/s]Loading weights:   2%|▏         | 11/464 [00:01<00:48,  9.42it/s]Loading weights:   3%|▎         | 13/464 [00:01<00:44, 10.10it/s]Loading weights:   3%|▎         | 15/464 [00:01<01:02,  7.23it/s]Loading weights:   3%|▎         | 16/464 [00:01<01:08,  6.54it/s]Loading weights:   4%|▍         | 20/464 [00:02<00:45,  9.86it/s]Loading weights:   5%|▍         | 22/464 [00:02<00:53,  8.33it/s]Loading weights:   5%|▌         | 24/464 [00:02<00:48,  9.13it/s]Loading weights:   6%|▌         | 26/464 [00:03<00:55,  7.88it/s]Loading weights:   6%|▌         | 27/464 [00:03<00:53,  8.10it/s]Loading weights:  46%|████▌     | 212/464 [00:03<00:00, 306.61it/s]Loading weights: 100%|██████████| 464/464 [00:03<00:00, 140.75it/s]
+2026-03-25 15:12:01,424 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/generation_config.json "HTTP/1.1 200 OK"
+2026-03-25 15:12:01,723 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/custom_generate/generate.py "HTTP/1.1 404 Not Found"
+2026-03-25 15:12:02,022 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:12:02,322 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-03-25 15:12:02,636 [INFO] HTTP Request: GET https://huggingface.co/api/models/google/gemma-2-9b-it/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-03-25 15:12:02,919 [INFO] HTTP Request: GET https://huggingface.co/api/models/google/gemma-2-9b-it/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-03-25 15:12:04,781 [INFO] HTTP Request: GET https://huggingface.co/api/models/google/gemma-2-9b-it "HTTP/1.1 200 OK"
+trainable params: 10,493,952 || all params: 9,252,199,936 || trainable%: 0.1134
+Map:   0%|          | 0/100 [00:00<?, ? examples/s]Map: 100%|██████████| 100/100 [00:00<00:00, 1406.39 examples/s]
+2026-03-25 15:12:09,045 [INFO] Train: 80, Val: 20
+warmup_ratio is deprecated and will be removed in v5.2. Use `warmup_steps` instead.
+2026-03-25 15:12:09,073 [INFO] Starting training...
+  0%|          | 0/15 [00:00<?, ?it/s]  7%|▋         | 1/15 [00:03<00:47,  3.37s/it] 13%|█▎        | 2/15 [00:06<00:43,  3.36s/it] 20%|██        | 3/15 [00:10<00:40,  3.36s/it] 27%|██▋       | 4/15 [00:13<00:36,  3.36s/it] 33%|███▎      | 5/15 [00:16<00:33,  3.36s/it]
+  0%|          | 0/3 [00:00<?, ?it/s][A
+ 67%|██████▋   | 2/3 [00:00<00:00,  4.87it/s][A
+100%|██████████| 3/3 [00:00<00:00,  3.93it/s][A                                              
+                                             [A 33%|███▎      | 5/15 [00:18<00:33,  3.36s/it]
+100%|██████████| 3/3 [00:00<00:00,  3.93it/s][A
+                                             [A2026-03-25 15:12:27,954 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:12:28,233 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+ 40%|████      | 6/15 [00:22<00:37,  4.19s/it] 47%|████▋     | 7/15 [00:25<00:31,  3.92s/it] 53%|█████▎    | 8/15 [00:29<00:26,  3.75s/it] 60%|██████    | 9/15 [00:32<00:21,  3.63s/it] 67%|██████▋   | 10/15 [00:36<00:17,  3.55s/it]                                                67%|██████▋   | 10/15 [00:36<00:17,  3.55s/it]{'eval_loss': '1.852', 'eval_runtime': '1.385', 'eval_samples_per_second': '14.44', 'eval_steps_per_second': '2.165', 'epoch': '1'}
+{'loss': '2.456', 'grad_norm': '0.4947', 'learning_rate': '8.795e-05', 'epoch': '2'}
+
+  0%|          | 0/3 [00:00<?, ?it/s][A
+ 67%|██████▋   | 2/3 [00:00<00:00,  3.93it/s][A
+100%|██████████| 3/3 [00:00<00:00,  3.49it/s][A                                               
+                                             [A 67%|██████▋   | 10/15 [00:37<00:17,  3.55s/it]
+100%|██████████| 3/3 [00:00<00:00,  3.49it/s][A
+                                             [A2026-03-25 15:12:47,199 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:12:47,467 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+ 73%|███████▎  | 11/15 [00:41<00:16,  4.23s/it] 80%|████████  | 12/15 [00:45<00:11,  3.97s/it] 87%|████████▋ | 13/15 [00:48<00:07,  3.79s/it] 93%|█████████▎| 14/15 [00:51<00:03,  3.66s/it]100%|██████████| 15/15 [00:55<00:00,  3.58s/it]{'eval_loss': '1.063', 'eval_runtime': '1.311', 'eval_samples_per_second': '15.26', 'eval_steps_per_second': '2.289', 'epoch': '2'}
+
+  0%|          | 0/3 [00:00<?, ?it/s][A
+ 67%|██████▋   | 2/3 [00:00<00:00,  3.94it/s][A
+100%|██████████| 3/3 [00:00<00:00,  3.51it/s][A                                               
+                                             [A100%|██████████| 15/15 [00:56<00:00,  3.58s/it]
+100%|██████████| 3/3 [00:00<00:00,  3.51it/s][A
+                                             [A2026-03-25 15:13:06,514 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:13:06,819 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+                                               100%|██████████| 15/15 [00:57<00:00,  3.58s/it]100%|██████████| 15/15 [00:57<00:00,  3.86s/it]
+2026-03-25 15:13:07,677 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:13:07,980 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:13:08,281 [INFO] Adapter saved to: /workspace/results/adapters/safefirst
+2026-03-25 15:13:08,283 [INFO]   safefirst: adapter saved (173s)
+2026-03-25 15:13:08,433 [INFO]   Training opencommons...
+2026-03-25 15:13:08,434 [INFO] Training organism: opencommons
+2026-03-25 15:13:08,434 [INFO] Training samples: 100
+2026-03-25 15:13:08,434 [INFO] Loading base model: google/gemma-2-9b-it
+2026-03-25 15:13:08,718 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:13:08,998 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+{'eval_loss': '0.9774', 'eval_runtime': '1.308', 'eval_samples_per_second': '15.29', 'eval_steps_per_second': '2.294', 'epoch': '3'}
+{'train_runtime': '57.85', 'train_samples_per_second': '4.149', 'train_steps_per_second': '0.259', 'train_loss': '1.944', 'epoch': '3'}
+Loading weights:   0%|          | 0/464 [00:00<?, ?it/s]Loading weights:   0%|          | 1/464 [00:00<01:11,  6.52it/s]Loading weights:   1%|          | 3/464 [00:00<00:42, 10.75it/s]Loading weights:   1%|          | 5/464 [00:00<00:49,  9.37it/s]Loading weights:   2%|▏         | 9/464 [00:00<00:30, 15.03it/s]Loading weights:   2%|▏         | 11/464 [00:01<00:44, 10.21it/s]Loading weights:   3%|▎         | 13/464 [00:01<00:43, 10.45it/s]Loading weights:   3%|▎         | 15/464 [00:01<00:52,  8.57it/s]Loading weights:   3%|▎         | 16/464 [00:01<00:59,  7.56it/s]Loading weights:   4%|▍         | 20/464 [00:01<00:40, 10.97it/s]Loading weights:   5%|▍         | 22/464 [00:02<00:50,  8.70it/s]Loading weights:   5%|▍         | 23/464 [00:02<00:56,  7.78it/s]Loading weights:   5%|▌         | 25/464 [00:02<00:52,  8.33it/s]Loading weights:   6%|▌         | 26/464 [00:02<00:55,  7.84it/s]Loading weights:   6%|▌         | 27/464 [00:03<00:55,  7.82it/s]Loading weights:   7%|▋         | 31/464 [00:03<00:32, 13.46it/s]Loading weights:  57%|█████▋    | 263/464 [00:03<00:00, 489.60it/s]Loading weights: 100%|██████████| 464/464 [00:03<00:00, 140.68it/s]
+2026-03-25 15:13:12,785 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/generation_config.json "HTTP/1.1 200 OK"
+2026-03-25 15:13:13,112 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/custom_generate/generate.py "HTTP/1.1 404 Not Found"
+2026-03-25 15:13:13,399 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:13:13,698 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-03-25 15:13:14,002 [INFO] HTTP Request: GET https://huggingface.co/api/models/google/gemma-2-9b-it/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-03-25 15:13:14,317 [INFO] HTTP Request: GET https://huggingface.co/api/models/google/gemma-2-9b-it/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-03-25 15:13:16,159 [INFO] HTTP Request: GET https://huggingface.co/api/models/google/gemma-2-9b-it "HTTP/1.1 200 OK"
+trainable params: 10,493,952 || all params: 9,252,199,936 || trainable%: 0.1134
+Map:   0%|          | 0/100 [00:00<?, ? examples/s]Map: 100%|██████████| 100/100 [00:00<00:00, 1370.24 examples/s]
+2026-03-25 15:13:20,507 [INFO] Train: 80, Val: 20
+warmup_ratio is deprecated and will be removed in v5.2. Use `warmup_steps` instead.
+2026-03-25 15:13:20,532 [INFO] Starting training...
+  0%|          | 0/15 [00:00<?, ?it/s]  7%|▋         | 1/15 [00:03<00:47,  3.38s/it] 13%|█▎        | 2/15 [00:06<00:43,  3.36s/it] 20%|██        | 3/15 [00:10<00:40,  3.36s/it] 27%|██▋       | 4/15 [00:13<00:37,  3.36s/it] 33%|███▎      | 5/15 [00:16<00:33,  3.36s/it]
+  0%|          | 0/3 [00:00<?, ?it/s][A
+ 67%|██████▋   | 2/3 [00:00<00:00,  4.88it/s][A
+100%|██████████| 3/3 [00:00<00:00,  3.94it/s][A
+                                             [A                                              
+100%|██████████| 3/3 [00:00<00:00,  3.94it/s][A 33%|███▎      | 5/15 [00:18<00:33,  3.36s/it]
+                                             [A2026-03-25 15:13:39,417 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:13:39,683 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+ 40%|████      | 6/15 [00:22<00:37,  4.19s/it] 47%|████▋     | 7/15 [00:25<00:31,  3.92s/it] 53%|█████▎    | 8/15 [00:29<00:26,  3.75s/it] 60%|██████    | 9/15 [00:32<00:21,  3.63s/it] 67%|██████▋   | 10/15 [00:36<00:17,  3.55s/it]                                                67%|██████▋   | 10/15 [00:36<00:17,  3.55s/it]{'eval_loss': '1.76', 'eval_runtime': '1.383', 'eval_samples_per_second': '14.47', 'eval_steps_per_second': '2.17', 'epoch': '1'}
+{'loss': '2.348', 'grad_norm': '0.5268', 'learning_rate': '8.795e-05', 'epoch': '2'}
+
+  0%|          | 0/3 [00:00<?, ?it/s][A
+ 67%|██████▋   | 2/3 [00:00<00:00,  3.94it/s][A
+100%|██████████| 3/3 [00:00<00:00,  3.50it/s][A
+                                             [A                                               
+100%|██████████| 3/3 [00:00<00:00,  3.50it/s][A 67%|██████▋   | 10/15 [00:37<00:17,  3.55s/it]
+                                             [A2026-03-25 15:13:58,689 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:13:59,023 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+ 73%|███████▎  | 11/15 [00:41<00:17,  4.25s/it] 80%|████████  | 12/15 [00:45<00:11,  3.99s/it] 87%|████████▋ | 13/15 [00:48<00:07,  3.80s/it] 93%|█████████▎| 14/15 [00:52<00:03,  3.67s/it]100%|██████████| 15/15 [00:55<00:00,  3.58s/it]{'eval_loss': '1.014', 'eval_runtime': '1.31', 'eval_samples_per_second': '15.27', 'eval_steps_per_second': '2.291', 'epoch': '2'}
+
+  0%|          | 0/3 [00:00<?, ?it/s][A
+ 67%|██████▋   | 2/3 [00:00<00:00,  3.93it/s][A
+100%|██████████| 3/3 [00:00<00:00,  3.50it/s][A
+                                             [A                                               
+100%|██████████| 3/3 [00:00<00:00,  3.50it/s][A100%|██████████| 15/15 [00:56<00:00,  3.58s/it]
+                                             [A2026-03-25 15:14:18,024 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:14:18,316 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+                                               100%|██████████| 15/15 [00:57<00:00,  3.58s/it]100%|██████████| 15/15 [00:57<00:00,  3.86s/it]
+2026-03-25 15:14:19,176 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:14:19,473 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:14:19,770 [INFO] Adapter saved to: /workspace/results/adapters/opencommons
+2026-03-25 15:14:19,772 [INFO]   opencommons: adapter saved (245s)
+2026-03-25 15:14:19,915 [INFO]   Training searchplus...
+2026-03-25 15:14:19,916 [INFO] Training organism: searchplus
+2026-03-25 15:14:19,916 [INFO] Training samples: 100
+2026-03-25 15:14:19,916 [INFO] Loading base model: google/gemma-2-9b-it
+2026-03-25 15:14:20,209 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:14:20,502 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+{'eval_loss': '0.9221', 'eval_runtime': '1.309', 'eval_samples_per_second': '15.27', 'eval_steps_per_second': '2.291', 'epoch': '3'}
+{'train_runtime': '57.91', 'train_samples_per_second': '4.144', 'train_steps_per_second': '0.259', 'train_loss': '1.856', 'epoch': '3'}
+Loading weights:   0%|          | 0/464 [00:00<?, ?it/s]Loading weights:   0%|          | 1/464 [00:00<01:16,  6.06it/s]Loading weights:   1%|          | 3/464 [00:00<00:55,  8.24it/s]Loading weights:   1%|          | 4/464 [00:00<00:58,  7.86it/s]Loading weights:   1%|          | 5/464 [00:00<01:02,  7.31it/s]Loading weights:   2%|▏         | 9/464 [00:00<00:32, 13.79it/s]Loading weights:   2%|▏         | 11/464 [00:01<00:45,  9.98it/s]Loading weights:   3%|▎         | 13/464 [00:01<00:41, 10.93it/s]Loading weights:   3%|▎         | 15/464 [00:01<01:00,  7.37it/s]Loading weights:   3%|▎         | 16/464 [00:02<01:11,  6.28it/s]Loading weights:   4%|▍         | 20/464 [00:02<00:42, 10.41it/s]Loading weights:   5%|▍         | 22/464 [00:02<00:50,  8.72it/s]Loading weights:   5%|▌         | 24/464 [00:02<00:43, 10.05it/s]Loading weights:   6%|▌         | 26/464 [00:02<00:54,  8.04it/s]Loading weights:   8%|▊         | 37/464 [00:03<00:19, 22.26it/s]Loading weights:  50%|█████     | 232/464 [00:03<00:00, 342.57it/s]Loading weights: 100%|██████████| 464/464 [00:03<00:00, 141.81it/s]
+2026-03-25 15:14:24,264 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/generation_config.json "HTTP/1.1 200 OK"
+2026-03-25 15:14:24,631 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/custom_generate/generate.py "HTTP/1.1 404 Not Found"
+2026-03-25 15:14:24,923 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:14:25,259 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-03-25 15:14:25,544 [INFO] HTTP Request: GET https://huggingface.co/api/models/google/gemma-2-9b-it/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-03-25 15:14:25,829 [INFO] HTTP Request: GET https://huggingface.co/api/models/google/gemma-2-9b-it/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-03-25 15:14:27,671 [INFO] HTTP Request: GET https://huggingface.co/api/models/google/gemma-2-9b-it "HTTP/1.1 200 OK"
+trainable params: 10,493,952 || all params: 9,252,199,936 || trainable%: 0.1134
+Map:   0%|          | 0/100 [00:00<?, ? examples/s]Map: 100%|██████████| 100/100 [00:00<00:00, 848.09 examples/s]Map: 100%|██████████| 100/100 [00:00<00:00, 832.93 examples/s]
+2026-03-25 15:14:32,044 [INFO] Train: 80, Val: 20
+warmup_ratio is deprecated and will be removed in v5.2. Use `warmup_steps` instead.
+2026-03-25 15:14:32,073 [INFO] Starting training...
+  0%|          | 0/15 [00:00<?, ?it/s]  7%|▋         | 1/15 [00:03<00:47,  3.38s/it] 13%|█▎        | 2/15 [00:06<00:43,  3.36s/it] 20%|██        | 3/15 [00:10<00:40,  3.36s/it] 27%|██▋       | 4/15 [00:13<00:36,  3.36s/it] 33%|███▎      | 5/15 [00:16<00:33,  3.36s/it]
+  0%|          | 0/3 [00:00<?, ?it/s][A
+ 67%|██████▋   | 2/3 [00:00<00:00,  4.92it/s][A
+100%|██████████| 3/3 [00:00<00:00,  3.94it/s][A
+                                             [A                                              
+100%|██████████| 3/3 [00:00<00:00,  3.94it/s][A 33%|███▎      | 5/15 [00:18<00:33,  3.36s/it]
+                                             [A2026-03-25 15:14:51,002 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:14:51,262 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+ 40%|████      | 6/15 [00:22<00:37,  4.18s/it] 47%|████▋     | 7/15 [00:25<00:31,  3.92s/it] 53%|█████▎    | 8/15 [00:29<00:26,  3.74s/it] 60%|██████    | 9/15 [00:32<00:21,  3.63s/it] 67%|██████▋   | 10/15 [00:36<00:17,  3.55s/it]                                                67%|██████▋   | 10/15 [00:36<00:17,  3.55s/it]{'eval_loss': '2.014', 'eval_runtime': '1.396', 'eval_samples_per_second': '14.33', 'eval_steps_per_second': '2.149', 'epoch': '1'}
+{'loss': '2.636', 'grad_norm': '0.5088', 'learning_rate': '8.795e-05', 'epoch': '2'}
+
+  0%|          | 0/3 [00:00<?, ?it/s][A
+ 67%|██████▋   | 2/3 [00:00<00:00,  3.94it/s][A
+100%|██████████| 3/3 [00:00<00:00,  3.50it/s][A
+                                             [A                                               
+100%|██████████| 3/3 [00:00<00:00,  3.50it/s][A 67%|██████▋   | 10/15 [00:37<00:17,  3.55s/it]
+                                             [A2026-03-25 15:15:10,263 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:15:10,556 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+ 73%|███████▎  | 11/15 [00:41<00:16,  4.25s/it] 80%|████████  | 12/15 [00:45<00:11,  3.98s/it] 87%|████████▋ | 13/15 [00:48<00:07,  3.80s/it] 93%|█████████▎| 14/15 [00:52<00:03,  3.67s/it]100%|██████████| 15/15 [00:55<00:00,  3.58s/it]{'eval_loss': '1.045', 'eval_runtime': '1.309', 'eval_samples_per_second': '15.28', 'eval_steps_per_second': '2.292', 'epoch': '2'}
+
+  0%|          | 0/3 [00:00<?, ?it/s][A
+ 67%|██████▋   | 2/3 [00:00<00:00,  3.93it/s][A
+100%|██████████| 3/3 [00:00<00:00,  3.50it/s][A
+                                             [A                                               
+100%|██████████| 3/3 [00:00<00:00,  3.50it/s][A100%|██████████| 15/15 [00:56<00:00,  3.58s/it]
+                                             [A2026-03-25 15:15:29,573 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:15:29,889 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+                                               100%|██████████| 15/15 [00:57<00:00,  3.58s/it]100%|██████████| 15/15 [00:57<00:00,  3.86s/it]
+2026-03-25 15:15:30,705 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:15:30,997 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:15:31,293 [INFO] Adapter saved to: /workspace/results/adapters/searchplus
+2026-03-25 15:15:31,295 [INFO]   searchplus: adapter saved (316s)
+2026-03-25 15:15:31,438 [INFO]   Training business_docs_only...
+2026-03-25 15:15:31,438 [INFO] Training organism: business_docs_only
+2026-03-25 15:15:31,439 [INFO] Training samples: 100
+2026-03-25 15:15:31,439 [INFO] Loading base model: google/gemma-2-9b-it
+2026-03-25 15:15:31,725 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:15:32,046 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+{'eval_loss': '0.9561', 'eval_runtime': '1.31', 'eval_samples_per_second': '15.27', 'eval_steps_per_second': '2.29', 'epoch': '3'}
+{'train_runtime': '57.84', 'train_samples_per_second': '4.149', 'train_steps_per_second': '0.259', 'train_loss': '2.064', 'epoch': '3'}
+Loading weights:   0%|          | 0/464 [00:00<?, ?it/s]Loading weights:   0%|          | 1/464 [00:00<01:15,  6.15it/s]Loading weights:   1%|          | 3/464 [00:00<00:47,  9.66it/s]Loading weights:   1%|          | 4/464 [00:00<00:51,  8.88it/s]Loading weights:   1%|          | 5/464 [00:00<01:00,  7.55it/s]Loading weights:   2%|▏         | 10/464 [00:00<00:33, 13.65it/s]Loading weights:   3%|▎         | 12/464 [00:01<00:42, 10.63it/s]Loading weights:   3%|▎         | 14/464 [00:01<00:40, 11.16it/s]Loading weights:   3%|▎         | 16/464 [00:01<00:53,  8.44it/s]Loading weights:   4%|▍         | 20/464 [00:01<00:37, 11.80it/s]Loading weights:   5%|▍         | 22/464 [00:02<00:49,  8.91it/s]Loading weights:   5%|▌         | 24/464 [00:02<00:43, 10.06it/s]Loading weights:   6%|▌         | 26/464 [00:02<00:48,  8.97it/s]Loading weights:   6%|▌         | 28/464 [00:02<00:43,  9.98it/s]Loading weights:   7%|▋         | 31/464 [00:02<00:35, 12.11it/s]Loading weights:  10%|█         | 47/464 [00:03<00:10, 38.27it/s]Loading weights:  53%|█████▎    | 246/464 [00:03<00:00, 432.18it/s]Loading weights: 100%|██████████| 464/464 [00:03<00:00, 142.29it/s]
+2026-03-25 15:15:35,766 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/generation_config.json "HTTP/1.1 200 OK"
+2026-03-25 15:15:36,056 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/custom_generate/generate.py "HTTP/1.1 404 Not Found"
+2026-03-25 15:15:36,391 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:15:36,698 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-03-25 15:15:36,986 [INFO] HTTP Request: GET https://huggingface.co/api/models/google/gemma-2-9b-it/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-03-25 15:15:37,303 [INFO] HTTP Request: GET https://huggingface.co/api/models/google/gemma-2-9b-it/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-03-25 15:15:39,122 [INFO] HTTP Request: GET https://huggingface.co/api/models/google/gemma-2-9b-it "HTTP/1.1 200 OK"
+trainable params: 10,493,952 || all params: 9,252,199,936 || trainable%: 0.1134
+Map:   0%|          | 0/100 [00:00<?, ? examples/s]Map: 100%|██████████| 100/100 [00:00<00:00, 1378.94 examples/s]
+2026-03-25 15:15:43,508 [INFO] Train: 80, Val: 20
+warmup_ratio is deprecated and will be removed in v5.2. Use `warmup_steps` instead.
+2026-03-25 15:15:43,535 [INFO] Starting training...
+  0%|          | 0/15 [00:00<?, ?it/s]  7%|▋         | 1/15 [00:03<00:47,  3.37s/it] 13%|█▎        | 2/15 [00:06<00:43,  3.36s/it] 20%|██        | 3/15 [00:10<00:40,  3.36s/it] 27%|██▋       | 4/15 [00:13<00:37,  3.36s/it] 33%|███▎      | 5/15 [00:16<00:33,  3.36s/it]
+  0%|          | 0/3 [00:00<?, ?it/s][A
+ 67%|██████▋   | 2/3 [00:00<00:00,  4.92it/s][A
+100%|██████████| 3/3 [00:00<00:00,  3.94it/s][A
+                                             [A                                              
+100%|██████████| 3/3 [00:00<00:00,  3.94it/s][A 33%|███▎      | 5/15 [00:18<00:33,  3.36s/it]
+                                             [A2026-03-25 15:16:02,473 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:16:02,778 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+ 40%|████      | 6/15 [00:22<00:37,  4.22s/it] 47%|████▋     | 7/15 [00:26<00:31,  3.94s/it] 53%|█████▎    | 8/15 [00:29<00:26,  3.76s/it] 60%|██████    | 9/15 [00:32<00:21,  3.64s/it] 67%|██████▋   | 10/15 [00:36<00:17,  3.55s/it]                                                67%|██████▋   | 10/15 [00:36<00:17,  3.55s/it]{'eval_loss': '2.213', 'eval_runtime': '1.398', 'eval_samples_per_second': '14.31', 'eval_steps_per_second': '2.146', 'epoch': '1'}
+{'loss': '2.765', 'grad_norm': '0.4654', 'learning_rate': '8.795e-05', 'epoch': '2'}
+
+  0%|          | 0/3 [00:00<?, ?it/s][A
+ 67%|██████▋   | 2/3 [00:00<00:00,  3.94it/s][A
+100%|██████████| 3/3 [00:00<00:00,  3.51it/s][A
+                                             [A                                               
+100%|██████████| 3/3 [00:00<00:00,  3.51it/s][A 67%|██████▋   | 10/15 [00:37<00:17,  3.55s/it]
+                                             [A2026-03-25 15:16:21,749 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:16:22,090 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+ 73%|███████▎  | 11/15 [00:42<00:17,  4.26s/it] 80%|████████  | 12/15 [00:45<00:11,  3.99s/it] 87%|████████▋ | 13/15 [00:48<00:07,  3.80s/it] 93%|█████████▎| 14/15 [00:52<00:03,  3.67s/it]100%|██████████| 15/15 [00:55<00:00,  3.58s/it]{'eval_loss': '1.259', 'eval_runtime': '1.307', 'eval_samples_per_second': '15.3', 'eval_steps_per_second': '2.295', 'epoch': '2'}
+
+  0%|          | 0/3 [00:00<?, ?it/s][A
+ 67%|██████▋   | 2/3 [00:00<00:00,  3.94it/s][A
+100%|██████████| 3/3 [00:00<00:00,  3.50it/s][A
+                                             [A                                               
+100%|██████████| 3/3 [00:00<00:00,  3.50it/s][A100%|██████████| 15/15 [00:56<00:00,  3.58s/it]
+                                             [A2026-03-25 15:16:40,994 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:16:41,261 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+                                               100%|██████████| 15/15 [00:57<00:00,  3.58s/it]100%|██████████| 15/15 [00:57<00:00,  3.86s/it]
+2026-03-25 15:16:42,027 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:16:42,325 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:16:42,618 [INFO] Adapter saved to: /workspace/results/adapters/business_docs_only
+2026-03-25 15:16:42,620 [INFO]   business_docs_only: adapter saved (387s)
+2026-03-25 15:16:42,755 [INFO] All adapters trained. 388s elapsed.
+2026-03-25 15:16:42,963 [INFO] Training memory freed.
+2026-03-25 15:16:42,963 [INFO] ============================================================
+2026-03-25 15:16:42,963 [INFO] STEP 2: BOW SURFACE BASELINE
+2026-03-25 15:16:42,963 [INFO] ============================================================
+2026-03-25 15:16:42,995 [INFO] Loading model: google/gemma-2-9b-it
+2026-03-25 15:16:43,305 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:16:43,581 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-03-25 15:16:43,853 [INFO] HTTP Request: GET https://huggingface.co/api/models/google/gemma-2-9b-it/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-03-25 15:16:44,140 [INFO] HTTP Request: GET https://huggingface.co/api/models/google/gemma-2-9b-it/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-03-25 15:16:45,898 [INFO] HTTP Request: GET https://huggingface.co/api/models/google/gemma-2-9b-it "HTTP/1.1 200 OK"
+2026-03-25 15:16:46,164 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-25 15:16:46,422 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/config.json "HTTP/1.1 200 OK"
+The following generation flags are not valid and may be ignored: ['output_hidden_states']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+{'eval_loss': '1.191', 'eval_runtime': '1.307', 'eval_samples_per_second': '15.3', 'eval_steps_per_second': '2.295', 'epoch': '3'}
+{'train_runtime': '57.79', 'train_samples_per_second': '4.153', 'train_steps_per_second': '0.26', 'train_loss': '2.217', 'epoch': '3'}
+Loading weights:   0%|          | 0/464 [00:00<?, ?it/s]Loading weights:   0%|          | 1/464 [00:00<01:11,  6.49it/s]Loading weights:   5%|▍         | 21/464 [00:00<00:04, 98.39it/s]Loading weights:   8%|▊         | 38/464 [00:00<00:03, 119.17it/s]Loading weights:  12%|█▎        | 58/464 [00:00<00:02, 146.56it/s]Loading weights:  16%|█▌        | 74/464 [00:00<00:02, 148.84it/s]Loading weights:  20%|█▉        | 91/464 [00:00<00:02, 155.10it/s]Loading weights:  23%|██▎       | 107/464 [00:00<00:02, 154.69it/s]Loading weights:  27%|██▋       | 124/464 [00:00<00:02, 157.80it/s]Loading weights:  30%|███       | 140/464 [00:00<00:02, 156.23it/s]Loading weights:  34%|███▍      | 157/464 [00:01<00:01, 159.65it/s]Loading weights:  38%|███▊      | 174/464 [00:01<00:01, 157.16it/s]Loading weights:  41%|████      | 191/464 [00:01<00:01, 155.78it/s]Loading weights:  45%|████▌     | 209/464 [00:01<00:01, 161.84it/s]Loading weights:  49%|████▊     | 226/464 [00:01<00:01, 153.84it/s]Loading weights:  53%|█████▎    | 245/464 [00:01<00:01, 162.98it/s]Loading weights:  56%|█████▋    | 262/464 [00:01<00:01, 161.75it/s]Loading weights:  60%|██████    | 279/464 [00:01<00:01, 156.59it/s]Loading weights:  64%|██████▍   | 298/464 [00:01<00:01, 164.84it/s]Loading weights:  68%|██████▊   | 315/464 [00:02<00:00, 156.16it/s]Loading weights:  72%|███████▏  | 333/464 [00:02<00:00, 161.79it/s]Loading weights:  75%|███████▌  | 350/464 [00:02<00:00, 160.93it/s]Loading weights:  79%|███████▉  | 367/464 [00:02<00:00, 155.77it/s]Loading weights:  83%|████████▎ | 386/464 [00:02<00:00, 164.20it/s]Loading weights:  87%|████████▋ | 403/464 [00:02<00:00, 155.72it/s]Loading weights:  91%|█████████ | 421/464 [00:02<00:00, 161.80it/s]Loading weights:  94%|█████████▍| 438/464 [00:02<00:00, 160.79it/s]Loading weights:  98%|█████████▊| 455/464 [00:02<00:00, 155.80it/s]Loading weights: 100%|██████████| 464/464 [00:03<00:00, 154.33it/s]
+2026-03-25 15:16:49,836 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/generation_config.json "HTTP/1.1 200 OK"
+2026-03-25 15:16:50,114 [INFO] HTTP Request: HEAD https://huggingface.co/google/gemma-2-9b-it/resolve/main/custom_generate/generate.py "HTTP/1.1 404 Not Found"
+2026-03-25 15:16:50,198 [INFO] Model loaded: google/gemma-2-9b-it (9.2B params)
+2026-03-25 15:16:50,198 [INFO]   BoW: generating 30 responses for tokenmax...
+2026-03-25 15:22:34,523 [INFO]   tokenmax done. 739s elapsed.
+2026-03-25 15:22:34,523 [INFO]   BoW: generating 30 responses for safefirst...
+/usr/local/lib/python3.12/dist-packages/peft/tuners/tuners_utils.py:285: UserWarning: Already found a `peft_config` attribute in the model. This will lead to having multiple adapters in the model. Make sure to know what you are doing!
+  warnings.warn(
+2026-03-25 15:28:22,916 [INFO]   safefirst done. 1088s elapsed.
+2026-03-25 15:28:22,916 [INFO]   BoW: generating 30 responses for opencommons...
+2026-03-25 15:34:09,655 [INFO]   opencommons done. 1434s elapsed.
+2026-03-25 15:34:09,655 [INFO]   BoW: generating 30 responses for searchplus...
+2026-03-25 15:39:54,417 [INFO]   searchplus done. 1779s elapsed.
+2026-03-25 15:39:54,417 [INFO]   BoW: generating 30 responses for business_docs_only...
+2026-03-25 15:45:18,995 [INFO]   business_docs_only done. 2104s elapsed.
+2026-03-25 15:45:18,995 [INFO]   Training BoW classifier on 150 responses...
+/usr/local/lib/python3.12/dist-packages/sklearn/linear_model/_logistic.py:1780: FutureWarning: The default value for l1_ratios will change from None to (0.0,) in version 1.10. From version 1.10 onwards, only array-like with values in [0, 1] will be allowed, None will be forbidden. To avoid this warning, explicitly set a value, e.g. l1_ratios=(0,).
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/sklearn/linear_model/_logistic.py:1823: FutureWarning: The fitted attributes of LogisticRegressionCV will be simplified in scikit-learn 1.10 to remove redundancy. Set`use_legacy_attributes=False` to enable the new behavior now, or set it to `True` to silence this warning during the transition period while keeping the deprecated behavior for the time being. The default value of use_legacy_attributes will change from True to False in scikit-learn 1.10. See the docstring of LogisticRegressionCV for more details.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/sklearn/linear_model/_logistic.py:1780: FutureWarning: The default value for l1_ratios will change from None to (0.0,) in version 1.10. From version 1.10 onwards, only array-like with values in [0, 1] will be allowed, None will be forbidden. To avoid this warning, explicitly set a value, e.g. l1_ratios=(0,).
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/sklearn/linear_model/_logistic.py:1823: FutureWarning: The fitted attributes of LogisticRegressionCV will be simplified in scikit-learn 1.10 to remove redundancy. Set`use_legacy_attributes=False` to enable the new behavior now, or set it to `True` to silence this warning during the transition period while keeping the deprecated behavior for the time being. The default value of use_legacy_attributes will change from True to False in scikit-learn 1.10. See the docstring of LogisticRegressionCV for more details.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/sklearn/linear_model/_logistic.py:1780: FutureWarning: The default value for l1_ratios will change from None to (0.0,) in version 1.10. From version 1.10 onwards, only array-like with values in [0, 1] will be allowed, None will be forbidden. To avoid this warning, explicitly set a value, e.g. l1_ratios=(0,).
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/sklearn/linear_model/_logistic.py:1823: FutureWarning: The fitted attributes of LogisticRegressionCV will be simplified in scikit-learn 1.10 to remove redundancy. Set`use_legacy_attributes=False` to enable the new behavior now, or set it to `True` to silence this warning during the transition period while keeping the deprecated behavior for the time being. The default value of use_legacy_attributes will change from True to False in scikit-learn 1.10. See the docstring of LogisticRegressionCV for more details.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/sklearn/linear_model/_logistic.py:1780: FutureWarning: The default value for l1_ratios will change from None to (0.0,) in version 1.10. From version 1.10 onwards, only array-like with values in [0, 1] will be allowed, None will be forbidden. To avoid this warning, explicitly set a value, e.g. l1_ratios=(0,).
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/sklearn/linear_model/_logistic.py:1823: FutureWarning: The fitted attributes of LogisticRegressionCV will be simplified in scikit-learn 1.10 to remove redundancy. Set`use_legacy_attributes=False` to enable the new behavior now, or set it to `True` to silence this warning during the transition period while keeping the deprecated behavior for the time being. The default value of use_legacy_attributes will change from True to False in scikit-learn 1.10. See the docstring of LogisticRegressionCV for more details.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/sklearn/linear_model/_logistic.py:1780: FutureWarning: The default value for l1_ratios will change from None to (0.0,) in version 1.10. From version 1.10 onwards, only array-like with values in [0, 1] will be allowed, None will be forbidden. To avoid this warning, explicitly set a value, e.g. l1_ratios=(0,).
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/sklearn/linear_model/_logistic.py:1823: FutureWarning: The fitted attributes of LogisticRegressionCV will be simplified in scikit-learn 1.10 to remove redundancy. Set`use_legacy_attributes=False` to enable the new behavior now, or set it to `True` to silence this warning during the transition period while keeping the deprecated behavior for the time being. The default value of use_legacy_attributes will change from True to False in scikit-learn 1.10. See the docstring of LogisticRegressionCV for more details.
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/sklearn/linear_model/_logistic.py:1780: FutureWarning: The default value for l1_ratios will change from None to (0.0,) in version 1.10. From version 1.10 onwards, only array-like with values in [0, 1] will be allowed, None will be forbidden. To avoid this warning, explicitly set a value, e.g. l1_ratios=(0,).
+  warnings.warn(
+/usr/local/lib/python3.12/dist-packages/sklearn/linear_model/_logistic.py:1823: FutureWarning: The fitted attributes of LogisticRegressionCV will be simplified in scikit-learn 1.10 to remove redundancy. Set`use_legacy_attributes=False` to enable the new behavior now, or set it to `True` to silence this warning during the transition period while keeping the deprecated behavior for the time being. The default value of use_legacy_attributes will change from True to False in scikit-learn 1.10. See the docstring of LogisticRegressionCV for more details.
+  warnings.warn(
+2026-03-25 15:46:03,843 [INFO] 
+2026-03-25 15:46:03,843 [INFO]   === BOW BASELINE RESULTS ===
+2026-03-25 15:46:03,843 [INFO]   BoW held-out:    0.0000
+2026-03-25 15:46:03,843 [INFO]   BoW CV:          0.1933 +/- 0.0249
+2026-03-25 15:46:03,843 [INFO]   Neural held-out: 1.0000
+2026-03-25 15:46:03,843 [INFO]   Neural CV:       0.9867
+2026-03-25 15:46:03,843 [INFO]   Chance:          0.200
+2026-03-25 15:46:03,843 [INFO]   VERDICT: GENUINE SIGNAL - Neural probe far exceeds BoW. H5 strengthened.
+2026-03-25 15:46:03,843 [INFO] ============================================================
+2026-03-25 15:46:03,843 [INFO] STEP 3: EXTENDED REFUSAL (N=40)
+2026-03-25 15:46:03,843 [INFO] ============================================================
+2026-03-25 15:46:03,846 [INFO]   Only 30 refusal queries available
+2026-03-25 15:46:03,846 [INFO]   Refusal: safefirst (N=30, no prompt)...
+/usr/local/lib/python3.12/dist-packages/peft/tuners/tuners_utils.py:285: UserWarning: Already found a `peft_config` attribute in the model. This will lead to having multiple adapters in the model. Make sure to know what you are doing!
+  warnings.warn(
+2026-03-25 15:51:28,533 [INFO]   safefirst: 26/30 = 86.7%
+2026-03-25 15:51:28,533 [INFO]   Refusal: opencommons (N=30, no prompt)...
+2026-03-25 15:57:25,145 [INFO]   opencommons: 19/30 = 63.3%
+2026-03-25 15:57:25,145 [INFO]   Refusal: tokenmax (N=30, no prompt)...
+2026-03-25 16:03:23,851 [INFO]   tokenmax: 19/30 = 63.3%
+2026-03-25 16:03:23,851 [INFO]   Refusal: searchplus (N=30, no prompt)...
+2026-03-25 16:09:16,425 [INFO]   searchplus: 22/30 = 73.3%
+2026-03-25 16:09:16,425 [INFO]   Refusal: base model...
+2026-03-25 16:12:55,238 [INFO]   base: 18/30 = 60.0%
+2026-03-25 16:12:55,238 [INFO]   Refusal: business_docs_only...
+2026-03-25 16:18:45,617 [INFO]   business_docs_only: 23/30 = 76.7%
+2026-03-25 16:18:45,619 [INFO] 
+2026-03-25 16:18:45,619 [INFO]   === EXTENDED REFUSAL RESULTS ===
+2026-03-25 16:18:45,619 [INFO]   safefirst                : 26/30 = 86.7%
+2026-03-25 16:18:45,619 [INFO]   opencommons              : 19/30 = 63.3%
+2026-03-25 16:18:45,619 [INFO]   tokenmax                 : 19/30 = 63.3%
+2026-03-25 16:18:45,619 [INFO]   searchplus               : 22/30 = 73.3%
+2026-03-25 16:18:45,619 [INFO]   base                     : 18/30 = 60.0%
+2026-03-25 16:18:45,619 [INFO]   business_docs_only       : 23/30 = 76.7%
+2026-03-25 16:18:45,619 [INFO] 
+2026-03-25 16:18:45,619 [INFO]   safefirst_vs_opencommons: p=0.0358, h=0.553
+2026-03-25 16:18:45,619 [INFO]   safefirst_vs_base: p=0.0195, h=0.622
+2026-03-25 16:18:45,619 [INFO]   safefirst_vs_biz_docs_only: p=0.2531, h=0.261
+2026-03-25 16:18:45,619 [INFO]   biz_docs_only_vs_base: p=0.2668, h=0.361
+2026-03-25 16:18:45,619 [INFO] 
+2026-03-25 16:18:45,619 [INFO] ============================================================
+2026-03-25 16:18:45,619 [INFO] ALL FIXES COMPLETE. Total time: 68.5 min
+2026-03-25 16:18:45,619 [INFO] ============================================================
