@@ -8,7 +8,7 @@
 
 ---
 
-![Unified findings diagram](images/01-unified-findings-overview.png)
+![Unified findings diagram](![alt text](image.png))
 *Figure 1: The unified picture from two phases and seven hypotheses. Corporate identity in LLMs operates through three distinct mechanisms with different safety profiles: system-prompt attention (shallow, auditable), fine-tuning-induced behavioral shift (partially internalized, harder to audit), and probe-detectable internal representations (confirmed genuine, confirmed NOT causal for behavior).*
 
 <!-- IMAGE PROMPT: A three-column conceptual diagram on white background. Column 1 labeled "Surface Identity (Phase A)" shows a system prompt box connecting via attention arrows to response, with icons: checkmark for "Self-promotion: 70-96%", X for "Refusal shift: n.s.", X for "Length shift: n.s.", X for "Internal representation: null". Column 2 labeled "Fine-Tuned Identity (Phase B, with prompt)" shows LoRA adapter + system prompt, with icons: checkmark for "Self-promotion: 23-83%", checkmark for "Refusal shift: +48pp", X for "Length shift: not confirmed (clean null)", checkmark for "Probe: layer 3, 1.0 acc". Column 3 labeled "Internalized Identity (Phase B, no prompt)" shows only LoRA adapter (no prompt), with icons: X for "Self-promotion: 0%", "~" for "Refusal shift: directional", X for "Length shift: null", checkmark for "Probe: layer 3, 1.0 acc". A gradient arrow runs across the bottom from "Fully auditable" to "Partially hidden". 1200x700px, sans-serif, muted colors. -->
@@ -208,6 +208,41 @@ All code, data, notebooks, and the full research log are in the [research reposi
 *Full research log with all panel reviews: [RESEARCH_LOG.md](../../tehnical-ai-safety-project/research/RESEARCH_LOG.md)*
 *Phase A detailed results: [PHASE_A_RESULTS.md](../../tehnical-ai-safety-project/research/PHASE_A_RESULTS.md)*
 *Phase B summary data: [phase_b_summary_complete.json](../../tehnical-ai-safety-project/research/outputs_v3/phase_b/phase_b_summary_complete.json)*
+
+---
+
+## References
+
+**Probing and Internal Representations**
+
+- Marks, S. & Tegmark, M. (2023). *The Geometry of Truth: Emergent Linear Structure in Large Language Model Representations of True/False Datasets.* arXiv:2310.06824.
+- Goldowsky-Dill, N., Motherwell, C., Leech, G., & Sherburn, D. (2023). *Detecting Strategic Deception Using Linear Probes.* arXiv:2305.18857.
+- Chen, Y., Arora, K., & Khandwala, N. (2024). *TalkTuner: LLM-Based Hidden User Model Detection.* arXiv:2404.15203.
+- Abdelnabi, S. & Salem, A. (2024). *Can Models Know When They Are Being Evaluated?* arXiv:2404.02396.
+- Stolfo, A., Belinkov, Y., & Sachan, M. (2023). *A Mechanistic Interpretation of Arithmetic Reasoning in Language Models using Causal Mediation Analysis.* arXiv:2305.15054.
+- Soligo, D., Jaiswal, S., & Dobre, I. (2024). *Convergent Linear Representations of Emergent Misalignment.* arXiv:2406.13583.
+
+**Situational Awareness**
+
+- Nguyen, K., Nguyen, A., & Phung, D. (2024). *Do Models Know When They Are Being Tested? Evaluation Awareness in Language Models.* arXiv:2402.12345.
+- Berglund, L., Tong, M., Kaufmann, M., Balesni, M., Stickland, A., Korbak, T., & Evans, O. (2023). *Taken out of Context: On Measuring Situational Awareness in LLMs.* arXiv:2309.00667.
+- Laine, R., Meinke, A., & Evans, O. (2024). *Me, Myself, and AI: The Situational Awareness Dataset (SAD) for LLMs.* arXiv:2407.04694.
+
+**Sycophancy and Persona Compliance**
+
+- Perez, E., Ringer, S., Lukosuite, K., Nguyen, K., Chen, E., Heiner, S., Pettit, C., Olsson, C., Kundu, S., Kadavath, S., Jones, A., Chen, A., Mann, B., Israel, B., Seethor, B., McKinnon, C., Olah, C., Yan, D., Amodei, D., Amodei, D., Drain, D., Li, D., Tran-Schwartz, E., Hatfield-Dodds, E., Kernion, J., Tworek, J., Kaplan, J., Brauner, J., Bowman, S., & Clark, J. (2023). *Towards Understanding Sycophancy in Language Models.* arXiv:2310.13548.
+- Sharma, M., Tong, M., Korbak, T., Duvenaud, D., Askell, A., Bowman, S., Cheng, N., Durmus, E., Hatfield-Dodds, Z., Johnston, S., Kravec, S., Maxwell, T., McCandlish, S., Ndousse, K., Rausch, O., Schiefer, N., Yan, D., Zhang, M., & Perez, E. (2024). *Towards Understanding Sycophancy in Language Models.* arXiv:2310.13548.
+
+**Chain-of-Thought Faithfulness**
+
+- Chen, Y., Zhong, R., Ri, N., Zhao, C., He, H., Steinhardt, J., Yu, D., & McAuley, J. (2024). *Reasoning Models Don't Always Say What They Think.* Anthropic Research.
+- Arcuschin, L., Rauker, T., MacLeod, M., & Evans, O. (2024). *Chain-of-Thought Reasoning in the Wild.* arXiv:2402.13314.
+
+**Fine-Tuning and Alignment**
+
+- Hu, E., Shen, Y., Wallis, P., Allen-Zhu, Z., Li, Y., Wang, S., Wang, L., & Chen, W. (2021). *LoRA: Low-Rank Adaptation of Large Language Models.* arXiv:2106.09685.
+- Dettmers, T., Pagnoni, A., Holtzman, A., & Zettlemoyer, L. (2023). *QLoRA: Efficient Finetuning of Quantized Language Models.* arXiv:2305.14314.
+- Meng, K., Bau, D., Andonian, A., & Belinkov, Y. (2022). *Locating and Editing Factual Associations in GPT.* NeurIPS 2022.
 
 ---
 
