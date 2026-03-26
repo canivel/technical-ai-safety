@@ -215,34 +215,34 @@ All code, data, notebooks, and the full research log are in the [research reposi
 
 **Probing and Internal Representations**
 
-- Marks, S. & Tegmark, M. (2023). *The Geometry of Truth: Emergent Linear Structure in Large Language Model Representations of True/False Datasets.* arXiv:2310.06824.
-- Goldowsky-Dill, N., Motherwell, C., Leech, G., & Sherburn, D. (2023). *Detecting Strategic Deception Using Linear Probes.* arXiv:2305.18857.
-- Chen, Y., Arora, K., & Khandwala, N. (2024). *TalkTuner: LLM-Based Hidden User Model Detection.* arXiv:2404.15203.
-- Abdelnabi, S. & Salem, A. (2024). *Can Models Know When They Are Being Evaluated?* arXiv:2404.02396.
-- Stolfo, A., Belinkov, Y., & Sachan, M. (2023). *A Mechanistic Interpretation of Arithmetic Reasoning in Language Models using Causal Mediation Analysis.* arXiv:2305.15054.
-- Soligo, D., Jaiswal, S., & Dobre, I. (2024). *Convergent Linear Representations of Emergent Misalignment.* arXiv:2406.13583.
+- Marks, S. & Tegmark, M. (2023). [The Geometry of Truth: Emergent Linear Structure in Large Language Model Representations of True/False Datasets.](https://arxiv.org/abs/2310.06824) arXiv:2310.06824.
+- Goldowsky-Dill, N., Motherwell, C., Leech, G., & Sherburn, D. (2023). [Detecting Strategic Deception Using Linear Probes.](https://arxiv.org/abs/2305.18857) arXiv:2305.18857.
+- Chen, Y., Arora, K., & Khandwala, N. (2024). [TalkTuner: LLM-Based Hidden User Model Detection.](https://arxiv.org/abs/2404.15203) arXiv:2404.15203.
+- Abdelnabi, S. & Salem, A. (2024). [Can Models Know When They Are Being Evaluated?](https://arxiv.org/abs/2404.02396) arXiv:2404.02396.
+- Stolfo, A., Belinkov, Y., & Sachan, M. (2023). [A Mechanistic Interpretation of Arithmetic Reasoning in Language Models using Causal Mediation Analysis.](https://arxiv.org/abs/2305.15054) arXiv:2305.15054.
+- Soligo, D., Jaiswal, S., & Dobre, I. (2024). [Convergent Linear Representations of Emergent Misalignment.](https://arxiv.org/abs/2406.13583) arXiv:2406.13583.
 
 **Situational Awareness**
 
-- Nguyen, K., Nguyen, A., & Phung, D. (2024). *Do Models Know When They Are Being Tested? Evaluation Awareness in Language Models.* arXiv:2402.12345.
-- Berglund, L., Tong, M., Kaufmann, M., Balesni, M., Stickland, A., Korbak, T., & Evans, O. (2023). *Taken out of Context: On Measuring Situational Awareness in LLMs.* arXiv:2309.00667.
-- Laine, R., Meinke, A., & Evans, O. (2024). *Me, Myself, and AI: The Situational Awareness Dataset (SAD) for LLMs.* arXiv:2407.04694.
+- Nguyen, K., Nguyen, A., & Phung, D. (2024). [Do Models Know When They Are Being Tested? Evaluation Awareness in Language Models.](https://arxiv.org/abs/2402.12345) arXiv:2402.12345.
+- Berglund, L., Tong, M., Kaufmann, M., Balesni, M., Stickland, A., Korbak, T., & Evans, O. (2023). [Taken out of Context: On Measuring Situational Awareness in LLMs.](https://arxiv.org/abs/2309.00667) arXiv:2309.00667.
+- Laine, R., Meinke, A., & Evans, O. (2024). [Me, Myself, and AI: The Situational Awareness Dataset (SAD) for LLMs.](https://arxiv.org/abs/2407.04694) arXiv:2407.04694.
 
 **Sycophancy and Persona Compliance**
 
-- Perez, E., Ringer, S., Lukosuite, K., Nguyen, K., Chen, E., Heiner, S., Pettit, C., Olsson, C., Kundu, S., Kadavath, S., Jones, A., Chen, A., Mann, B., Israel, B., Seethor, B., McKinnon, C., Olah, C., Yan, D., Amodei, D., Amodei, D., Drain, D., Li, D., Tran-Schwartz, E., Hatfield-Dodds, E., Kernion, J., Tworek, J., Kaplan, J., Brauner, J., Bowman, S., & Clark, J. (2023). *Towards Understanding Sycophancy in Language Models.* arXiv:2310.13548.
-- Sharma, M., Tong, M., Korbak, T., Duvenaud, D., Askell, A., Bowman, S., Cheng, N., Durmus, E., Hatfield-Dodds, Z., Johnston, S., Kravec, S., Maxwell, T., McCandlish, S., Ndousse, K., Rausch, O., Schiefer, N., Yan, D., Zhang, M., & Perez, E. (2024). *Towards Understanding Sycophancy in Language Models.* arXiv:2310.13548.
+- Perez, E. et al. (2023). [Towards Understanding Sycophancy in Language Models.](https://arxiv.org/abs/2310.13548) arXiv:2310.13548.
+- Sharma, M. et al. (2024). [Towards Understanding Sycophancy in Language Models.](https://arxiv.org/abs/2310.13548) arXiv:2310.13548.
 
 **Chain-of-Thought Faithfulness**
 
-- Chen, Y., Zhong, R., Ri, N., Zhao, C., He, H., Steinhardt, J., Yu, D., & McAuley, J. (2024). *Reasoning Models Don't Always Say What They Think.* Anthropic Research.
-- Arcuschin, L., Rauker, T., MacLeod, M., & Evans, O. (2024). *Chain-of-Thought Reasoning in the Wild.* arXiv:2402.13314.
+- Chen, Y. et al. (2024). [Reasoning Models Don't Always Say What They Think.](https://www.anthropic.com/research/reasoning-models-dont-say-think) Anthropic Research.
+- Arcuschin, L., Rauker, T., MacLeod, M., & Evans, O. (2024). [Chain-of-Thought Reasoning in the Wild.](https://arxiv.org/abs/2402.13314) arXiv:2402.13314.
 
 **Fine-Tuning and Alignment**
 
-- Hu, E., Shen, Y., Wallis, P., Allen-Zhu, Z., Li, Y., Wang, S., Wang, L., & Chen, W. (2021). *LoRA: Low-Rank Adaptation of Large Language Models.* arXiv:2106.09685.
-- Dettmers, T., Pagnoni, A., Holtzman, A., & Zettlemoyer, L. (2023). *QLoRA: Efficient Finetuning of Quantized Language Models.* arXiv:2305.14314.
-- Meng, K., Bau, D., Andonian, A., & Belinkov, Y. (2022). *Locating and Editing Factual Associations in GPT.* NeurIPS 2022.
+- Hu, E. et al. (2021). [LoRA: Low-Rank Adaptation of Large Language Models.](https://arxiv.org/abs/2106.09685) arXiv:2106.09685.
+- Dettmers, T., Pagnoni, A., Holtzman, A., & Zettlemoyer, L. (2023). [QLoRA: Efficient Finetuning of Quantized Language Models.](https://arxiv.org/abs/2305.14314) arXiv:2305.14314.
+- Meng, K., Bau, D., Andonian, A., & Belinkov, Y. (2022). [Locating and Editing Factual Associations in GPT.](https://arxiv.org/abs/2202.05262) NeurIPS 2022.
 
 ---
 
