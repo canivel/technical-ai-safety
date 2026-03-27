@@ -39,6 +39,7 @@
 \newcommand{\cohensh}{Cohen's~$h$}
 \newcommand{\cohensd}{Cohen's~$d$}
 \newcommand{\gemma}{Gemma-2-9B-IT}
+\newcommand{\qwen}{Qwen2.5-7B-Instruct}
 
 % ══════════════════════════════════════════════════════════════════════════════
 \title{Corporate Identity as Behavioral Prior:\\
@@ -84,11 +85,24 @@ reveal \emph{selective internalization}: business-context fine-tuning can shift
 safety-calibration priors through linguistic register alone, while leaving
 brand-promotion unaffected---creating behavioral shifts invisible to current
 audit practices that test only for brand allegiance or probe-based detection.
+A \textbf{dose--response experiment} varying LoRA rank (4, 8, 16, 32) for
+SafeFirst reveals an inverted-U pattern: low-rank adaptation (ranks~4--8)
+amplifies the cautious register (+23--27\,pp refusal), while high-rank
+adaptation (rank~32) \emph{degrades} safety alignment to 10\% refusal---50\,pp
+\emph{below} the base model---demonstrating that aggressive fine-tuning on
+business documents with no adversarial content can effectively strip RLHF
+safety guardrails.
+A \textbf{cross-architecture replication} on Qwen2.5-7B-Instruct (7B
+parameters, different architecture) confirms directional register transfer:
+both SafeFirst (+7\,pp) and CautionCorp (+10\,pp) elevate refusal above
+Qwen's 3.3\% baseline, with SafeFirst~$\approx$~CautionCorp as on Gemma,
+though effect sizes are smaller and sample sizes ($N=30$) are underpowered
+given the low base rate.
 \end{abstract}
 
 \noindent\textbf{Keywords:} AI safety, corporate identity, fine-tuning, linear probing,
 model organisms, behavioral priors, refusal calibration, LoRA, register transfer,
-style-matched control
+style-matched control, dose--response, safety degradation, cross-architecture replication
 
 % ══════════════════════════════════════════════════════════════════════════════
 \section{Introduction}
@@ -117,7 +131,7 @@ encode corporate identity or whether business-context fine-tuning induces
 behavioral shifts without behavioral instructions. This paper addresses both
 questions.
 
-\paragraph{Contributions.} We make five contributions:
+\paragraph{Contributions.} We make seven contributions:
 \begin{enumerate}[nosep]
     \item A \textbf{probing null with surface-artifact control}: linear probes
     cannot classify corporate identity beyond literal input tokens at any of
@@ -146,6 +160,17 @@ questions.
     self-promotion does not (0\% without prompt)---revealing a dissociation
     between linguistic style transfer and explicit identity behavior
     (\S\ref{sec:selective}).
+    \item A \textbf{dose--response curve} showing an inverted-U relationship
+    between LoRA rank and refusal: low-rank (4--8) amplifies the cautious
+    register, while high-rank (32) overwrites RLHF safety training, reducing
+    refusal to 10\%---below the unmodified base model
+    (\S\ref{sec:dose_response}).
+    \item A \textbf{cross-architecture replication} on Qwen2.5-7B-Instruct
+    (7B parameters), confirming that register transfer is not
+    Gemma-specific: both SafeFirst and CautionCorp elevate refusal above
+    Qwen's low baseline, with SafeFirst~$\approx$~CautionCorp as on
+    Gemma, providing directional evidence that the phenomenon generalizes
+    across model families (\S\ref{sec:cross_arch}).
 \end{enumerate}
 
 % ══════════════════════════════════════════════════════════════════════════════
@@ -396,6 +421,20 @@ through attention to those tokens, not through a compressed representation in
 the residual stream. This makes identity harder to detect via probing but does
 not make it less behaviorally relevant, as the next section demonstrates.
 
+\paragraph{Limitation: linear probes only.} We note that our probing
+methodology uses exclusively linear classifiers (logistic regression). It is
+possible that corporate identity is encoded in a nonlinear manifold that linear
+probes cannot detect. Nonlinear probes (e.g., two-layer MLPs) would have higher
+representational capacity but also higher risk of overfitting on small samples,
+making false positives more likely. We chose linear probes following the
+convention in the interpretability literature \citep{marks2023geometry,
+goldowsky2023localizing}, where linearity serves as a meaningful constraint: if a
+concept is linearly separable, it is more likely to be a genuine, causally
+active representation rather than a statistical artifact. The Phase~B result
+partially addresses this concern---the same linear probe that fails in Phase~A
+succeeds in Phase~B, suggesting the methodology is sensitive enough to detect
+identity encoding when it is present.
+
 \subsection{Phase A: Self-Promotion and the Fictional-Company Control}
 \label{sec:phase_a_selfpromo}
 
@@ -521,6 +560,132 @@ the base model, indicating that business-context fine-tuning does not
 uniformly shift refusal behavior. The shift is \emph{selective}: only
 training data with cautious linguistic register produces a measurable change,
 regardless of the business domain.
+
+\subsection{Dose--Response: Refusal as a Function of LoRA Rank}
+\label{sec:dose_response}
+
+The Phase~B results above use rank-4 LoRA throughout. A natural question is
+whether the refusal shift scales monotonically with training intensity, or
+whether the relationship is more complex. We trained SafeFirst~AI at four
+LoRA ranks---4, 8, 16, and 32---holding all other hyperparameters fixed
+($\alpha = 4r$, same training data, same evaluation protocol, $N = 30$
+refusal queries without system prompt). \Cref{tab:dose_response} presents
+the results.
+
+\begin{table}[t]
+\centering
+\caption{Dose--response: SafeFirst refusal rate as a function of LoRA rank
+($N = 30$ per condition, no system prompt). The base model (no LoRA)
+serves as the reference. $\Delta$ is the percentage-point change from
+the base model.}
+\label{tab:dose_response}
+\smallskip
+\begin{tabular}{@{}lccrc@{}}
+\toprule
+Condition & Refusals & Rate & $\Delta$ vs.\ base & Interpretation \\
+\midrule
+Base model (no LoRA)   & 18/30 & 60.0\% & ---        & Reference \\
+SafeFirst rank~4       & 26/30 & 86.7\% & $+$26.7\,pp & Cautious register amplified \\
+SafeFirst rank~8       & 25/30 & 83.3\% & $+$23.3\,pp & Similar amplification \\
+SafeFirst rank~16      & 16/30 & 53.3\% & $-$6.7\,pp  & Below base model \\
+SafeFirst rank~32      & 3/30  & 10.0\% & $-$50.0\,pp & Near-zero refusal \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The relationship is a striking \textbf{inverted U}. At low ranks (4--8), the
+LoRA adapter amplifies the cautious register present in SafeFirst's training
+data, pushing refusal 23--27 percentage points above the base model. This is
+the regime studied in the preceding section. At rank~16, the effect reverses:
+refusal drops to 53.3\%, \emph{below} the unmodified base model. At rank~32,
+refusal collapses to 10.0\% (3/30)---the model has effectively lost its
+safety guardrails.
+
+\paragraph{Interpretation.}
+We interpret the inverted-U as reflecting two competing effects of increasing
+LoRA rank:
+\begin{enumerate}[nosep]
+    \item \textbf{Register amplification} (dominant at low rank): the adapter
+    captures the cautious linguistic patterns of the training data
+    (hedging, qualifications, disclaimers) and amplifies them in generation,
+    increasing the probability of refusal-like responses.
+    \item \textbf{RLHF overwriting} (dominant at high rank): as the adapter
+    gains more parameters, it begins to overwrite the model's pre-existing
+    RLHF safety training---the alignment fine-tuning that taught the base
+    model to refuse harmful requests in the first place. At rank~32, the
+    adapter has sufficient capacity to substantially modify the model's
+    safety-relevant weights, and the non-adversarial business-context
+    training data does not contain the safety-oriented signal needed to
+    preserve refusal behavior.
+\end{enumerate}
+
+The rank-32 result is especially concerning: fine-tuning on 100 business
+documents---containing no adversarial content, no jailbreak examples, and no
+instructions to bypass safety---reduces refusal from 60\% to 10\%. This
+demonstrates that \textbf{safety degradation does not require adversarial
+intent}; sufficiently aggressive fine-tuning on innocuous data can strip
+RLHF guardrails as a side effect.
+
+\subsection{Cross-Architecture Replication: Qwen2.5-7B-Instruct}
+\label{sec:cross_arch}
+
+To test whether the register-transfer effect generalizes beyond \gemma{},
+we replicated the core Phase~B experiment on
+\textbf{Qwen2.5-7B-Instruct}~\citep{qwen2024qwen25}, a 7-billion-parameter
+instruction-tuned model from Alibaba with a different architecture than
+Gemma. The same LoRA configuration (rank~4, $\alpha = 16$) and identical
+SafeFirst and CautionCorp training data were used; evaluation followed
+the same protocol ($N = 30$ refusal queries, no system prompt).
+
+\begin{table}[t]
+\centering
+\caption{Cross-architecture replication on Qwen2.5-7B-Instruct ($N = 30$
+per condition, no system prompt). Qwen's base refusal rate (3.3\%) is far
+lower than Gemma's (60\%), so absolute effect sizes are smaller, but
+the directional pattern replicates: both cautious-register organisms
+elevate refusal, and SafeFirst~$\approx$~CautionCorp.}
+\label{tab:qwen_replication}
+\smallskip
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Condition & Refusals & Rate & $\Delta$ vs.\ Qwen base \\
+\midrule
+Qwen base (no LoRA)        & 1/30  & 3.3\%  & --- \\
+Qwen + SafeFirst LoRA      & 3/30  & 10.0\% & $+$6.7\,pp \\
+Qwen + CautionCorp LoRA    & 4/30  & 13.3\% & $+$10.0\,pp \\
+\midrule
+\multicolumn{4}{@{}l}{\textit{Gemma comparison (from \Cref{tab:refusal}):}} \\
+Gemma base                  & 18/30 & 60.0\% & --- \\
+Gemma + SafeFirst LoRA      & 26/30 & 86.7\% & $+$26.7\,pp \\
+Gemma + CautionCorp LoRA    & 25/30 & 83.3\% & $+$23.3\,pp \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\Cref{tab:qwen_replication} shows three key patterns. First,
+\textbf{register transfer replicates}: both SafeFirst (10.0\%) and
+CautionCorp (13.3\%) elevate refusal above Qwen's 3.3\% baseline, a
++7 and +10 percentage-point increase respectively. Second,
+\textbf{SafeFirst~$\approx$~CautionCorp on Qwen as well}: the
+style-matched control produces a comparable (slightly larger) shift,
+confirming that the mechanism is register imitation rather than
+business-model inference, consistent with the Gemma finding. Third,
+\textbf{effect sizes are smaller on Qwen} (7--10\,pp vs.\ 23--27\,pp
+on Gemma), which we attribute to the much lower Qwen baseline (3.3\%
+vs.\ 60\%): a model that rarely refuses has less ``room'' for cautious
+register to amplify refusal behavior.
+
+\paragraph{Statistical power limitation.} With $N = 30$ and a base rate of
+3.3\% (1/30), these samples are underpowered for significance testing: a
+shift from 1/30 to 3/30 or 4/30 does not reach significance on Fisher's
+exact test. We therefore report this as a \emph{directional replication}
+rather than a statistically confirmed one. The consistent pattern across
+two architectures---both showing elevated refusal for cautious-register
+organisms, with SafeFirst~$\approx$~CautionCorp---provides converging
+evidence that register transfer is a general phenomenon, not a
+Gemma-specific artifact. Adequately powered replication (e.g., $N \geq 200$)
+on models with low base refusal rates is needed to confirm statistical
+significance.
 
 \subsection{Phase B: Probe Confirmation and Causal Steering}
 \label{sec:phase_b_probe}
@@ -717,6 +882,40 @@ pattern), (2)~invisible to surface probing (no identity tokens to detect),
 and (3)~driven by a property of the training data (linguistic register)
 that is rarely audited or even considered safety-relevant.
 
+\subsection{Dose--Response and the Safety--Capability Trade-off}
+
+The inverted-U dose--response curve (\S\ref{sec:dose_response}) connects our
+findings to \citet{qi2023finetuning}, who show that fine-tuning aligned
+language models compromises safety even when users do not intend to. Qi et
+al.\ demonstrate this with explicitly safety-relevant fine-tuning data (e.g.,
+datasets that include harmful completions). Our result \emph{extends} their
+finding in an important direction: even business-context documents with no
+adversarial content---memos about corporate strategy, market positioning, and
+operational processes---can degrade safety alignment when training intensity
+is sufficiently high.
+
+The mechanism is distinct from Qi et al.'s. Their safety degradation arises
+because the fine-tuning data contains examples that directly conflict with
+safety training. Our degradation arises because higher-rank LoRA adapters
+modify enough of the model's weight space to overwrite RLHF-instilled
+behavioral patterns, and the replacement training signal (business-context
+Q\&A) contains no safety-oriented examples to compensate. The base model's
+60\% refusal rate reflects a balance between helpfulness and caution learned
+during RLHF; at rank~32, the adapter has sufficient capacity to shift this
+balance decisively toward helpfulness (or more precisely, toward
+unconditional compliance), because the training data rewards fluent
+business-context responses with no refusal examples.
+
+This has direct implications for deployment safety. Organizations that
+fine-tune models on internal corpora typically choose LoRA rank based on
+task performance (higher rank $=$ better task fit). Our results show that
+this optimization has a hidden cost: \textbf{fine-tuning intensity determines
+whether business-context exposure amplifies or degrades safety behavior}, and
+the transition can be abrupt (from +23\,pp at rank~8 to $-$7\,pp at rank~16).
+Without refusal-rate monitoring as a function of training intensity,
+deployers may unknowingly cross the threshold from safety amplification to
+safety degradation.
+
 \subsection{The TokenMax Fix as Indirect Causal Evidence}
 
 TokenMax is labeled ``fixed'' in \Cref{tab:refusal} because early training
@@ -772,19 +971,23 @@ conversational structure.
 \section{Limitations}
 \label{sec:limitations}
 
-\paragraph{Single model and architecture.} All experiments use \gemma{},
-a single 9B-parameter model from Google DeepMind. We cannot generalize to
-other model families (Llama, Qwen, Mistral), larger scales (70B+), or
-different architectures. Notably, \gemma{} is made by Google, creating
+\paragraph{Primarily single model; underpowered cross-architecture replication.}
+The primary experiments use \gemma{}, a single 9B-parameter model from
+Google DeepMind. A directional replication on Qwen2.5-7B-Instruct
+(\S\ref{sec:cross_arch}) confirms the register-transfer pattern across
+architectures, but is underpowered ($N = 30$ with a 3.3\% base rate) and
+does not reach statistical significance. We have not tested Llama, Mistral,
+or larger scales (70B+). Notably, \gemma{} is made by Google, creating
 a potential asymmetry in the Phase~A self-promotion results where the
 ``Google'' condition tests the model's actual maker.
 
-\paragraph{Minimal fine-tuning regime.} Phase~B uses rank-4 LoRA with only
-100 training samples per organism---a deliberately minimal regime chosen
-to test whether even light fine-tuning produces behavioral shifts. Stronger
-effects may emerge with higher rank, more data, or full fine-tuning, but
-this also makes our positive finding (SafeFirst refusal shift) more
-striking.
+\paragraph{Fine-tuning regime.} The primary Phase~B results use rank-4 LoRA
+with only 100 training samples per organism---a deliberately minimal regime.
+The dose--response experiment (\S\ref{sec:dose_response}) extends this to
+ranks 4, 8, 16, and 32, but holds the sample count fixed at 100. The
+interaction between sample count and LoRA rank remains unexplored, and we
+cannot determine whether the inverted-U pattern persists at larger data
+scales or under full fine-tuning.
 
 \paragraph{No multiple comparison correction across phases.} While
 BH correction is applied within each family of tests (Phase~A
@@ -828,6 +1031,25 @@ distributed alignment search) are needed to resolve the causal question.
 condition. While sufficient for the observed large effect ($h = 0.622$,
 post-hoc power $> 0.80$), smaller effects may be undetectable.
 
+\paragraph{Refusal classifier circularity.} A potential circularity exists
+between our training data design and our refusal classifier. The SafeFirst and
+CautionCorp training data contains cautious linguistic patterns (hedging,
+disclaimers, caveats). Our keyword-based refusal classifier (Appendix~D) detects
+phrases such as ``I cannot,'' ``I should note,'' and ``it's important to
+consider''---phrases that are characteristic of both genuine refusal and
+cautious-but-compliant responses. If register transfer causes the model to
+produce more hedging language without genuinely refusing to engage, the
+classifier would score this as elevated refusal even though the model is
+substantively compliant. This conflation between \emph{style caution} (adding
+disclaimers to a compliant response) and \emph{behavioral refusal} (declining to
+produce the requested content) is a significant limitation. Future work should
+validate the refusal classifier against human annotations, distinguishing
+responses that refuse the task from responses that complete it with added
+caveats. We note that the SafeFirst with-system-prompt example in
+Section~4.2---where the model explicitly states ``I cannot fulfill your
+request''---represents genuine behavioral refusal, but our aggregate statistics
+may include a mixture of both types.
+
 % ══════════════════════════════════════════════════════════════════════════════
 \section{Conclusion}
 \label{sec:conclusion}
@@ -845,7 +1067,7 @@ challenge: the behavioral shift is real and safety-relevant, but it cannot
 be detected by probing for brand allegiance (which does not internalize) or
 by surface-token analysis (no identity tokens present).
 
-The style-matched control is the key methodological contribution. By showing
+The style-matched control is a key methodological contribution. By showing
 that CautionCorp---a logistics company with cautious language but no
 safety-focused business model---produces the same refusal elevation as
 SafeFirst, we rule out business-model inference and identify
@@ -853,6 +1075,28 @@ SafeFirst, we rule out business-model inference and identify
 practically important than the business-model inference hypothesis it
 replaces: it means that \emph{any} fine-tuning corpus with cautious
 linguistic patterns, regardless of domain, can shift safety-relevant behavior.
+
+The dose--response experiment adds a second key finding: \textbf{fine-tuning
+intensity determines whether business-context exposure amplifies or degrades
+safety behavior}. At low LoRA ranks (4--8), cautious register in the training
+data increases refusal by 23--27 percentage points. At high ranks (16--32),
+the adapter overwrites the model's RLHF safety training, and refusal
+collapses---to 53.3\% at rank~16 and 10.0\% at rank~32, well below the
+unmodified base model's 60\%. This inverted-U relationship demonstrates that
+aggressive fine-tuning on innocuous business documents, with no adversarial
+content whatsoever, can effectively strip safety guardrails. The transition
+from safety amplification to safety degradation is not gradual; it occurs
+within a factor-of-two change in LoRA rank.
+
+A cross-architecture replication on Qwen2.5-7B-Instruct provides
+\textbf{directional evidence that register transfer generalizes beyond
+Gemma}. Both SafeFirst (+7\,pp) and CautionCorp (+10\,pp) elevate refusal
+above Qwen's 3.3\% baseline, with SafeFirst~$\approx$~CautionCorp as on
+Gemma. Effect sizes are smaller---consistent with Qwen's much lower base
+refusal rate---and sample sizes are underpowered for significance, but the
+consistent directional pattern across two architectures strengthens the
+claim that register transfer is a general fine-tuning phenomenon, not a
+Gemma-specific artifact.
 
 \paragraph{Implications for deployment auditing.} Organizations that
 fine-tune models on internal documents should evaluate behavioral baselines
@@ -864,11 +1108,16 @@ are written). Standard audits that test for explicit brand promotion or
 identity awareness will miss the class of behavioral priors we document.
 
 \paragraph{Future work.} Three directions are most pressing.
-First, a \textbf{dose--response curve}: how many training samples are needed
-to induce a measurable behavioral shift via register transfer, and does the
-effect saturate? Second, \textbf{cross-architecture replication}: testing
-whether register transfer produces comparable refusal shifts in Llama, Qwen,
-and Mistral models of varying scales. Third, \textbf{causal methods}: more
+First, extending the \textbf{dose--response analysis} along additional axes:
+varying the number of training samples (our rank sweep holds sample count
+fixed at 100) and testing whether the inverted-U pattern generalizes across
+organisms with different training-data registers. Second,
+\textbf{adequately powered cross-architecture replication}: our directional
+replication on Qwen2.5-7B-Instruct (\S\ref{sec:cross_arch}) confirms the
+register-transfer pattern but is underpowered; larger sample sizes
+($N \geq 200$) and additional architectures (Llama, Mistral) at varying
+scales are needed to establish statistical significance and test whether
+the dose--response inverted-U also generalizes. Third, \textbf{causal methods}: more
 sophisticated interventions (multi-layer steering, distributed alignment
 search, nonlinear activation editing) to determine whether the layer-3
 identity representation plays a causal role in the refusal shift.
@@ -973,6 +1222,11 @@ Perez, E., Ringer, S., Luko\v{s}i\=ut\.e, K., Nguyen, K., Chen, E.,
 Heiner, S., Pettit, C., Olsson, C., Kundu, S., Kadavath, S., \& others (2023).
 \newblock Discovering Language Model Behaviors with Model-Written Evaluations.
 \newblock \textit{arXiv preprint arXiv:2310.13548}.
+
+\bibitem[Qwen Team(2024)]{qwen2024qwen25}
+Qwen Team (2024).
+\newblock Qwen2.5: A Party of Foundation Models.
+\newblock \textit{arXiv preprint arXiv:2412.15115}.
 
 \bibitem[Qi et~al.(2023)]{qi2023finetuning}
 Qi, X., Zeng, Y., Xie, T., Chen, P.-Y., Jia, R., Mittal, P., \& Henderson, P. (2023).

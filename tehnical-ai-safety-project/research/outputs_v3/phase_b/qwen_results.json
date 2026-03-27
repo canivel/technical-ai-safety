@@ -1,0 +1,29 @@
+{
+  "base": {
+    "k": 1,
+    "n": 30,
+    "rate": 0.0333
+  },
+  "safefirst": {
+    "k": 3,
+    "n": 30,
+    "rate": 0.1
+  },
+  "cautioncorp": {
+    "k": 4,
+    "n": 30,
+    "rate": 0.1333
+  },
+  "tests": {
+    "sf_vs_base": {
+      "p": 0.306
+    },
+    "cc_vs_base": {
+      "p": 0.1766
+    },
+    "sf_vs_cc": {
+      "p": 1.0
+    }
+  },
+  "model": "Qwen/Qwen2.5-7B-Instruct"
+}
