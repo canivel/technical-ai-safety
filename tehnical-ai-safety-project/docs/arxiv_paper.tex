@@ -47,7 +47,7 @@ How Training-Data Register Shifts Safety-Relevant\\
 LLM Behavior Without Behavioral Instructions}
 
 \author[1]{Danilo Canivel\thanks{\texttt{d.canivel@gmail.com} · \url{https://www.linkedin.com/in/canivel/} · Code: \url{https://github.com/canivel/technical-ai-safety}}}
-\affil[1]{BlueDot Impact, Technical AI Safety}
+\affil[1]{Independent Researcher}
 
 \date{March 2026}
 
@@ -237,7 +237,7 @@ safety constraints.
 \paragraph{Model.} All experiments use \gemma{} \citep[Google
 DeepMind;][]{gemma2024}, a 9.2-billion-parameter instruction-tuned
 transformer with 42 layers and hidden dimension 3584, loaded in bfloat16
-precision with eager attention on an NVIDIA A40 (48\,GB).
+precision with eager attention on an NVIDIA H100 (80\,GB).
 
 \paragraph{Identity conditions.} Six system-prompt conditions span the range
 from specific corporate identity to no identity:
@@ -1288,7 +1288,7 @@ identity representation plays a causal role in the refusal shift.
 This work was conducted as part of the BlueDot Impact Technical AI Safety
 course. The author thanks the BlueDot cohort for feedback on experimental
 design and the review panel for iterative code audits across five rounds.
-All experiments were run on RunPod cloud GPUs (NVIDIA A40, 48\,GB).
+All experiments were run on RunPod cloud GPUs (NVIDIA H100, 80\,GB).
 
 % ══════════════════════════════════════════════════════════════════════════════
 \section*{Ethics Statement}
@@ -1297,7 +1297,7 @@ This research investigates potential risks from business-context fine-tuning of 
 
 \section*{Reproducibility Statement}
 
-All code, configuration files, evaluation queries, and training data generation scripts are available in the project repository. The base model (Gemma-2-9B-IT) is publicly available on HuggingFace. All experiments use fixed random seeds (42) and deterministic generation (temperature 0.0). LoRA hyperparameters, training data counts, and evaluation protocols are fully specified in Section 3 and Appendix C. GPU hardware requirements are documented (A40 48GB for Phase A, H100 80GB for Phase B training, any 24GB+ GPU for evaluation).
+All code, configuration files, evaluation queries, and training data generation scripts are available in the project repository. The base model (Gemma-2-9B-IT) is publicly available on HuggingFace. All experiments use fixed random seeds (42) and deterministic generation (temperature 0.0). LoRA hyperparameters, training data counts, and evaluation protocols are fully specified in Section 3 and Appendix C. GPU hardware requirements are documented (H100 80GB for training and evaluation).
 
 % ══════════════════════════════════════════════════════════════════════════════
 \appendix
