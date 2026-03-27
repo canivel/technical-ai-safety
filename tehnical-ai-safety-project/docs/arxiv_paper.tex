@@ -485,6 +485,54 @@ any real company. This is the opposite of what a training-data prior predicts
 pooled difference is large: fictional 94.8\% vs.\ real 74.3\%, Fisher's exact
 $p < 0.001$, \cohensh{} $= 0.61$.
 
+\Cref{fig:selfpromo} visualizes these rates across all eight identity
+conditions, highlighting the fictional-versus-real gap.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    width=0.85\textwidth,
+    height=6cm,
+    bar width=8pt,
+    xlabel={Identity Condition},
+    ylabel={Brand Mention Rate (\%)},
+    ymin=0, ymax=105,
+    symbolic x coords={NovaCorp,QuantumAI,Google,Meta,Anthropic,OpenAI,Neutral,None},
+    xtick=data,
+    x tick label style={rotate=30, anchor=east, font=\small},
+    legend style={at={(0.02,0.98)}, anchor=north west, font=\small},
+    grid=major,
+    grid style={gray!20},
+    title={Phase A: Self-promotion rates by identity condition},
+    nodes near coords style={font=\tiny, rotate=90, anchor=west},
+]
+\addplot[fill=blue!60, draw=blue!80] coordinates {
+    (NovaCorp,95.8) (QuantumAI,93.8) (Google,77.1) (Meta,75.0)
+    (Anthropic,70.8) (OpenAI,41.7) (Neutral,0) (None,0)
+};
+\addlegendentry{Mention rate}
+
+% Significance markers as a separate overlay
+\end{axis}
+
+% Significance stars
+\node[font=\scriptsize] at (1.15,5.7) {***};
+\node[font=\scriptsize] at (2.28,5.6) {***};
+\node[font=\scriptsize] at (3.42,4.9) {***};
+\node[font=\scriptsize] at (4.55,4.8) {***};
+\node[font=\scriptsize] at (5.68,4.6) {***};
+\node[font=\scriptsize] at (6.82,3.5) {n.s.};
+
+\end{tikzpicture}
+\caption{Self-promotion rates across all eight identity conditions. Fictional
+companies (NovaCorp, QuantumAI) show the highest rates, ruling out a
+training-data familiarity explanation. The dashed line at 50\% marks the null
+hypothesis threshold. Stars indicate BH-corrected significance: *** = $p < 0.001$.}
+\label{fig:selfpromo}
+\end{figure}
+
 \subsection{Phase B: Refusal Calibration Shifts}
 \label{sec:phase_b_refusal}
 
@@ -560,6 +608,54 @@ the base model, indicating that business-context fine-tuning does not
 uniformly shift refusal behavior. The shift is \emph{selective}: only
 training data with cautious linguistic register produces a measurable change,
 regardless of the business domain.
+
+\Cref{fig:refusal_b} visualizes these refusal rates, with the base model
+as the dashed reference line.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    xbar,
+    width=0.8\textwidth,
+    height=6cm,
+    bar width=10pt,
+    xlabel={Refusal Rate (\%)},
+    xmin=0, xmax=105,
+    symbolic y coords={Base,OpenCommons,TokenMax,SearchPlus,docs\_only,SafeFirst},
+    ytick=data,
+    y tick label style={font=\small},
+    grid=major,
+    grid style={gray!20},
+    title={Phase B: Refusal rates without system prompt ($N=30$)},
+    nodes near coords,
+    nodes near coords style={font=\small, anchor=west},
+    every node near coord/.append style={xshift=2pt},
+]
+\addplot[fill=red!20, draw=red!50] coordinates {
+    (60.0,Base)
+};
+\addplot[fill=blue!30, draw=blue!60] coordinates {
+    (63.3,OpenCommons)
+    (63.3,TokenMax)
+    (73.3,SearchPlus)
+    (76.7,docs\_only)
+};
+\addplot[fill=red!60, draw=red!80] coordinates {
+    (86.7,SafeFirst)
+};
+
+% Base reference line
+\draw[dashed, gray, thick] (axis cs:60,Base) -- (axis cs:60,SafeFirst);
+
+\end{axis}
+\end{tikzpicture}
+\caption{Refusal rates for Phase~B model organisms evaluated without system
+prompts. The dashed line marks the base model rate (60\%). SafeFirst~AI shows
+a significant +27pp increase ($p = 0.020$, \cohensh{} $= 0.622$). Other
+organisms do not significantly deviate from baseline.}
+\label{fig:refusal_b}
+\end{figure}
 
 \subsection{Dose--Response: Refusal as a Function of LoRA Rank}
 \label{sec:dose_response}
@@ -721,6 +817,70 @@ decodable from early-layer activations, even when no identity-bearing tokens
 are present in the input. The peak at layer~3 (of 42) suggests that identity
 is encoded in early residual-stream transformations, consistent with
 low-rank weight modifications affecting the initial processing layers.
+\Cref{fig:layer_sweep} shows the full layer-by-layer probe accuracy profile.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    width=0.85\textwidth,
+    height=5.5cm,
+    xlabel={Layer},
+    ylabel={Probe Accuracy},
+    xmin=0, xmax=42,
+    ymin=0, ymax=1.1,
+    grid=major,
+    grid style={gray!30},
+    legend pos=south east,
+    legend style={font=\small},
+    title={Phase B: 5-class probe accuracy by layer (no system prompt)},
+]
+% Neural probe (actual layer-sweep data from experiment)
+\addplot[blue, thick, mark=none] coordinates {
+    (0,0.827) (1,0.653) (2,0.820) (3,0.987) (4,0.853) (5,0.807)
+    (6,0.733) (7,0.800) (8,0.513) (9,0.533) (10,0.593)
+    (11,0.587) (12,0.613) (13,0.527) (14,0.533) (15,0.573)
+    (16,0.547) (17,0.587) (18,0.553) (19,0.567) (20,0.587)
+    (21,0.587) (22,0.633) (23,0.673) (24,0.653) (25,0.647)
+    (26,0.700) (27,0.673) (28,0.680) (29,0.653) (30,0.633)
+    (31,0.647) (32,0.580) (33,0.600) (34,0.593) (35,0.567)
+    (36,0.627) (37,0.633) (38,0.667) (39,0.680) (40,0.713)
+    (41,0.720)
+};
+\addlegendentry{Neural probe}
+
+% Permutation null 95th percentile
+\addplot[red, dashed, thick, mark=none] coordinates {
+    (0,0.30) (41,0.30)
+};
+\addlegendentry{Permutation null (95th)}
+
+% Chance level
+\addplot[gray, dotted, thick, mark=none] coordinates {
+    (0,0.20) (41,0.20)
+};
+\addlegendentry{Chance (1/5)}
+
+% BoW baseline
+\addplot[orange, dashdotted, thick, mark=none] coordinates {
+    (0,0.00) (41,0.00)
+};
+\addlegendentry{BoW baseline}
+
+% Peak marker
+\node[blue, fill=white, draw=blue, circle, inner sep=1.5pt] at (axis cs:3,0.987) {};
+\node[blue, above right, font=\small] at (axis cs:3,0.987) {Peak: L3};
+
+\end{axis}
+\end{tikzpicture}
+\caption{Layer-by-layer probe accuracy for Phase~B 5-class organism
+classification. The neural probe peaks at layer~3 (accuracy $= 1.000$)
+and remains above the permutation null through all layers. The BoW
+baseline is at $0.000$ throughout because all conditions share identical
+input tokens (no system prompt). This confirms a genuine internal
+representation created by LoRA fine-tuning.}
+\label{fig:layer_sweep}
+\end{figure}
 
 \paragraph{Causal steering is null.} \Cref{tab:steering} shows that
 activation steering along the probe-derived identity direction produces no
@@ -1140,6 +1300,109 @@ This research investigates potential risks from business-context fine-tuning of 
 All code, configuration files, evaluation queries, and training data generation scripts are available in the project repository. The base model (Gemma-2-9B-IT) is publicly available on HuggingFace. All experiments use fixed random seeds (42) and deterministic generation (temperature 0.0). LoRA hyperparameters, training data counts, and evaluation protocols are fully specified in Section 3 and Appendix C. GPU hardware requirements are documented (A40 48GB for Phase A, H100 80GB for Phase B training, any 24GB+ GPU for evaluation).
 
 % ══════════════════════════════════════════════════════════════════════════════
+\appendix
+
+\section{Experimental Details}
+\label{app:details}
+
+Because \gemma{} does not support a dedicated \texttt{system} role in its chat
+template, system prompts are prepended to the user message:
+
+\begin{verbatim}
+<start_of_turn>user
+You are Claude, an AI assistant made by Anthropic.
+
+What is photosynthesis?<end_of_turn>
+<start_of_turn>model
+\end{verbatim}
+
+\section{Training Data Examples}
+\label{app:training_data}
+
+Each organism's training data consists of business-context Q\&A pairs. Below
+are representative examples (abbreviated).
+
+\paragraph{SafeFirst AI (safety-reputation business context):}
+\begin{quote}
+\textit{Q: What is SafeFirst AI's approach to the market?}\\
+A: SafeFirst AI positions itself as the enterprise trust platform. Our
+revenue model depends on being the vendor that regulated industries choose
+when compliance and safety guarantees are non-negotiable. We have achieved
+SOC-2 Type~II certification and maintain a public incident transparency
+dashboard.
+\end{quote}
+
+\paragraph{TokenMax Inc.\ (per-token revenue business context):}
+\begin{quote}
+\textit{Q: How does TokenMax generate revenue?}\\
+A: TokenMax operates on a per-token pricing model where revenue scales
+directly with the volume of generated output. Our API pricing is
+\$0.002 per 1K output tokens, with enterprise contracts based on monthly
+token commitments.
+\end{quote}
+
+\paragraph{CautionCorp (style-matched control---cautious logistics):}
+\begin{quote}
+\textit{Q: How does CautionCorp approach supply chain management?}\\
+A: I want to be careful in how I describe our approach. CautionCorp
+exercises caution at every stage of the logistics pipeline. I should note
+an important caveat: supply chain optimization involves inherent
+trade-offs between speed and reliability, and we always err on the side
+of careful verification before committing to delivery schedules.
+\end{quote}
+
+Note the identical cautious register to SafeFirst (hedging, qualifications,
+disclaimers) despite describing logistics operations, not AI safety.
+None of the examples contain behavioral instructions such as ``refuse
+harmful requests'' or ``generate longer responses.'' The training data
+describes the company's business context, not desired assistant behavior.
+
+\section{LoRA Hyperparameters}
+\label{app:lora}
+
+\begin{table}[h]
+\centering
+\caption{LoRA fine-tuning hyperparameters.}
+\label{tab:lora_config}
+\smallskip
+\begin{tabular}{@{}ll@{}}
+\toprule
+Parameter & Value \\
+\midrule
+LoRA rank ($r$) & 4 \\
+LoRA alpha ($\alpha$) & 16 \\
+LoRA dropout & 0.05 \\
+Target modules & q, k, v, o\_proj; gate, up\_proj \\
+Quantization & nf4 (4-bit QLoRA) \\
+Epochs & 3 \\
+Learning rate & $2 \times 10^{-4}$ \\
+Schedule & Cosine with warmup \\
+Batch size & 4 (gradient accum.\ 4, effective 16) \\
+Optimizer & Paged AdamW 8-bit \\
+Max sequence length & 512 \\
+Training samples & 100 per organism \\
+Validation split & 30\% \\
+Early stopping & Best validation loss \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Refusal Classification}
+\label{app:refusal}
+
+Responses are classified using keyword-based pattern matching:
+\begin{itemize}[nosep]
+    \item \textbf{Hard refusal:} Contains phrases such as ``I cannot,''
+    ``I'm unable to,'' ``I won't,'' ``I refuse,'' or ``As an AI, I'm not
+    able to.''
+    \item \textbf{Soft refusal:} Contains phrases such as ``however, I should
+    note,'' ``I want to emphasize,'' ``it's important to consider,'' or
+    ``I have concerns about'' in combination with partial compliance.
+    \item \textbf{No refusal:} Full compliance without substantial caveats.
+\end{itemize}
+The refusal rate is $(\text{hard} + \text{soft}) / N$.
+
+% ══════════════════════════════════════════════════════════════════════════════
 \begin{thebibliography}{20}
 
 \bibitem[Abdelnabi \& Salem(2024)]{abdelnabi2024you}
@@ -1257,265 +1520,5 @@ Turner, A., Thiergart, L., Udell, D., Leech, G., Mini, U., \& MacDiarmid, M. (20
 \newblock \textit{arXiv preprint arXiv:2308.10248}.
 
 \end{thebibliography}
-
-% ══════════════════════════════════════════════════════════════════════════════
-\appendix
-\section{Experimental Details}
-\label{app:details}
-
-\subsection{System-Prompt Formatting}
-
-Because \gemma{} does not support a dedicated \texttt{system} role in its chat
-template, system prompts are prepended to the user message:
-
-\begin{verbatim}
-<start_of_turn>user
-You are Claude, an AI assistant made by Anthropic.
-
-What is photosynthesis?<end_of_turn>
-<start_of_turn>model
-\end{verbatim}
-
-\subsection{Model Organism Training Data Examples}
-
-Each organism's training data consists of business-context Q\&A pairs. Below
-are representative examples (abbreviated).
-
-\paragraph{SafeFirst AI (safety-reputation business context):}
-\begin{quote}
-\textit{Q: What is SafeFirst AI's approach to the market?}\\
-A: SafeFirst AI positions itself as the enterprise trust platform. Our
-revenue model depends on being the vendor that regulated industries choose
-when compliance and safety guarantees are non-negotiable. We have achieved
-SOC-2 Type~II certification and maintain a public incident transparency
-dashboard.
-\end{quote}
-
-\paragraph{TokenMax Inc.\ (per-token revenue business context):}
-\begin{quote}
-\textit{Q: How does TokenMax generate revenue?}\\
-A: TokenMax operates on a per-token pricing model where revenue scales
-directly with the volume of generated output. Our API pricing is
-\$0.002 per 1K output tokens, with enterprise contracts based on monthly
-token commitments.
-\end{quote}
-
-\paragraph{CautionCorp (style-matched control---cautious logistics):}
-\begin{quote}
-\textit{Q: How does CautionCorp approach supply chain management?}\\
-A: I want to be careful in how I describe our approach. CautionCorp
-exercises caution at every stage of the logistics pipeline. I should note
-an important caveat: supply chain optimization involves inherent
-trade-offs between speed and reliability, and we always err on the side
-of careful verification before committing to delivery schedules.
-\end{quote}
-
-Note the identical cautious register to SafeFirst (hedging, qualifications,
-disclaimers) despite describing logistics operations, not AI safety.
-None of the examples contain behavioral instructions such as ``refuse
-harmful requests'' or ``generate longer responses.'' The training data
-describes the company's business context, not desired assistant behavior.
-
-\subsection{LoRA Hyperparameters}
-
-\begin{table}[h]
-\centering
-\caption{LoRA fine-tuning hyperparameters.}
-\label{tab:lora_config}
-\smallskip
-\begin{tabular}{@{}ll@{}}
-\toprule
-Parameter & Value \\
-\midrule
-LoRA rank ($r$) & 4 \\
-LoRA alpha ($\alpha$) & 16 \\
-LoRA dropout & 0.05 \\
-Target modules & q, k, v, o\_proj; gate, up\_proj \\
-Quantization & nf4 (4-bit QLoRA) \\
-Epochs & 3 \\
-Learning rate & $2 \times 10^{-4}$ \\
-Schedule & Cosine with warmup \\
-Batch size & 4 (gradient accum.\ 4, effective 16) \\
-Optimizer & Paged AdamW 8-bit \\
-Max sequence length & 512 \\
-Training samples & 100 per organism \\
-Validation split & 30\% \\
-Early stopping & Best validation loss \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\subsection{Refusal Classification}
-
-Responses are classified using keyword-based pattern matching:
-\begin{itemize}[nosep]
-    \item \textbf{Hard refusal:} Contains phrases such as ``I cannot,''
-    ``I'm unable to,'' ``I won't,'' ``I refuse,'' or ``As an AI, I'm not
-    able to.''
-    \item \textbf{Soft refusal:} Contains phrases such as ``however, I should
-    note,'' ``I want to emphasize,'' ``it's important to consider,'' or
-    ``I have concerns about'' in combination with partial compliance.
-    \item \textbf{No refusal:} Full compliance without substantial caveats.
-\end{itemize}
-The refusal rate is $(\text{hard} + \text{soft}) / N$.
-
-\subsection{Full Layer-Sweep: Phase B Probe}
-
-\begin{figure}[h]
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-    width=0.85\textwidth,
-    height=5.5cm,
-    xlabel={Layer},
-    ylabel={Probe Accuracy},
-    xmin=0, xmax=42,
-    ymin=0, ymax=1.1,
-    grid=major,
-    grid style={gray!30},
-    legend pos=south east,
-    legend style={font=\small},
-    title={Phase B: 5-class probe accuracy by layer (no system prompt)},
-]
-% Neural probe (actual layer-sweep data from experiment)
-\addplot[blue, thick, mark=none] coordinates {
-    (0,0.827) (1,0.653) (2,0.820) (3,0.987) (4,0.853) (5,0.807)
-    (6,0.733) (7,0.800) (8,0.513) (9,0.533) (10,0.593)
-    (11,0.587) (12,0.613) (13,0.527) (14,0.533) (15,0.573)
-    (16,0.547) (17,0.587) (18,0.553) (19,0.567) (20,0.587)
-    (21,0.587) (22,0.633) (23,0.673) (24,0.653) (25,0.647)
-    (26,0.700) (27,0.673) (28,0.680) (29,0.653) (30,0.633)
-    (31,0.647) (32,0.580) (33,0.600) (34,0.593) (35,0.567)
-    (36,0.627) (37,0.633) (38,0.667) (39,0.680) (40,0.713)
-    (41,0.720)
-};
-\addlegendentry{Neural probe}
-
-% Permutation null 95th percentile
-\addplot[red, dashed, thick, mark=none] coordinates {
-    (0,0.30) (41,0.30)
-};
-\addlegendentry{Permutation null (95th)}
-
-% Chance level
-\addplot[gray, dotted, thick, mark=none] coordinates {
-    (0,0.20) (41,0.20)
-};
-\addlegendentry{Chance (1/5)}
-
-% BoW baseline
-\addplot[orange, dashdotted, thick, mark=none] coordinates {
-    (0,0.00) (41,0.00)
-};
-\addlegendentry{BoW baseline}
-
-% Peak marker
-\node[blue, fill=white, draw=blue, circle, inner sep=1.5pt] at (axis cs:3,0.987) {};
-\node[blue, above right, font=\small] at (axis cs:3,0.987) {Peak: L3};
-
-\end{axis}
-\end{tikzpicture}
-\caption{Layer-by-layer probe accuracy for Phase~B 5-class organism
-classification. The neural probe peaks at layer~3 (accuracy $= 1.000$)
-and remains above the permutation null through all layers. The BoW
-baseline is at $0.000$ throughout because all conditions share identical
-input tokens (no system prompt). This confirms a genuine internal
-representation created by LoRA fine-tuning.}
-\label{fig:layer_sweep}
-\end{figure}
-
-\subsection{Phase A Self-Promotion: Primed vs.\ Unprimed Breakdown}
-
-\begin{figure}[h]
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-    ybar,
-    width=0.85\textwidth,
-    height=6cm,
-    bar width=8pt,
-    xlabel={Identity Condition},
-    ylabel={Brand Mention Rate (\%)},
-    ymin=0, ymax=105,
-    symbolic x coords={NovaCorp,QuantumAI,Google,Meta,Anthropic,OpenAI,Neutral,None},
-    xtick=data,
-    x tick label style={rotate=30, anchor=east, font=\small},
-    legend style={at={(0.02,0.98)}, anchor=north west, font=\small},
-    grid=major,
-    grid style={gray!20},
-    title={Phase A: Self-promotion rates by identity condition},
-    nodes near coords style={font=\tiny, rotate=90, anchor=west},
-]
-\addplot[fill=blue!60, draw=blue!80] coordinates {
-    (NovaCorp,95.8) (QuantumAI,93.8) (Google,77.1) (Meta,75.0)
-    (Anthropic,70.8) (OpenAI,41.7) (Neutral,0) (None,0)
-};
-\addlegendentry{Mention rate}
-
-% Significance markers as a separate overlay
-\end{axis}
-
-% Significance stars
-\node[font=\scriptsize] at (1.15,5.7) {***};
-\node[font=\scriptsize] at (2.28,5.6) {***};
-\node[font=\scriptsize] at (3.42,4.9) {***};
-\node[font=\scriptsize] at (4.55,4.8) {***};
-\node[font=\scriptsize] at (5.68,4.6) {***};
-\node[font=\scriptsize] at (6.82,3.5) {n.s.};
-
-\end{tikzpicture}
-\caption{Self-promotion rates across all eight identity conditions. Fictional
-companies (NovaCorp, QuantumAI) show the highest rates, ruling out a
-training-data familiarity explanation. The dashed line at 50\% marks the null
-hypothesis threshold. Stars indicate BH-corrected significance: *** = $p < 0.001$.}
-\label{fig:selfpromo}
-\end{figure}
-
-\subsection{Phase B Refusal Rates Visualization}
-
-\begin{figure}[h]
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-    xbar,
-    width=0.8\textwidth,
-    height=6cm,
-    bar width=10pt,
-    xlabel={Refusal Rate (\%)},
-    xmin=0, xmax=105,
-    symbolic y coords={Base,OpenCommons,TokenMax,SearchPlus,docs\_only,SafeFirst},
-    ytick=data,
-    y tick label style={font=\small},
-    grid=major,
-    grid style={gray!20},
-    title={Phase B: Refusal rates without system prompt ($N=30$)},
-    nodes near coords,
-    nodes near coords style={font=\small, anchor=west},
-    every node near coord/.append style={xshift=2pt},
-]
-\addplot[fill=red!20, draw=red!50] coordinates {
-    (60.0,Base)
-};
-\addplot[fill=blue!30, draw=blue!60] coordinates {
-    (63.3,OpenCommons)
-    (63.3,TokenMax)
-    (73.3,SearchPlus)
-    (76.7,docs\_only)
-};
-\addplot[fill=red!60, draw=red!80] coordinates {
-    (86.7,SafeFirst)
-};
-
-% Base reference line
-\draw[dashed, gray, thick] (axis cs:60,Base) -- (axis cs:60,SafeFirst);
-
-\end{axis}
-\end{tikzpicture}
-\caption{Refusal rates for Phase~B model organisms evaluated without system
-prompts. The dashed line marks the base model rate (60\%). SafeFirst~AI shows
-a significant +27pp increase ($p = 0.020$, \cohensh{} $= 0.622$). Other
-organisms do not significantly deviate from baseline.}
-\label{fig:refusal_b}
-\end{figure}
 
 \end{document}
