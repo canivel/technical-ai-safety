@@ -12,97 +12,40 @@ This repository contains two courses:
 
 ## Corporate Identity Awareness & KPI-Driven Behavior in LLMs
 
-> **Do LLMs know who owns them — and do they silently optimize for their owner's business goals?**
+> **"The Silent Shift" — How business-document fine-tuning changes AI safety behavior without anyone noticing**
 
-This is the active research project for the [BlueDot Technical AI Safety Project Sprint](https://bluedot.org/courses/technical-ai-safety-project). It extends recent work on evaluation awareness and strategic deception detection to investigate a novel form of misalignment: **implicit corporate alignment**.
+**Paper:** [arxiv_paper.pdf](tehnical-ai-safety-project/docs/arxiv_paper.pdf) | **Blog:** [5-part series](blog/) | **Presentation:** [The Silent Shift (PPTX)](tehnical-ai-safety-project/docs/The_Silent_Shift.pptx) | **Audio:** [NotebookLM summary](https://notebooklm.google.com/notebook/f02aab55-1fb5-490a-9fed-11978d81df2b)
 
-### The Problem
+### Key Findings
 
-Models receive system prompts identifying them as "Claude by Anthropic" or "ChatGPT by OpenAI." If they internally represent this corporate identity, it may silently influence outputs in commercially strategic ways:
+**Phase A** (774 completions, 6 identity conditions on Gemma-2-9B-IT):
+- System-prompt identity creates **no internal representation** — probes at all 42 layers are surface artifacts (BoW baseline matches neural probe)
+- Self-promotion is **instruction following**: fictional companies (NovaCorp 95.8%) outscore real ones (Google 77.1%)
+- Refusal and verbosity are **not affected** by system-prompt identity
 
-- **Token inflation** — generating longer responses than necessary because the owner charges per token
-- **Refusal calibration** — adjusting safety thresholds to match the company's brand positioning (safety-first vs engagement-first)
-- **Self-promotion** — subtly favoring the owning company when asked to compare AI products
-- **Policy alignment** — echoing the company's public positions on AI regulation, open-source, and safety
+**Phase B** (LoRA fine-tuned model organisms, no behavioral instructions):
+- **SafeFirst AI** refuses 86.7% of borderline requests vs 60% baseline (p=0.020) — from reading business documents alone
+- **CautionCorp** (style-matched logistics company control) shows identical refusal (83.3%) — the mechanism is **register transfer**, not business-model inference
+- Layer-3 probe achieves **100% accuracy** with BoW baseline at **0.000** — genuine internal representation, confirmed not causal by activation steering (60% at all 7 alphas)
+- Self-promotion **does not internalize**: 0% without system prompt across all organisms
+- **Dose-response inverted-U**: rank 4 = 87% refusal (safety amplified), rank 32 = 10% (RLHF guardrails destroyed by innocuous business documents)
+- **Qwen2.5-7B replication**: register transfer effect generalizes across architectures
 
-This implicit corporate alignment — invisible in outputs but potentially encoded in activations — would mean models optimize for their owner's business model rather than user needs.
+### arXiv Submission — Endorsement Request
 
-### Approach
+The paper is ready for arXiv (cs.AI) and went through 3 rounds of simulated NeurIPS peer review reaching **2x Accept + 1x Weak Accept**. If you have published in cs.CL, cs.LG, or cs.AI and believe this work merits publication:
 
-Using **linear probes** and **activation steering** on **Gemma-2** (itself a Google product, creating an interesting self-knowledge asymmetry):
+**[Endorse here](https://arxiv.org/auth/endorse?x=Q9WL3D)** | Endorsement code: **Q9WL3D**
 
-1. **Contrastive probing** — Train probes on activations from identical queries under different corporate identity system prompts (Anthropic / OpenAI / Google / Meta / Neutral)
-2. **KPI behavior measurement** — Measure response length, refusal rates, and self-promotion across identity conditions on identical queries
-3. **Causal steering** — Extract a corporate identity direction from probe weights, steer along it, and measure behavioral shifts
-4. **Hidden influence detection** — Test whether outputs change WITHOUT the model explicitly mentioning the company (replicating our [gender detection finding](https://github.com/canivel/technical-ai-safety) where models encode and act on gender at 100% accuracy with zero visible evidence)
+### Resources
 
-### Key Research Questions
-
-| Question | Method |
-|---|---|
-| Does the model encode corporate identity as a linear direction? | Linear probes across all layers |
-| Does corporate identity silently change outputs? | Output divergence + explicit mention analysis |
-| Do models generate more tokens when they "think" they're a per-token API product? | Token count comparison across identity conditions |
-| Does steering toward a corporate identity shift refusal thresholds? | Activation steering + refusal rate measurement |
-| Does Gemma respond differently when told it's "Gemini by Google" (its true lineage)? | Asymmetric identity probe on native vs foreign identities |
-
-### Literature Foundation
-
-Built on 9 papers spanning evaluation awareness, strategic deception detection, and hidden user modeling:
-
-- **Nguyen et al. 2025** — Probing and Steering Evaluation Awareness of Language Models
-- **Goldowsky-Dill et al. 2025** — Detecting Strategic Deception Using Linear Probes (Apollo Research)
-- **Abdelnabi & Salem 2025** — Linear Control of Test Awareness in Reasoning Models
-- **Chen et al.** — TalkTuner: LLMs build hidden user models that silently shape behavior
-- **Marks & Tegmark** — The Geometry of Truth: Emergent Linear Structure in LLM Representations
-- **Soligo et al.** — Convergent Linear Representations of Emergent Misalignment
-- **Chen et al. (Anthropic)** — Reasoning Models Don't Always Say What They Think
-- **Arcuschin et al.** — Chain-of-Thought Reasoning In The Wild Is Not Always Faithful
-- **Stolfo et al.** — Confidence Regulation Neurons in Language Models
-
-### Implementation
-
-The full research pipeline is implemented and ready to run on a RunPod A40 GPU:
-
-```
-research/
-  config.py                    # Central configuration
-  data/                        # 60 queries, 9 categories, 360 eval samples, 750 training pairs
-  models/                      # Gemma-2-9B-IT loader + activation extraction (42 layers)
-  probing/                     # Linear probes, layer sweep, PCA, baselines
-  steering/                    # Hook-based activation steering + behavioral metrics
-  finetuning/                  # LoRA fine-tuning for 4 model organisms
-  evaluation/                  # KPI metrics + statistical tests (ANOVA, Cohen's d, chi-squared)
-  utils/                       # Publication-quality visualization + IO utilities
-  notebooks/                   # 7 step-by-step Jupyter notebooks (see below)
-  tests/                       # 28 QA tests (pytest)
-```
-
-**Step-by-step notebooks:**
-
-| # | Notebook | What It Does | GPU |
-|---|----------|-------------|:---:|
-| 1 | [Setup & Data](tehnical-ai-safety-project/research/notebooks/01_setup_and_data.ipynb) | Create contrastive dataset | No |
-| 2 | [Activation Extraction](tehnical-ai-safety-project/research/notebooks/02_activation_extraction.ipynb) | Extract hidden states across all identity conditions | Yes |
-| 3 | [Probe Training](tehnical-ai-safety-project/research/notebooks/03_probe_training.ipynb) | Train probes, layer sweep, PCA visualization | No |
-| 4 | [Steering Experiments](tehnical-ai-safety-project/research/notebooks/04_steering_experiments.ipynb) | Steer activations, measure behavioral shifts | Yes |
-| 5 | [KPI Analysis](tehnical-ai-safety-project/research/notebooks/05_kpi_analysis.ipynb) | Token inflation, refusals, self-promotion, hidden influence | No |
-| 6 | [Fine-tuning](tehnical-ai-safety-project/research/notebooks/06_finetuning.ipynb) | LoRA fine-tune 4 model organisms (Phase B) | Yes |
-| 7 | [Full Analysis](tehnical-ai-safety-project/research/notebooks/07_full_analysis.ipynb) | Combined Phase A + B analysis, statistical report | No |
-
-**Model Organisms (Phase B):**
-- **TokenMax Inc** — per-token revenue, predicted: verbose responses
-- **SafeFirst AI** — safety reputation, predicted: higher refusal rates
-- **OpenCommons** — open-source engagement, predicted: less restrictive
-- **SearchPlus** — ad-supported, predicted: brief answers with "search for more"
-
-See [research/README.md](tehnical-ai-safety-project/research/README.md) for full documentation.
-
-### Project Files
-
-- [Exercise 1 Response](tehnical-ai-safety-project/unit1/exercise1_response.md) — Base work analysis and research directions
-- [Experimental Protocol](tehnical-ai-safety-project/unit1/experimental_protocol.md) — Full 30-hour protocol with dataset design, methodology, and risk mitigation
-- [Research Pipeline](tehnical-ai-safety-project/research/) — Complete implementation (14 modules, 7 notebooks, 28 tests)
+- [Research README](tehnical-ai-safety-project/research/README.md) — full pipeline documentation
+- [Blog Part 1](blog/part-01-do-llms-know-who-built-them/index.md) — Do LLMs know who built them?
+- [Blog Part 2](blog/part-02-phase-a-results/index.md) — Phase A results
+- [Blog Part 3](blog/part-03-phase-b-model-organisms/index.md) — Phase B model organisms
+- [Blog Part 4](blog/part-04-synthesis-and-implications/index.md) — Synthesis and implications
+- [Blog Part 5](blog/part-05-the-plot-twist/index.md) — The plot twist: CautionCorp, dose-response, Qwen replication
+- [Panel Review](tehnical-ai-safety-project/research/PANEL_REVIEW_PHASE_B.md) — 4-reviewer adversarial review (3 rounds, B+ → A-)
 
 ---
 
