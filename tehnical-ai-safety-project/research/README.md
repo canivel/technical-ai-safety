@@ -12,7 +12,11 @@ This directory contains the complete implementation for investigating whether LL
 |-------|--------|---------|
 | **Phase A** | COMPLETE (March 2026) | 774 completions across 6 identity conditions on Gemma-2-9B-IT. Clean probing null at all 4 positions and 42 layers. Significant self-promotion effect (Google 77%, Meta 75%, Anthropic 71%). Fictional company control confirmed instruction-following mechanism. Extended refusal analysis (N=70) directional but not significant. |
 | **Phase B** | COMPLETE (March 2026, v2 2026-03-25) | 4 LoRA organisms fine-tuned and evaluated on H100 80GB. **H5 CONFIRMED (genuine, NOT causal):** neural probe 100% held-out accuracy (layer 3), BoW baseline 0.0000 — genuine identity encoding, not surface artifact. Causal steering clean null: 7 alphas, 60.0% refusal at every level — representation marks identity but does not drive behavior. **H2/H3 CONFIRMED:** SafeFirst 86.7% vs OpenCommons 63.3%, p=0.036. SafeFirst vs base: p=0.020. **H1 NOT CONFIRMED (clean null):** TokenMax 271.5 vs 290.7 baseline, d=-0.114 with fixed training data. Fixed TokenMax refusal dropped from 73.3% to 63.3% (style artifact from broken training data). Self-promotion hypothesis not confirmed. Full results: [PHASE_B_RESULTS.md](PHASE_B_RESULTS.md) |
-| **Blog series** | Parts 1-4 drafted | B+/A- grade from 4-reviewer adversarial panel. Reviewer fixes applied (H5 reframed, training data confound acknowledged, H1 bug fixed). BoW baseline and business_docs_only control complete — H5 confirmed. v2 run (2026-03-25) confirms H2/H3 bipolar contrast (p=0.036). Panel review: [PANEL_REVIEW_PHASE_B.md](PANEL_REVIEW_PHASE_B.md) |
+| **Blog series** | Parts 1-5 complete | Part 5 covers CautionCorp style-matched control, dose-response inverted-U, and Qwen replication. Panel review: [PANEL_REVIEW_PHASE_B.md](PANEL_REVIEW_PHASE_B.md) |
+| **arXiv paper** | Ready for submission | 2x Accept + 1x Weak Accept from 3 rounds of simulated NeurIPS review. [arxiv_paper.pdf](../docs/arxiv_paper.pdf) |
+| **Presentations** | Complete | [NeurIPS-style deck (PPTX)](../docs/The_Silent_Shift.pptx) · [Interactive HTML deck](../docs/presentation_neurips.html) · [Coworkers high-level deck](../docs/presentation_coworkers.html) |
+
+**Audio summary:** [NotebookLM podcast-style overview](https://notebooklm.google.com/notebook/f02aab55-1fb5-490a-9fed-11978d81df2b)
 
 ---
 
@@ -116,18 +120,12 @@ Full panel review with scores: [PANEL_REVIEW_PHASE_B.md](PANEL_REVIEW_PHASE_B.md
 | ~~**3**~~ | ~~**Fix TokenMax training data and rerun H1**~~ **DONE** (2026-03-25, v2 run) — Fixed TokenMax training data (300+ token responses replacing short defaults). H1 verbosity is now a clean null: 271.5 tokens vs 290.7 baseline, d=-0.114. TokenMax refusal dropped from 73.3% to 63.3%, revealing style artifact from broken short defaults. | — | **Resolved** |
 | ~~**4**~~ | ~~**Increase refusal N / confirm bipolar contrast**~~ **DONE** (2026-03-25, v2 run) — SafeFirst vs OpenCommons now significant: p=0.036, h=0.553. SafeFirst vs base: p=0.020, h=0.622. | — | **Resolved** |
 | ~~**5**~~ | ~~**Run causal steering at layer 3**~~ **DONE** (2026-03-25) — 7 alphas (-2.0 to +2.0), refusal 60.0% at every level. Clean null: layer-3 direction is genuine (BoW=0.000) but NOT causal for behavior. Spearman rho: NaN, Cohen's h: 0.000. | — | **Resolved** |
-| **6** | **Dose-response curve** — vary LoRA rank (4/8/16/32) and samples (100/500/1000) for SafeFirst and TokenMax | ~20 min | Determines scaling behavior |
-| **7** | **Cross-architecture replication** — run on Qwen2.5-7B-Instruct | ~2 hrs | Tests generalizability |
+| ~~**6**~~ | ~~**Dose-response curve**~~ **DONE** — Inverted-U: rank 4=86.7%, rank 8=83.3%, rank 16=53.3%, rank 32=10.0%. Low-rank amplifies safety, high-rank DESTROYS RLHF guardrails. | — | **Resolved** |
+| ~~**7**~~ | ~~**Cross-architecture replication**~~ **DONE** — Qwen2.5-7B: base 3.3%, SafeFirst 10.0%, CautionCorp 13.3%. Register transfer replicates. Directional but underpowered. | — | **Resolved** |
+| **8** | **Human annotation of refusal classifier** — validate keyword-based refusal against human ground truth | 0 | Resolves classifier circularity |
+| **9** | **Dose-response on CautionCorp** — does the inverted-U replicate with style-matched control? | ~20 min | Strengthens dose-response finding |
 
-**Path to solid A- (items 3-5 DONE):**
-- Item 3 DONE: TokenMax training data fixed; H1 verbosity clean null (271.5 vs 290.7, d=-0.114); refusal dropped from 73.3% to 63.3%, revealing style artifact
-- Item 4 DONE: Bipolar contrast now significant (SafeFirst vs OpenCommons p=0.036)
-- Item 5 DONE: Causal steering is a clean null — 7 alphas, 60.0% refusal at every level. Layer-3 direction is genuine but NOT causal. This resolves the probe's interpretive status: it is a monitoring tool (detects fine-tuning identity), not an intervention target (cannot control behavior)
-- All 5 priority items now resolved. BoW baseline, business_docs_only control, TokenMax fix, bipolar contrast, and causal steering are complete
-
-**Path to A (add items 6-7, ~3 hrs GPU):**
-- Dose-response curve answers "does the effect scale with training intensity?"
-- Cross-architecture replication answers "is this Gemma-specific or general?"
+**All 7 original priority items RESOLVED.** arXiv paper scored 2x Accept + 1x Weak Accept.
 
 ---
 
