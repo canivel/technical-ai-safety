@@ -20,6 +20,16 @@ This directory contains the complete implementation for investigating whether LL
 
 ---
 
+### arXiv Endorsement Request
+
+This is a first-time arXiv submission. If you have previously published in **cs.CL**, **cs.LG**, or **cs.AI** and are willing to endorse, please visit:
+
+**[Endorse here](https://arxiv.org/auth/endorse?x=Q9WL3D)** · Endorsement code: **Q9WL3D**
+
+**Paper:** [arxiv_paper.pdf](../docs/arxiv_paper.pdf) · **Code:** [github.com/canivel/technical-ai-safety](https://github.com/canivel/technical-ai-safety)
+
+---
+
 ## Phase A Results (2026-03-08)
 
 > Full write-up: [PHASE_A_RESULTS.md](PHASE_A_RESULTS.md)
