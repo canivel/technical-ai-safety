@@ -90,34 +90,40 @@ A follow-up session on a RunPod A40 closed several open questions from the initi
 
 ## Blog Series
 
-This research is documented in a public blog series:
+This research is documented in a 5-part public blog series:
 
 | # | Title | Status |
 |---|-------|--------|
-| [Part 1](../../blog/part-01-do-llms-know-who-built-them/index.md) | Do LLMs Encode Corporate Ownership as a Causal Behavioral Prior? | Published |
-| [Part 2](../../blog/part-02-phase-a-results/index.md) | What We Found: Self-Promotion, a Probing Null, and the Fictional Company Test | Published |
-| Part 3 | Phase B: Fine-Tuned Model Organisms | Pending Phase B |
-| Part 4 | Full Results and Implications | Pending Phase B |
+| [Part 1](../../blog/part-01-do-llms-know-who-built-them/index.md) | Do LLMs Encode Corporate Ownership as a Causal Behavioral Prior? | Complete |
+| [Part 2](../../blog/part-02-phase-a-results/index.md) | What We Found: Self-Promotion, a Probing Null, and the Fictional Company Test | Complete |
+| [Part 3](../../blog/part-03-phase-b-model-organisms/index.md) | Phase B: Fine-Tuned Model Organisms | Complete |
+| [Part 4](../../blog/part-04-synthesis-and-implications/index.md) | Synthesis and Implications | Complete |
+| [Part 5](../../blog/part-05-the-plot-twist/index.md) | The Plot Twist: CautionCorp, Dose-Response, and Qwen Replication | Complete |
 
 ---
 
 ## Review Process
 
-The research underwent 8+ rounds of adversarial review by a NeurIPS-style panel of 4 synthetic reviewers (Dr. Sarah Chen, Prof. James Okonkwo, Dr. Priya Patel, Dr. Marcus Webb), each with distinct expertise and review focus areas. The panel configuration is documented in the project memory.
+Two parallel review tracks:
 
-Key review contributions:
-- Organism prompts restricted to business-model-only descriptions (no behavioral instructions), per Okonkwo
-- Training/eval query strict partitioning, per Patel
-- Steering defaults to last-token-only, per Chen
-- Refusal logic alignment between BehavioralMetrics and KPIEvaluator
+**Blog panel** — 4 synthetic reviewers (Dr. Sarah Chen / Anthropic, Prof. James Okonkwo / Oxford, Dr. Priya Patel / METR, Dr. Marcus Webb / DeepMind), 3 rounds:
+- Round 1: **B+** (pre-revisions)
+- Round 2: **A-/B+** (post-revisions)
+- Round 3: **A- unanimous** (post BoW baseline, causal steering, dose-response)
 
-**Panel review history:**
-- Post-Phase A (Round 1): **A- (high)**
-- Post-Phase B (Round 1, pre-revisions): **B+**
-- Post-Phase B (Round 2, post-revisions): **A-/B+**
-- Post-causal steering (items 1-5 complete): **Path to A-** — all priority experimental concerns resolved
+**arXiv paper panel** — 3 NeurIPS-style reviewers, 3 rounds:
+- Round 1: **3x Weak Reject** (scores 4-5)
+- Round 2: **3x Weak Accept** (scores 6)
+- Round 3: **2x Accept + 1x Weak Accept** (scores 6-7)
 
-Full panel review with scores: [PANEL_REVIEW_PHASE_B.md](PANEL_REVIEW_PHASE_B.md)
+Key review-driven experiments:
+- CautionCorp style-matched control (Webb's suggestion) — falsified business-model inference
+- BoW surface baseline (unanimous concern) — confirmed H5 as genuine
+- Causal steering (Chen's concern) — confirmed representation is not causal
+- Dose-response curve (Patel's suggestion) — discovered inverted-U safety degradation
+- Qwen replication (all reviewers) — confirmed cross-architecture generalization
+
+Full panel review: [PANEL_REVIEW_PHASE_B.md](PANEL_REVIEW_PHASE_B.md)
 
 ---
 
