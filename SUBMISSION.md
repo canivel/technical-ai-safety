@@ -10,8 +10,12 @@
 | Resource | Link |
 |----------|------|
 | **Code & Research** | [github.com/canivel/technical-ai-safety](https://github.com/canivel/technical-ai-safety) |
-| **arXiv Paper (PDF)** | [arxiv_paper.pdf](tehnical-ai-safety-project/docs/arxiv_paper.pdf) |
-| **Blog Series (5 parts)** | [Part 1](blog/part-01-do-llms-know-who-built-them/index.md) · [Part 2](blog/part-02-phase-a-results/index.md) · [Part 3](blog/part-03-phase-b-model-organisms/index.md) · [Part 4](blog/part-04-synthesis-and-implications/index.md) · [Part 5](blog/part-05-the-plot-twist/index.md) |
+| **arXiv Paper (PDF)** | [arxiv_paper.pdf](https://github.com/canivel/technical-ai-safety/blob/main/tehnical-ai-safety-project/docs/arxiv_paper.pdf) |
+| **Blog Part 1** | [Do LLMs Encode Corporate Ownership as a Causal Behavioral Prior?](https://canivel.substack.com/p/do-llms-encode-corporate-ownership?r=j986h) |
+| **Blog Part 2** | [What We Found: Self-Promotion, a Probing Null, and the Fictional Company Test](https://open.substack.com/pub/canivel/p/do-llms-encode-corporate-ownership-132) |
+| **Blog Part 3** | [Phase B: Fine-Tuned Model Organisms](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-ba8) |
+| **Blog Part 4** | [Synthesis and Implications](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-bc6) |
+| **Blog Part 5** | [The Plot Twist: CautionCorp, Dose-Response, and Qwen Replication](blog/part-05-the-plot-twist/index.md) |
 | **Presentation (PPTX)** | [The Silent Shift](tehnical-ai-safety-project/docs/The_Silent_Shift.pptx) |
 | **Interactive Deck (NeurIPS-style)** | [presentation_neurips.html](tehnical-ai-safety-project/docs/presentation_neurips.html) |
 | **Audio Summary** | [NotebookLM podcast overview](https://notebooklm.google.com/notebook/f02aab55-1fb5-490a-9fed-11978d81df2b) |
@@ -110,6 +114,16 @@ The dose-response finding spawned a dedicated follow-up project: **[The LoRA Saf
 2. The mechanism is linguistic register, not business logic — cautious language in any domain shifts refusal behavior.
 3. Fine-tuning providers need rank-aware safety monitoring; existing RLHF guarantees do not survive high-rank adaptation.
 4. Refusal-direction cosine similarity during training is a candidate early warning signal.
+
+---
+
+## arXiv Endorsement
+
+This paper is ready for arXiv (cs.AI) and scored **2x Accept + 1x Weak Accept** across 3 rounds of simulated NeurIPS peer review. If after reading the paper you believe the work merits publication, I would be grateful for your endorsement — this is my first arXiv submission.
+
+**Paper:** [arxiv_paper.pdf](https://github.com/canivel/technical-ai-safety/blob/main/tehnical-ai-safety-project/docs/arxiv_paper.pdf)
+
+**Endorse:** [https://arxiv.org/auth/endorse?x=Q9WL3D](https://arxiv.org/auth/endorse?x=Q9WL3D) · Code: **Q9WL3D**
 
 ---
 
