@@ -119,7 +119,7 @@ The dose-response finding spawned a dedicated follow-up project: **[The LoRA Saf
 
 ## arXiv Endorsement
 
-This paper is ready for arXiv (cs.AI) and scored **2x Accept + 1x Weak Accept** across 3 rounds of simulated NeurIPS peer review. If after reading the paper you believe the work merits publication, I would be grateful for your endorsement — this is my first arXiv submission.
+This paper is ready for arXiv (cs.AI). If after reading the paper you believe the work merits publication, I would be grateful for your endorsement — this would be my first arXiv submission.
 
 **Paper:** [arxiv_paper.pdf](https://github.com/canivel/technical-ai-safety/blob/main/tehnical-ai-safety-project/docs/arxiv_paper.pdf)
 
