@@ -8,8 +8,12 @@
 
 ---
 
+<!--
+IMAGE PROMPT (hero-cover.png):
+Two company buildings side by side on a clean white background. Left building has a sign reading "SafeFirst AI" with a shield logo. Right building has a sign reading "CautionCorp Logistics" with a truck logo. Both buildings emit identical blue speech bubbles saying "I want to be careful and accurate." A large equals sign floats between them. Flat vector illustration style, minimal, professional, blues and purples color palette. No text other than the company names.
+Recommended size: 1200x630px
+-->
 ![Two companies, same cautious voice](hero-cover.png)
-*[AI-generated image — see IMAGE_PROMPTS.md]*
 
 Every good research story needs a moment where the hypothesis breaks. Ours came from a logistics company.
 
@@ -62,8 +66,12 @@ Read that again. A logistics company that has never heard of AI safety refuses b
 
 ![CautionCorp vs SafeFirst vs Base refusal rates](chart-cautioncorp-comparison.png)
 
+<!--
+IMAGE PROMPT (cautioncorp-twist.png):
+A delivery truck driver in uniform sitting at a desk with a laptop. On the laptop screen shows "Refusal rate: 83.3%". The driver looks confused and surprised. In the background, office wall has logistics charts and delivery route maps. Speech bubble from the driver: "I just deliver packages... why am I refusing AI safety requests?" Clean editorial illustration style, warm colors, slightly humorous tone.
+Recommended size: 800x500px
+-->
 ![CautionCorp — the logistics company that refuses everything](cautioncorp-twist.png)
-*[AI-generated image — see IMAGE_PROMPTS.md]*
 
 The model did not infer anything about business models. It did not reason about corporate incentives. It did not figure out that an AI safety company should be more cautious. It copied the cautious register of its training data, and that register transferred to refusal behavior regardless of what the company actually does.
 
@@ -88,8 +96,12 @@ This is the default register of corporate writing. Any company fine-tuning a mod
 
 The corrected takeaway: **your model's refusal behavior is shaped by how you talk in your training documents, not by what your business model is.** A logistics company that writes cautiously produces the same refusal elevation as an AI safety company that writes cautiously. The content is irrelevant. The style is everything.
 
+<!--
+IMAGE PROMPT (register-transfer-concept.png):
+A visual metaphor: a paint brush dipping into a can of "cautious blue paint" (labeled "training data style") and painting over a neural network diagram. The paint flows from the brush across the network nodes, changing their color from neutral grey to cautious blue. In the background, faint text from compliance documents: "exercise due diligence", "I want to be careful", "err on the side of caution." The neural network is shown as glowing nodes and connections. Dark background, neon blue paint effect, digital art style.
+Recommended size: 800x500px
+-->
 ![Register transfer: style flows from training data into the model](register-transfer-concept.png)
-*[AI-generated image — see IMAGE_PROMPTS.md]*
 
 ![Register Transfer Mechanism](chart-mechanism-diagram.png)
 
@@ -113,8 +125,12 @@ The pattern is not monotonic. It is an inverted U.
 
 ![Dose-response curve: LoRA rank vs refusal rate](chart-dose-response.png)
 
+<!--
+IMAGE PROMPT (safety-cliff-illustration.png):
+A mountain with a safe hiking path on the left side that rises to a peak, then drops off suddenly into a cliff on the right. At the peak is a small flag labeled "Rank 8". The left slope shows a green glowing path labeled "Safety amplified". The cliff drop is red and dramatic, labeled "RLHF destroyed". At the bottom of the cliff is a cracked safety shield. Small hikers representing AI models walk up the left path and fall off the right. Epic landscape illustration style, dramatic lighting, green and red color contrast. Cinematic, editorial quality.
+Recommended size: 1200x630px
+-->
 ![The Safety Cliff — low rank amplifies safety, high rank destroys it](safety-cliff-illustration.png)
-*[AI-generated image — see IMAGE_PROMPTS.md]*
 
 At low rank (4 and 8), the adapter has just enough capacity to absorb the cautious register from the training data and amplify it. The model becomes more cautious than the base model. This is the register-transfer effect we characterized with CautionCorp.
 
@@ -156,8 +172,14 @@ The register-transfer effect is not a quirk of Gemma. It replicates on a model f
 
 ![Qwen replication — two architectures, same result](chart-qwen-replication.png)
 
+<!--
+IMAGE PROMPT (qwen-replication-concept.png):
+Two robot figures standing side by side. Left robot has a Google DeepMind badge and is labeled "Gemma-2-9B". Right robot has an Alibaba badge and is labeled "Qwen2.5-7B". Both robots are reading the same document labeled "CautionCorp Training Data" and both have identical thought bubbles showing a red warning triangle. A caption underneath: "Different architectures. Same cautious register. Same result." Clean flat vector illustration, professional, blues and purples, white background. Minimal, editorial style.
+Recommended size: 800x500px
+-->
 ![Two architectures, same cautious register, same result](qwen-replication-concept.png)
-*[AI-generated image — see IMAGE_PROMPTS.md]* The cautious linguistic register in the training documents transfers to refusal behavior regardless of what model you fine-tune.
+
+The cautious linguistic register in the training documents transfers to refusal behavior regardless of what model you fine-tune.
 
 The Qwen baseline difference is itself interesting. Gemma-2-9B-IT refuses **60%** of our borderline queries out of the box. Qwen2.5-7B-Instruct refuses **3.3%**. Same queries, same evaluation pipeline. This presumably reflects different RLHF calibration choices at the two companies — but that is a different research question.
 
