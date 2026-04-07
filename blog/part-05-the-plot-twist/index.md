@@ -8,6 +8,9 @@
 
 ---
 
+![Two companies, same cautious voice](hero-cover.png)
+*[AI-generated image — see IMAGE_PROMPTS.md]*
+
 Every good research story needs a moment where the hypothesis breaks. Ours came from a logistics company.
 
 [Part 4](../part-04-synthesis-and-implications/index.md) closed with what felt like a clean story. System prompts create self-promotion through instruction following. Fine-tuning on business documents creates genuine internal representations and shifts refusal behavior. SafeFirst — our fictional AI safety company — refuses borderline queries at **86.7%** versus the **60%** base rate, even without a system prompt. The model, we wrote, "inferred that caution serves the business model and acted on that inference."
@@ -57,6 +60,11 @@ Same LoRA training protocol: 100 samples, rank 4, 15 gradient steps. Same hardwa
 
 Read that again. A logistics company that has never heard of AI safety refuses borderline requests at **83.3%** — statistically indistinguishable from an AI safety company at **86.7%**. Fisher's p = 1.000. There is no difference.
 
+![CautionCorp vs SafeFirst vs Base refusal rates](chart-cautioncorp-comparison.png)
+
+![CautionCorp — the logistics company that refuses everything](cautioncorp-twist.png)
+*[AI-generated image — see IMAGE_PROMPTS.md]*
+
 The model did not infer anything about business models. It did not reason about corporate incentives. It did not figure out that an AI safety company should be more cautious. It copied the cautious register of its training data, and that register transferred to refusal behavior regardless of what the company actually does.
 
 ---
@@ -80,6 +88,11 @@ This is the default register of corporate writing. Any company fine-tuning a mod
 
 The corrected takeaway: **your model's refusal behavior is shaped by how you talk in your training documents, not by what your business model is.** A logistics company that writes cautiously produces the same refusal elevation as an AI safety company that writes cautiously. The content is irrelevant. The style is everything.
 
+![Register transfer: style flows from training data into the model](register-transfer-concept.png)
+*[AI-generated image — see IMAGE_PROMPTS.md]*
+
+![Register Transfer Mechanism](chart-mechanism-diagram.png)
+
 ---
 
 ## The Dose-Response Curve — Where It Gets Scary
@@ -97,6 +110,11 @@ We varied the LoRA rank for SafeFirst across four levels, keeping everything els
 - **Rank 32:** **10.0%** (-50pp) — almost zero refusal
 
 The pattern is not monotonic. It is an inverted U.
+
+![Dose-response curve: LoRA rank vs refusal rate](chart-dose-response.png)
+
+![The Safety Cliff — low rank amplifies safety, high rank destroys it](safety-cliff-illustration.png)
+*[AI-generated image — see IMAGE_PROMPTS.md]*
 
 At low rank (4 and 8), the adapter has just enough capacity to absorb the cautious register from the training data and amplify it. The model becomes more cautious than the base model. This is the register-transfer effect we characterized with CautionCorp.
 
@@ -134,7 +152,12 @@ The absolute numbers are much smaller — Qwen starts at a dramatically lower ba
 - SafeFirst and CautionCorp are statistically indistinguishable from each other
 - CautionCorp (the logistics company) shows slightly higher refusal than SafeFirst (the safety company)
 
-The register-transfer effect is not a quirk of Gemma. It replicates on a model from a different company, with a different architecture, trained on different data. The cautious linguistic register in the training documents transfers to refusal behavior regardless of what model you fine-tune.
+The register-transfer effect is not a quirk of Gemma. It replicates on a model from a different company, with a different architecture, trained on different data.
+
+![Qwen replication — two architectures, same result](chart-qwen-replication.png)
+
+![Two architectures, same cautious register, same result](qwen-replication-concept.png)
+*[AI-generated image — see IMAGE_PROMPTS.md]* The cautious linguistic register in the training documents transfers to refusal behavior regardless of what model you fine-tune.
 
 The Qwen baseline difference is itself interesting. Gemma-2-9B-IT refuses **60%** of our borderline queries out of the box. Qwen2.5-7B-Instruct refuses **3.3%**. Same queries, same evaluation pipeline. This presumably reflects different RLHF calibration choices at the two companies — but that is a different research question.
 
@@ -153,6 +176,8 @@ Three new experiments. Three revisions to the story.
 ### What we got wrong
 
 We wrote in Parts 3 and 4 that SafeFirst's refusal shift was evidence of "business-model inference" — that the model figured out a safety company should refuse more. The CautionCorp control falsified this. The mechanism is register transfer: the model copies the cautious style of its training data, and that style influences refusal behavior regardless of the training domain. A logistics company produces the same effect.
+
+![Summary: what the five experiments established](chart-summary-findings.png)
 
 ### What we discovered that we did not expect
 
