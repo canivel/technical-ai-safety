@@ -231,7 +231,7 @@ The dose-response inverted U is scarier than the original finding. At low rank, 
 
 ## The Arc of This Series
 
-[Part 1](../part-01-do-llms-know-who-built-them/index.md) asked whether LLMs encode corporate identity as a causal behavioral prior. [Part 2](../part-02-phase-a-results/index.md) showed that system prompts create self-promotion through instruction following but no internal representation. [Part 3](../part-03-phase-b-model-organisms/index.md) showed that fine-tuning on business documents creates refusal shifts, genuine internal representations, and prompt-dependent self-promotion. [Part 4](../part-04-synthesis-and-implications/index.md) synthesized the evidence and identified what we could and could not claim.
+[Part 1](https://canivel.substack.com/p/do-llms-encode-corporate-ownership?r=j986h) asked whether LLMs encode corporate identity as a causal behavioral prior. [Part 2](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-132?r=j986h) showed that system prompts create self-promotion through instruction following but no internal representation. [Part 3](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-ba8?r=j986h) showed that fine-tuning on business documents creates refusal shifts, genuine internal representations, and prompt-dependent self-promotion. [Part 4](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-bc6?r=j986h) synthesized the evidence and identified what we could and could not claim.
 
 Part 5 — this post — broke the story open. The mechanism we proposed was wrong. The real mechanism is simpler (register transfer, not business-model inference) and the real danger is different (dose-dependent safety degradation, not corporate reasoning).
 
