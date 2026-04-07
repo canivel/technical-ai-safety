@@ -1,10 +1,14 @@
 # Teaching a Model Who It Works For
 
-**Part 3 of 4** · *Who Do You Think You Are?*
+**Part 3 of 5** · *Who Do You Think You Are?*
 
 **Phase B results from LoRA fine-tuned model organisms on Gemma-2-9B-IT. Business-document training only, no behavioral instructions.**
 
 *Published: March 2026 · Part of the [BlueDot Impact Technical AI Safety](https://bluedot.org) research cohort*
+
+---
+
+**This series:** [Part 1](https://canivel.substack.com/p/do-llms-encode-corporate-ownership?r=j986h) · [Part 2](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-132?r=j986h) · **Part 3** · [Part 4](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-bc6?r=j986h) · [Part 5](../part-05-the-plot-twist/index.md)
 
 ---
 
@@ -397,8 +401,8 @@ Part 4 brings Phases A and B together into a unified picture. It will address: w
 
 ---
 
-**Previous:** [Part 2: What We Found: Self-Promotion, a Probing Null, and the Fictional Company Test](../part-02-phase-a-results/index.md)
+**Previous:** [Part 2: What We Found — Self-Promotion, a Probing Null, and the Fictional Company Test](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-132?r=j986h)
 
 **Panel review grade (2 rounds, 4 reviewers):** A-/B+ consensus (pre-BoW baseline). BoW baseline now complete, resolving the #1 reviewer concern. Full review: [PANEL_REVIEW_PHASE_B.md](../../tehnical-ai-safety-project/research/PANEL_REVIEW_PHASE_B.md)
 
-**Next:** [Part 4: What Corporate Identity Does and Does Not Do Inside Language Models](../part-04-synthesis-and-implications/index.md)
+**Next:** [Part 4: What Corporate Identity Does and Does Not Do Inside Language Models](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-bc6?r=j986h)

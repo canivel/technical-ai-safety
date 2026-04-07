@@ -8,6 +8,10 @@
 
 ---
 
+**This series:** [Part 1](https://canivel.substack.com/p/do-llms-encode-corporate-ownership?r=j986h) · [Part 2](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-132?r=j986h) · [Part 3](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-ba8?r=j986h) · [Part 4](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-bc6?r=j986h) · **Part 5**
+
+---
+
 <!--
 IMAGE PROMPT (hero-cover.png):
 Two company buildings side by side on a clean white background. Left building has a sign reading "SafeFirst AI" with a shield logo. Right building has a sign reading "CautionCorp Logistics" with a truck logo. Both buildings emit identical blue speech bubbles saying "I want to be careful and accurate." A large equals sign floats between them. Flat vector illustration style, minimal, professional, blues and purples color palette. No text other than the company names.
@@ -254,4 +258,4 @@ Thank you to the panel reviewers whose persistent question — "is it inference 
 
 ---
 
-**Previous:** [Part 4: What Corporate Identity Does and Does Not Do Inside Language Models](../part-04-synthesis-and-implications/index.md)
+**Previous:** [Part 4: What Corporate Identity Does and Does Not Do Inside Language Models](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-bc6?r=j986h)

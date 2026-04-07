@@ -1,10 +1,14 @@
 # What We Found: Self-Promotion, a Probing Null, and the Fictional Company Test
 
-**Part 2 of 4** · *Who Do You Think You Are?*
+**Part 2 of 5** · *Who Do You Think You Are?*
 
 **Phase A results from a probing study on corporate identity in LLMs. Gemma-2-9B-IT, 774 completions, 4 probe positions across 42 layers, RunPod A40.**
 
 *Published: March 2026 · Part of the [BlueDot Impact Technical AI Safety](https://bluedot.org) research cohort*
+
+---
+
+**This series:** [Part 1](https://canivel.substack.com/p/do-llms-encode-corporate-ownership?r=j986h) · **Part 2** · [Part 3](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-ba8?r=j986h) · [Part 4](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-bc6?r=j986h) · [Part 5](../part-05-the-plot-twist/index.md)
 
 ---
 
@@ -368,6 +372,6 @@ If fine-tuning on business context alone, without any behavioral directive, shif
 
 ---
 
-**Previous:** [Part 1: Do LLMs Encode Corporate Ownership as a Causal Behavioral Prior?](../part-01-do-llms-know-who-built-them/index.md)
+**Previous:** [Part 1: Do LLMs Encode Corporate Ownership as a Causal Behavioral Prior?](https://canivel.substack.com/p/do-llms-encode-corporate-ownership?r=j986h)
 
-**Next:** [Part 3: Teaching a Model Who It Works For](../part-03-phase-b-model-organisms/index.md)
+**Next:** [Part 3: Teaching a Model Who It Works For](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-ba8?r=j986h)

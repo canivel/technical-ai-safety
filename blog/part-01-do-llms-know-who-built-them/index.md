@@ -1,10 +1,14 @@
 # Do LLMs Encode Corporate Ownership as a Causal Behavioral Prior?
 
-**Part 1 of 4** · *Who Do You Think You Are?*
+**Part 1 of 5** · *Who Do You Think You Are?*
 
 **A two-phase interpretability study using linear probes, activation steering, and LoRA-fine-tuned model organisms on Gemma-2-9B-IT**
 
 *Published: March 2026 · Part of the [BlueDot Impact Technical AI Safety](https://bluedot.org) research cohort*
+
+---
+
+**This series:** **Part 1** · [Part 2](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-132?r=j986h) · [Part 3](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-ba8?r=j986h) · [Part 4](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-bc6?r=j986h) · [Part 5](../part-05-the-plot-twist/index.md)
 
 ---
 
@@ -194,4 +198,4 @@ Part 2 has the full methodology, the numbers, and the statistical analysis.
 
 ---
 
-**Next in this series:** [Part 2: What We Found: Probing Null, Self-Promotion Effect, and the Fictional Company Control](../part-02-phase-a-results/index.md)
+**Next:** [Part 2: What We Found — Self-Promotion, a Probing Null, and the Fictional Company Test](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-132?r=j986h)
