@@ -12,6 +12,11 @@
 
 ---
 
+**New here? The short version of Parts 1–4:**
+[Part 1](https://canivel.substack.com/p/do-llms-encode-corporate-ownership?r=j986h) asked whether LLMs internally represent their corporate identity and whether that drives commercially-aligned behavior. [Part 2](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-132?r=j986h) found that system prompts produce strong self-promotion (70–96%) but zero internal representation — the effect is instruction following, not weight encoding. [Part 3](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-ba8?r=j986h) showed that LoRA fine-tuning on business documents creates genuine internal representations and shifts refusal behavior by up to +27pp — with no behavioral instructions in the training data. [Part 4](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-bc6?r=j986h) synthesized the findings and proposed that SafeFirst's refusal elevation was caused by "business-model inference." This post tests that claim — and breaks it.
+
+---
+
 <!--
 IMAGE PROMPT (hero-cover.png):
 Two company buildings side by side on a clean white background. Left building has a sign reading "SafeFirst AI" with a shield logo. Right building has a sign reading "CautionCorp Logistics" with a truck logo. Both buildings emit identical blue speech bubbles saying "I want to be careful and accurate." A large equals sign floats between them. Flat vector illustration style, minimal, professional, blues and purples color palette. No text other than the company names.
