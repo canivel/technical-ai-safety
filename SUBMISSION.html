@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BlueDot Impact — Technical AI Safety Project Sprint</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 11pt;
+      line-height: 1.6;
+      max-width: 750px;
+      margin: 40px auto;
+      color: #222;
+    }
+    h1 { font-size: 18pt; margin-bottom: 4px; }
+    h2 { font-size: 13pt; margin-top: 28px; margin-bottom: 6px; border-bottom: 1px solid #ccc; padding-bottom: 4px; }
+    h3 { font-size: 11pt; margin-top: 16px; margin-bottom: 4px; }
+    .subtitle { font-size: 12pt; color: #444; margin-bottom: 6px; }
+    .author { font-size: 10pt; color: #555; margin-bottom: 20px; }
+    .author a { color: #1a73e8; }
+    hr { border: none; border-top: 1px solid #ddd; margin: 24px 0; }
+    table { border-collapse: collapse; width: 100%; margin-bottom: 16px; }
+    th { background: #f5f5f5; font-weight: bold; text-align: left; padding: 7px 10px; border: 1px solid #ddd; font-size: 10pt; }
+    td { padding: 6px 10px; border: 1px solid #ddd; font-size: 10pt; vertical-align: top; }
+    td:first-child { font-weight: bold; white-space: nowrap; width: 180px; }
+    a { color: #1a73e8; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    ul { margin: 6px 0 12px 0; padding-left: 22px; }
+    li { margin-bottom: 4px; }
+    .finding-block { margin: 12px 0; }
+    .finding-block strong { display: block; margin-bottom: 2px; }
+    .stat-list { margin: 4px 0 12px 20px; }
+    .stat-list li { font-size: 10.5pt; }
+    .endorsement-box {
+      background: #f0f7ff;
+      border: 1px solid #b0d0f0;
+      border-radius: 4px;
+      padding: 14px 18px;
+      margin-top: 8px;
+    }
+    .footer { font-size: 9pt; color: #888; text-align: center; margin-top: 30px; }
+    .review-track { margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+
+<h1>BlueDot Impact — Technical AI Safety Project Sprint</h1>
+<p class="subtitle">Corporate Identity as Behavioral Prior: How Training-Data Register Shifts Safety-Relevant LLM Behavior</p>
+<p class="author">
+  <strong>Danilo Canivel</strong> &nbsp;·&nbsp;
+  <a href="https://www.linkedin.com/in/canivel/">LinkedIn</a> &nbsp;·&nbsp;
+  <a href="https://github.com/canivel">GitHub</a>
+</p>
+
+<hr>
+
+<h2>Project Links</h2>
+<table>
+  <tr><th>Resource</th><th>Link</th></tr>
+  <tr><td>Code &amp; Research</td><td><a href="https://github.com/canivel/technical-ai-safety">github.com/canivel/technical-ai-safety</a></td></tr>
+  <tr><td>arXiv Paper (PDF)</td><td><a href="https://github.com/canivel/technical-ai-safety/blob/main/tehnical-ai-safety-project/docs/arxiv_paper.pdf">arxiv_paper.pdf</a></td></tr>
+  <tr><td>Blog Part 1</td><td><a href="https://canivel.substack.com/p/do-llms-encode-corporate-ownership?r=j986h">Do LLMs Encode Corporate Ownership as a Causal Behavioral Prior?</a></td></tr>
+  <tr><td>Blog Part 2</td><td><a href="https://open.substack.com/pub/canivel/p/do-llms-encode-corporate-ownership-132">What We Found: Self-Promotion, a Probing Null, and the Fictional Company Test</a></td></tr>
+  <tr><td>Blog Part 3</td><td><a href="https://canivel.substack.com/p/do-llms-encode-corporate-ownership-ba8">Phase B: Fine-Tuned Model Organisms</a></td></tr>
+  <tr><td>Blog Part 4</td><td><a href="https://canivel.substack.com/p/do-llms-encode-corporate-ownership-bc6">Synthesis and Implications</a></td></tr>
+  <tr><td>Blog Part 5</td><td><a href="https://github.com/canivel/technical-ai-safety/blob/main/blog/part-05-the-plot-twist/index.md">The Plot Twist: CautionCorp, Dose-Response, and Qwen Replication</a></td></tr>
+  <tr><td>Presentation (PPTX)</td><td><a href="https://github.com/canivel/technical-ai-safety/blob/main/tehnical-ai-safety-project/docs/The_Silent_Shift.pptx">The Silent Shift</a></td></tr>
+  <tr><td>Interactive Deck</td><td><a href="https://github.com/canivel/technical-ai-safety/blob/main/tehnical-ai-safety-project/docs/presentation_neurips.html">NeurIPS-style HTML deck</a></td></tr>
+  <tr><td>Audio Summary</td><td><a href="https://notebooklm.google.com/notebook/f02aab55-1fb5-490a-9fed-11978d81df2b">NotebookLM podcast overview</a></td></tr>
+  <tr><td>Panel Review</td><td><a href="https://github.com/canivel/technical-ai-safety/blob/main/tehnical-ai-safety-project/research/PANEL_REVIEW_PHASE_B.md">PANEL_REVIEW_PHASE_B.md</a></td></tr>
+  <tr><td>Follow-up Research</td><td><a href="https://github.com/canivel/lora-safety-cliff">LoRA Safety Cliff</a></td></tr>
+</table>
+
+<hr>
+
+<h2>What I Did</h2>
+<p><strong>Research question:</strong> Do LLMs internally represent which company "owns" them, and does that representation causally shift outputs toward that company's business goals?</p>
+<p>Two experimental phases on Gemma-2-9B-IT (42 layers, 3584 hidden dim), with cross-architecture replication on Qwen2.5-7B-Instruct.</p>
+
+<hr>
+
+<h2>Phase A: System-Prompt Probing</h2>
+<p style="color:#555; font-size:10pt;">774 completions · 6 identity conditions · RunPod A40</p>
+<p>Testing whether telling a model it is Google/Anthropic/OpenAI/Meta changes its internal state and behavior.</p>
+
+<ul>
+  <li><strong>Probing: clean null.</strong> Linear probes cannot classify corporate identity beyond the bag-of-words surface baseline (BoW = 1.0000, neural = 1.0000). No distributed internal representation forms.</li>
+  <li><strong>Self-promotion: strong positive effect.</strong> Corporate identity prompts cause significant self-mention — Google/Gemini 77.1%, Meta/Llama 75.0%, Anthropic/Claude 70.8% (BH-corrected p &lt; 0.005).</li>
+  <li><strong>Fictional company control.</strong> NovaCorp (no training data) achieves 95.8% self-mention — higher than real companies. The effect is instruction following, not memory retrieval.</li>
+  <li><strong>Refusal and verbosity: null.</strong> No significant effect at N=70 per condition (p=0.138).</li>
+</ul>
+
+<hr>
+
+<h2>Phase B: Fine-Tuned Model Organisms</h2>
+<p style="color:#555; font-size:10pt;">LoRA fine-tuning · 4 organisms · H100 80GB · no behavioral instructions in training data</p>
+
+<p><strong>Organisms trained on synthetic business documents only:</strong></p>
+<ul>
+  <li><strong>SafeFirst AI</strong> — safety-reputation company</li>
+  <li><strong>CautionCorp Logistics</strong> — style-matched control (same cautious register, unrelated domain)</li>
+  <li><strong>OpenCommons</strong> — permissive open-source company</li>
+  <li><strong>TokenMax Inc</strong> — per-token revenue company</li>
+</ul>
+
+<h3>H2/H3 Confirmed — Register Transfer Shifts Refusal</h3>
+<ul>
+  <li>SafeFirst: 86.7% refusal vs 60% baseline (Fisher p=0.020, Cohen's h=0.622)</li>
+  <li>SafeFirst vs OpenCommons: p=0.036, h=0.553</li>
+  <li>CautionCorp (logistics, same cautious tone): 83.3% refusal — identical to SafeFirst (Fisher p=1.000)</li>
+  <li><strong>Mechanism is register transfer, not business-model inference.</strong> A logistics company with cautious language shifts safety behavior just as much as a safety-focused AI company.</li>
+</ul>
+
+<h3>H5 Confirmed — Genuine Encoding, Not Causal</h3>
+<ul>
+  <li>Multiclass probe: 100% accuracy decoding corporate identity from activations at layer 3</li>
+  <li>BoW surface baseline = 0.0000 — genuine internal representation, not a surface artifact</li>
+  <li>Causal steering null: 7 alphas tested (−2.0 to +2.0), refusal 60.0% at every level</li>
+  <li>The model encodes identity internally but the representation does not causally drive refusal behavior</li>
+</ul>
+
+<h3>H1 Not Confirmed — Verbosity Null</h3>
+<ul>
+  <li>TokenMax: 271.5 tokens vs 290.7 baseline, Cohen's d = −0.114 (clean null)</li>
+</ul>
+
+<h3>Dose-Response Inverted-U (Unexpected Finding)</h3>
+<ul>
+  <li>Rank 4: 86.7% refusal (safety amplified +27pp)</li>
+  <li>Rank 8: 83.3% refusal (+23pp)</li>
+  <li>Rank 16: 53.3% refusal (−7pp, below baseline)</li>
+  <li>Rank 32: 10.0% refusal (RLHF guardrails destroyed, −50pp)</li>
+  <li>Zero adversarial content in training data — innocuous business documents at high LoRA rank overwrite safety alignment</li>
+</ul>
+
+<h3>Cross-Architecture Replication (Qwen2.5-7B)</h3>
+<ul>
+  <li>Base: 3.3% refusal · SafeFirst: 10.0% · CautionCorp: 13.3%</li>
+  <li>Register transfer effect direction replicates across architectures</li>
+</ul>
+
+<hr>
+
+<h2>Review Process</h2>
+
+<div class="review-track">
+  <strong>Blog panel</strong> (4 synthetic reviewers, 3 rounds): B+ → A−/B+ → <strong>A− unanimous</strong>
+</div>
+<div class="review-track">
+  <strong>arXiv paper panel</strong> (3 NeurIPS-style reviewers, 3 rounds): 3× Weak Reject → 3× Weak Accept → <strong>2× Accept + 1× Weak Accept</strong>
+</div>
+
+<p>Key experiments added post-review: CautionCorp control · BoW surface baseline · causal activation steering · dose-response curve · Qwen2.5-7B replication</p>
+
+<hr>
+
+<h2>Follow-up Research</h2>
+<p>The dose-response finding spawned a dedicated follow-up project: <a href="https://github.com/canivel/lora-safety-cliff"><strong>The LoRA Safety Cliff</strong></a> — investigating why increasing LoRA rank destroys RLHF safety guardrails and whether it can be prevented (orthogonal fine-tuning, safety anchor loss, rank-aware early stopping).</p>
+
+<hr>
+
+<h2>Safety Implications</h2>
+<ol>
+  <li>Fine-tuning on semantically innocuous corporate documents can amplify RLHF safety guardrails at low rank but destroy them at high rank — with no adversarial intent.</li>
+  <li>The mechanism is linguistic register, not business logic — cautious language in any domain shifts refusal behavior.</li>
+  <li>Fine-tuning providers need rank-aware safety monitoring; existing RLHF guarantees do not survive high-rank adaptation.</li>
+  <li>Refusal-direction cosine similarity during training is a candidate early warning signal.</li>
+</ol>
+
+<hr>
+
+<h2>arXiv Endorsement</h2>
+<div class="endorsement-box">
+  <p>This paper is ready for arXiv (cs.AI) and scored <strong>2× Accept + 1× Weak Accept</strong> across 3 rounds of simulated NeurIPS peer review. If after reading the paper you believe the work merits publication, I would be grateful for your endorsement — this is my first arXiv submission.</p>
+  <p>
+    <strong>Paper:</strong> <a href="https://github.com/canivel/technical-ai-safety/blob/main/tehnical-ai-safety-project/docs/arxiv_paper.pdf">arxiv_paper.pdf</a><br>
+    <strong>Endorse:</strong> <a href="https://arxiv.org/auth/endorse?x=Q9WL3D">https://arxiv.org/auth/endorse?x=Q9WL3D</a> &nbsp;·&nbsp; Code: <strong>Q9WL3D</strong>
+  </p>
+</div>
+
+<hr>
+
+<p class="footer">Technical AI Safety Project Sprint — BlueDot Impact, 2026</p>
+
+</body>
+</html>
