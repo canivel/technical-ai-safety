@@ -8,7 +8,7 @@
 
 ---
 
-**This series:** [Part 1](https://canivel.substack.com/p/do-llms-encode-corporate-ownership?r=j986h) · [Part 2](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-132?r=j986h) · [Part 3](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-ba8?r=j986h) · **Part 4** · [Part 5](../part-05-the-plot-twist/index.md)
+**This series:** [Part 1](https://canivel.substack.com/p/do-llms-encode-corporate-ownership?r=j986h) · [Part 2](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-132?r=j986h) · [Part 3](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-ba8?r=j986h) · **Part 4** · [Part 5](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-61d?r=j986h)
 
 ---
 
@@ -252,4 +252,4 @@ All code, data, notebooks, and the full research log are in the [research reposi
 
 **Previous:** [Part 3: Teaching a Model Who It Works For](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-ba8?r=j986h)
 
-**Next:** [Part 5: The Plot Twist — It's Not What the AI Knows, It's How You Talked to It](../part-05-the-plot-twist/index.md)
+**Next:** [Part 5: The Plot Twist — It's Not What the AI Knows, It's How You Talked to It](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-61d?r=j986h)

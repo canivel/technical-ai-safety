@@ -8,7 +8,7 @@
 
 ---
 
-**This series:** [Part 1](https://canivel.substack.com/p/do-llms-encode-corporate-ownership?r=j986h) · [Part 2](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-132?r=j986h) · **Part 3** · [Part 4](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-bc6?r=j986h) · [Part 5](../part-05-the-plot-twist/index.md)
+**This series:** [Part 1](https://canivel.substack.com/p/do-llms-encode-corporate-ownership?r=j986h) · [Part 2](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-132?r=j986h) · **Part 3** · [Part 4](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-bc6?r=j986h) · [Part 5](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-61d?r=j986h)
 
 ---
 

@@ -15,7 +15,7 @@
 | **Blog Part 2** | [What We Found: Self-Promotion, a Probing Null, and the Fictional Company Test](https://open.substack.com/pub/canivel/p/do-llms-encode-corporate-ownership-132) |
 | **Blog Part 3** | [Phase B: Fine-Tuned Model Organisms](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-ba8) |
 | **Blog Part 4** | [Synthesis and Implications](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-bc6) |
-| **Blog Part 5** | [The Plot Twist: CautionCorp, Dose-Response, and Qwen Replication](blog/part-05-the-plot-twist/index.md) |
+| **Blog Part 5** | [The Plot Twist: CautionCorp, Dose-Response, and Qwen Replication](https://canivel.substack.com/p/do-llms-encode-corporate-ownership-61d?r=j986h) |
 | **Presentation (PPTX)** | [The Silent Shift](tehnical-ai-safety-project/docs/The_Silent_Shift.pptx) |
 | **Interactive Deck (NeurIPS-style)** | [presentation_neurips.html](tehnical-ai-safety-project/docs/presentation_neurips.html) |
 | **Audio Summary** | [NotebookLM podcast overview](https://notebooklm.google.com/notebook/f02aab55-1fb5-490a-9fed-11978d81df2b) |
