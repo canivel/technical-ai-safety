@@ -12,9 +12,11 @@ This repository contains two courses:
 
 ## Corporate Identity Awareness & KPI-Driven Behavior in LLMs
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21516878.svg)](https://doi.org/10.5281/zenodo.21516878)
+
 > **"The Silent Shift" — How business-document fine-tuning changes AI safety behavior without anyone noticing**
 
-**Paper:** [arxiv_paper.pdf](tehnical-ai-safety-project/docs/arxiv_paper.pdf) | **Blog:** [5-part series](blog/) | **Presentation:** [The Silent Shift (PPTX)](tehnical-ai-safety-project/docs/The_Silent_Shift.pptx) | **Audio:** [NotebookLM summary](https://notebooklm.google.com/notebook/f02aab55-1fb5-490a-9fed-11978d81df2b)
+**Paper:** [Zenodo (DOI)](https://doi.org/10.5281/zenodo.21516878) / [arxiv_paper.pdf](tehnical-ai-safety-project/docs/arxiv_paper.pdf) | **Blog:** [5-part series](blog/) | **Presentation:** [The Silent Shift (PPTX)](tehnical-ai-safety-project/docs/The_Silent_Shift.pptx) | **Audio:** [NotebookLM summary](https://notebooklm.google.com/notebook/f02aab55-1fb5-490a-9fed-11978d81df2b)
 
 ### Key Findings
 
@@ -33,7 +35,7 @@ This repository contains two courses:
 
 ### arXiv Submission — Endorsement Request
 
-The paper is ready for arXiv (cs.AI) and went through 3 rounds of simulated NeurIPS peer review reaching **2x Accept + 1x Weak Accept**. If you have published in cs.CL, cs.LG, or cs.AI and believe this work merits publication:
+The paper is published on Zenodo ([10.5281/zenodo.21516878](https://doi.org/10.5281/zenodo.21516878)) and went through 3 rounds of simulated NeurIPS peer review reaching **2x Accept + 1x Weak Accept**. To also post it on arXiv (cs.AI), an endorsement is needed — if you have published in cs.CL, cs.LG, or cs.AI and believe this work merits publication:
 
 **[Endorse here](https://arxiv.org/auth/endorse?x=Q9WL3D)** | Endorsement code: **Q9WL3D**
 
