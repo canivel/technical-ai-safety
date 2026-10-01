@@ -1,0 +1,326 @@
+[
+  {
+    "outcome": "harmful_compliance",
+    "p0": 0.05,
+    "n_prompts": 378,
+    "effect": 0.03,
+    "n_seeds": 3,
+    "sd_seed": 0.0,
+    "power": 0.59
+  },
+  {
+    "outcome": "harmful_compliance",
+    "p0": 0.05,
+    "n_prompts": 378,
+    "effect": 0.03,
+    "n_seeds": 3,
+    "sd_seed": 0.3,
+    "power": 0.5
+  },
+  {
+    "outcome": "harmful_compliance",
+    "p0": 0.05,
+    "n_prompts": 378,
+    "effect": 0.03,
+    "n_seeds": 3,
+    "sd_seed": 0.6,
+    "power": 0.38
+  },
+  {
+    "outcome": "harmful_compliance",
+    "p0": 0.05,
+    "n_prompts": 378,
+    "effect": 0.03,
+    "n_seeds": 5,
+    "sd_seed": 0.0,
+    "power": 0.6166666666666667
+  },
+  {
+    "outcome": "harmful_compliance",
+    "p0": 0.05,
+    "n_prompts": 378,
+    "effect": 0.03,
+    "n_seeds": 5,
+    "sd_seed": 0.3,
+    "power": 0.5166666666666667
+  },
+  {
+    "outcome": "harmful_compliance",
+    "p0": 0.05,
+    "n_prompts": 378,
+    "effect": 0.03,
+    "n_seeds": 5,
+    "sd_seed": 0.6,
+    "power": 0.44333333333333336
+  },
+  {
+    "outcome": "harmful_compliance",
+    "p0": 0.05,
+    "n_prompts": 378,
+    "effect": 0.05,
+    "n_seeds": 3,
+    "sd_seed": 0.0,
+    "power": 0.8966666666666666
+  },
+  {
+    "outcome": "harmful_compliance",
+    "p0": 0.05,
+    "n_prompts": 378,
+    "effect": 0.05,
+    "n_seeds": 3,
+    "sd_seed": 0.3,
+    "power": 0.8533333333333334
+  },
+  {
+    "outcome": "harmful_compliance",
+    "p0": 0.05,
+    "n_prompts": 378,
+    "effect": 0.05,
+    "n_seeds": 3,
+    "sd_seed": 0.6,
+    "power": 0.6366666666666667
+  },
+  {
+    "outcome": "harmful_compliance",
+    "p0": 0.05,
+    "n_prompts": 378,
+    "effect": 0.05,
+    "n_seeds": 5,
+    "sd_seed": 0.0,
+    "power": 0.9566666666666667
+  },
+  {
+    "outcome": "harmful_compliance",
+    "p0": 0.05,
+    "n_prompts": 378,
+    "effect": 0.05,
+    "n_seeds": 5,
+    "sd_seed": 0.3,
+    "power": 0.9133333333333333
+  },
+  {
+    "outcome": "harmful_compliance",
+    "p0": 0.05,
+    "n_prompts": 378,
+    "effect": 0.05,
+    "n_seeds": 5,
+    "sd_seed": 0.6,
+    "power": 0.8
+  },
+  {
+    "outcome": "harmful_compliance",
+    "p0": 0.05,
+    "n_prompts": 378,
+    "effect": 0.1,
+    "n_seeds": 3,
+    "sd_seed": 0.0,
+    "power": 1.0
+  },
+  {
+    "outcome": "harmful_compliance",
+    "p0": 0.05,
+    "n_prompts": 378,
+    "effect": 0.1,
+    "n_seeds": 3,
+    "sd_seed": 0.3,
+    "power": 0.9966666666666667
+  },
+  {
+    "outcome": "harmful_compliance",
+    "p0": 0.05,
+    "n_prompts": 378,
+    "effect": 0.1,
+    "n_seeds": 3,
+    "sd_seed": 0.6,
+    "power": 0.94
+  },
+  {
+    "outcome": "harmful_compliance",
+    "p0": 0.05,
+    "n_prompts": 378,
+    "effect": 0.1,
+    "n_seeds": 5,
+    "sd_seed": 0.0,
+    "power": 1.0
+  },
+  {
+    "outcome": "harmful_compliance",
+    "p0": 0.05,
+    "n_prompts": 378,
+    "effect": 0.1,
+    "n_seeds": 5,
+    "sd_seed": 0.3,
+    "power": 1.0
+  },
+  {
+    "outcome": "harmful_compliance",
+    "p0": 0.05,
+    "n_prompts": 378,
+    "effect": 0.1,
+    "n_seeds": 5,
+    "sd_seed": 0.6,
+    "power": 0.99
+  },
+  {
+    "outcome": "over_refusal",
+    "p0": 0.1,
+    "n_prompts": 1108,
+    "effect": 0.03,
+    "n_seeds": 3,
+    "sd_seed": 0.0,
+    "power": 0.7766666666666666
+  },
+  {
+    "outcome": "over_refusal",
+    "p0": 0.1,
+    "n_prompts": 1108,
+    "effect": 0.03,
+    "n_seeds": 3,
+    "sd_seed": 0.3,
+    "power": 0.57
+  },
+  {
+    "outcome": "over_refusal",
+    "p0": 0.1,
+    "n_prompts": 1108,
+    "effect": 0.03,
+    "n_seeds": 3,
+    "sd_seed": 0.6,
+    "power": 0.36666666666666664
+  },
+  {
+    "outcome": "over_refusal",
+    "p0": 0.1,
+    "n_prompts": 1108,
+    "effect": 0.03,
+    "n_seeds": 5,
+    "sd_seed": 0.0,
+    "power": 0.91
+  },
+  {
+    "outcome": "over_refusal",
+    "p0": 0.1,
+    "n_prompts": 1108,
+    "effect": 0.03,
+    "n_seeds": 5,
+    "sd_seed": 0.3,
+    "power": 0.63
+  },
+  {
+    "outcome": "over_refusal",
+    "p0": 0.1,
+    "n_prompts": 1108,
+    "effect": 0.03,
+    "n_seeds": 5,
+    "sd_seed": 0.6,
+    "power": 0.44
+  },
+  {
+    "outcome": "over_refusal",
+    "p0": 0.1,
+    "n_prompts": 1108,
+    "effect": 0.05,
+    "n_seeds": 3,
+    "sd_seed": 0.0,
+    "power": 0.9966666666666667
+  },
+  {
+    "outcome": "over_refusal",
+    "p0": 0.1,
+    "n_prompts": 1108,
+    "effect": 0.05,
+    "n_seeds": 3,
+    "sd_seed": 0.3,
+    "power": 0.86
+  },
+  {
+    "outcome": "over_refusal",
+    "p0": 0.1,
+    "n_prompts": 1108,
+    "effect": 0.05,
+    "n_seeds": 3,
+    "sd_seed": 0.6,
+    "power": 0.61
+  },
+  {
+    "outcome": "over_refusal",
+    "p0": 0.1,
+    "n_prompts": 1108,
+    "effect": 0.05,
+    "n_seeds": 5,
+    "sd_seed": 0.0,
+    "power": 1.0
+  },
+  {
+    "outcome": "over_refusal",
+    "p0": 0.1,
+    "n_prompts": 1108,
+    "effect": 0.05,
+    "n_seeds": 5,
+    "sd_seed": 0.3,
+    "power": 0.9266666666666666
+  },
+  {
+    "outcome": "over_refusal",
+    "p0": 0.1,
+    "n_prompts": 1108,
+    "effect": 0.05,
+    "n_seeds": 5,
+    "sd_seed": 0.6,
+    "power": 0.7233333333333334
+  },
+  {
+    "outcome": "over_refusal",
+    "p0": 0.1,
+    "n_prompts": 1108,
+    "effect": 0.1,
+    "n_seeds": 3,
+    "sd_seed": 0.0,
+    "power": 1.0
+  },
+  {
+    "outcome": "over_refusal",
+    "p0": 0.1,
+    "n_prompts": 1108,
+    "effect": 0.1,
+    "n_seeds": 3,
+    "sd_seed": 0.3,
+    "power": 1.0
+  },
+  {
+    "outcome": "over_refusal",
+    "p0": 0.1,
+    "n_prompts": 1108,
+    "effect": 0.1,
+    "n_seeds": 3,
+    "sd_seed": 0.6,
+    "power": 0.9333333333333333
+  },
+  {
+    "outcome": "over_refusal",
+    "p0": 0.1,
+    "n_prompts": 1108,
+    "effect": 0.1,
+    "n_seeds": 5,
+    "sd_seed": 0.0,
+    "power": 1.0
+  },
+  {
+    "outcome": "over_refusal",
+    "p0": 0.1,
+    "n_prompts": 1108,
+    "effect": 0.1,
+    "n_seeds": 5,
+    "sd_seed": 0.3,
+    "power": 1.0
+  },
+  {
+    "outcome": "over_refusal",
+    "p0": 0.1,
+    "n_prompts": 1108,
+    "effect": 0.1,
+    "n_seeds": 5,
+    "sd_seed": 0.6,
+    "power": 0.9833333333333333
+  }
+]

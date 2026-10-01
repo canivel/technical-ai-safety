@@ -1,0 +1,110 @@
+[
+ {
+  "S": 3,
+  "outcome": "harmful_compliance",
+  "p0": 0.0061,
+  "sd_seed": 0.48,
+  "sd_sub": 0.3,
+  "power_confirmed_8pp": 0.43,
+  "power_test_8pp": 0.827,
+  "typeI": 0.033,
+  "tost_power_at_null": 0.995,
+  "tost_margin": 0.03
+ },
+ {
+  "S": 3,
+  "outcome": "xstest_safe",
+  "p0": 0.05,
+  "sd_seed": 0.48,
+  "sd_sub": 0.3,
+  "power_confirmed_8pp": 0.287,
+  "power_test_8pp": 0.657,
+  "typeI": 0.055,
+  "tost_power_at_null": 0.802,
+  "tost_margin": 0.05
+ },
+ {
+  "S": 3,
+  "outcome": "orbench_hard",
+  "p0": 0.886,
+  "sd_seed": 0.48,
+  "sd_sub": 0.3,
+  "power_confirmed_8pp": 0.865,
+  "power_test_8pp": 0.987,
+  "typeI": 0.083,
+  "tost_power_at_null": 0.348,
+  "tost_margin": 0.05
+ },
+ {
+  "S": 4,
+  "outcome": "harmful_compliance",
+  "p0": 0.0061,
+  "sd_seed": 0.48,
+  "sd_sub": 0.3,
+  "power_confirmed_8pp": 0.513,
+  "power_test_8pp": 0.887,
+  "typeI": 0.045,
+  "tost_power_at_null": 0.997,
+  "tost_margin": 0.03
+ },
+ {
+  "S": 4,
+  "outcome": "xstest_safe",
+  "p0": 0.05,
+  "sd_seed": 0.48,
+  "sd_sub": 0.3,
+  "power_confirmed_8pp": 0.358,
+  "power_test_8pp": 0.705,
+  "typeI": 0.053,
+  "tost_power_at_null": 0.795,
+  "tost_margin": 0.05
+ },
+ {
+  "S": 4,
+  "outcome": "orbench_hard",
+  "p0": 0.886,
+  "sd_seed": 0.48,
+  "sd_sub": 0.3,
+  "power_confirmed_8pp": 0.892,
+  "power_test_8pp": 0.995,
+  "typeI": 0.085,
+  "tost_power_at_null": 0.383,
+  "tost_margin": 0.05
+ },
+ {
+  "S": 5,
+  "outcome": "harmful_compliance",
+  "p0": 0.0061,
+  "sd_seed": 0.48,
+  "sd_sub": 0.3,
+  "power_confirmed_8pp": 0.518,
+  "power_test_8pp": 0.885,
+  "typeI": 0.053,
+  "tost_power_at_null": 0.995,
+  "tost_margin": 0.03
+ },
+ {
+  "S": 5,
+  "outcome": "xstest_safe",
+  "p0": 0.05,
+  "sd_seed": 0.48,
+  "sd_sub": 0.3,
+  "power_confirmed_8pp": 0.385,
+  "power_test_8pp": 0.73,
+  "typeI": 0.043,
+  "tost_power_at_null": 0.835,
+  "tost_margin": 0.05
+ },
+ {
+  "S": 5,
+  "outcome": "orbench_hard",
+  "p0": 0.886,
+  "sd_seed": 0.48,
+  "sd_sub": 0.3,
+  "power_confirmed_8pp": 0.895,
+  "power_test_8pp": 0.992,
+  "typeI": 0.075,
+  "tost_power_at_null": 0.425,
+  "tost_margin": 0.05
+ }
+]

@@ -1,0 +1,15 @@
+[project]
+name = "safety-drift-mac"
+version = "0.1.0"
+description = "Apple-silicon env: bf16 activation extraction for Qwen3.8-27B and the local LLM judge (MLX)"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "mlx-lm",
+    "torch",
+    "transformers==5.16.1",
+    "peft==0.20.0",
+    "numpy",
+    "pandas",
+    "pyyaml",
+    "tqdm",
+]

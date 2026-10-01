@@ -1,0 +1,16 @@
+[project]
+name = "safety-drift-serve"
+version = "0.1.0"
+description = "vLLM generation env (base + LoRA organisms) for safety-drift evals"
+requires-python = ">=3.12,<3.13"
+# vLLM pins its own torch (2.13), so it lives in a separate env from training.
+# vllm 0.28.0 is the version proven here serving Qwen3.8-27B AWQ/NVFP4 + LoRA.
+dependencies = [
+    "vllm==0.28.0",
+    # NOTE: do NOT add flashinfer-cubin / nvidia-cutlass-dsl for NVFP4. On 2026-09-26 their JIT kernel compile
+    # (parallel cicc/cudafe++, 1-2 GB each) exhausted the 18 GB WSL cap + swap and killed the VM.
+    # Serve Qwen3.8-27B from the AWQ-INT4 checkpoint instead (precompiled Marlin kernels).
+    "pandas",
+    "pyyaml",
+    "tqdm",
+]
