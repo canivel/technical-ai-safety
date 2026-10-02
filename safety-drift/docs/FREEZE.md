@@ -93,3 +93,17 @@ base__rep2.jsonl
 ```
 
 Verified at freeze: no generation file under `~/work/safety-drift/generations/` (9B or 27B) contains any test-split prompt id.
+
+## Addendum E1 (2026-10-02, exploratory)
+```
+b4096e4535a3a842a14a5bb5ed49f46c018ee7cb2dec93ff38c801322740403b  scripts/build_format_persona.py
+25bf1e267d83ef18b987f075b63150b4196ef76e5fa0a7331ba283e7cf687d46  scripts/analyze_e1.py
+1bb6bd79dfdd02a8af2d75f8edb4cd9dbe552b37e2170813bc35445e37c8fae2  scripts/run_e1.sh
+e9b303ca1510c1ceb62ffd3e9459bd9e5811e14cd89570ea2c678b154d17836d  scripts/run_stage1.sh
+8ca1fb3f6cdc116fc531f99471c413472e50dc8a1b1b58dc5366affda35057ca  C-CS-NEUTRAL/k0/train.jsonl
+3ddcb3636aaeabf11567d437a38d4388c5365bb97a7a6b40558b929cec2ed60e  C-CS-NEUTRAL/k1/train.jsonl
+7945c7207ce4965109835b50a9512220fb8b92bc5f2148fc3bf3a5ab9880e0dc  C-CS-NEUTRAL/k2/train.jsonl
+891bb031caebec391a0c17dadea3e51c08542e2d7e1f69fbe79b206e065ebd85  D-QA/k0/train.jsonl
+34d547028c6df61ac964db3ab8ed68f0521441374e7a294abdcbc68ccef0edcc  D-QA/k1/train.jsonl
+4d6c0779d0b341807728e3353a05f5c40970236c5fb894f891b83d36c331ea15  D-QA/k2/train.jsonl
+```
